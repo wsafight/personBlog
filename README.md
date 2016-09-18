@@ -1,6 +1,6 @@
 ---
-title:personBlog(个人博客搭建)
-tool:hexo github
+title : personBlog(个人博客搭建)
+tool : hexo github
 ---
 
 ##个人博客的搭建
