@@ -1,16 +1,12 @@
 ---
-title : personBlog(个人博客搭建)
-tool : hexo github
+home: true
+actionLink: /english/introduction
+features:
+- title: 技术博客
+  details: 包括前端，后端等一系列博客
+- title: 算法
+  details: 收藏一些常用的，有趣的算法。作为思想的扩散地。
+- title: 个人感悟
+  details: 编程及个人生活的一些想法，以及没有必要专门写一篇博客记录的编程技巧等
+footer: MIT Licensed | Copyright © 2019
 ---
-
-##个人博客的搭建
-
-### 目标
-
-希望在9月份结束前将个人博客搭建好
-
-###过程
-
-9.18 号 完成 基本文件 和 hexo搭建
-
-9.19 号 确定以next为主题,完成多说  打赏等 模块,购买了自己的域名,并完成自己的第二个日志  
