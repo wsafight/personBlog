@@ -53,14 +53,14 @@ module.exports = {
           children: genSidebarConfig("blog/web-front", true)
         },
       ],
-      // "/vuepress/": [
-      //   "introduction",
-      //   {
-      //     title: "配置步骤",
-      //     collapsable: false,
-      //     children: genSidebarConfig("vuepress/2018-October", true)
-      //   },
-      // ],
+      "/perception/": [
+        "introduction",
+        {
+          title: "有趣的问题",
+          collapsable: false,
+          children: genSidebarConfig("perception/Interesting-question", true)
+        },
+      ],
       // "/components/": [
       //   "introduction",
       //   {
