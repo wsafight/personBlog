@@ -25,8 +25,8 @@ module.exports = {
         link: '/algorithm/introduction'
       },
       {
-        text: '个人感悟',
-        link: '/perception/introduction'
+        text: '笔记',
+        link: '/notes/introduction'
       },
       {
         text: '关于',
@@ -53,12 +53,17 @@ module.exports = {
           children: genSidebarConfig("blog/web-front", true)
         },
       ],
-      "/perception/": [
+      "/notes/": [
         "introduction",
         {
           title: "有趣的问题",
           collapsable: false,
-          children: genSidebarConfig("perception/Interesting-question", true)
+          children: genSidebarConfig("notes/Interesting-question", true)
+        },
+		 {
+          title: "个人感悟",
+          collapsable: false,
+          children: genSidebarConfig("notes/perception", true)
         },
       ],
       // "/components/": [
