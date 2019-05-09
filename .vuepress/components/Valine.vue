@@ -1,15 +1,5 @@
 <template>
-  <div >
-    <section>  
-      <div id="vcomments"></div>
-       <!-- id 将作为查询条件 -->
-        <span class="leancloud-visitors"
-              data-flag-title="Your Article Title">
-          <em class="post-meta-item-text">阅读量： </em>
-          <i class="leancloud-visitors-count"></i>
-        </span>
-    </section>
-  </div>
+  <div id="vcomments"></div>
 </template>
 <script>
 export default {
@@ -23,9 +13,7 @@ export default {
   },
   methods: {
     initValine () {
-      let path = location.origin + location.pathname
-      // vuepress打包后变成的HTML不知为什么吞掉此处的绑定`:id="countId"`
-      document.getElementsByClassName('leancloud-visitors')[0].id = path
+      const path = location.origin + location.pathname
       this.valine.init({
         el: '#vcomments',
         appId: 'JsbIEIrpTtaEWhGXAC4vGHWm-gzGzoHsz',// your appId
