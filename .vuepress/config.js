@@ -52,6 +52,11 @@ module.exports = {
           collapsable: false,
           children: genSidebarConfig("blog/web-front", true)
         },
+        {
+          title: "小程序",
+          collapsable: false,
+          children: genSidebarConfig("blog/mini-program", true)
+        },
       ],
       "/notes/": [
         "introduction",
