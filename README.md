@@ -8,11 +8,11 @@
 目录
 
 * web前端
-    * [利用 es6 new.target 来对模拟抽象类](https://wsafight.github.io/blog/web-front/2019-05-09.html)
-    * [谈谈前端工程化 js加载](https://wsafight.github.io/blog/web-front/2019-05-03.html)
-    * [前端 api 请求缓存方案](https://wsafight.github.io/blog/web-front/2019-04-21.html)
-    * [利用 WeakMap 对 Vue 新建数组中的对象赋予 :key](https://wsafight.github.io/blog/web-front/2018-04-28.html)
+    * [利用 es6 new.target 来对模拟抽象类](https://github.com/wsafight/personBlog/issues/5)
+    * [谈谈前端工程化 js加载](https://github.com/wsafight/personBlog/issues/4)
+    * [前端 api 请求缓存方案](https://github.com/wsafight/personBlog/issues/2)
+    * [利用 WeakMap 对 Vue 新建数组中的对象赋予 :key](https://github.com/wsafight/personBlog/issues/1)
 
 * 小程序
-    * [小程序绑定用户方案 优化](https://wsafight.github.io/blog/mini-program/2019-05-13.html)
-    * [从 VantComponent 谈 小程序维护](https://wsafight.github.io/blog/mini-program/2019-04-27.html)
+    * [小程序绑定用户方案 优化](https://github.com/wsafight/personBlog/issues/6)
+    * [从 VantComponent 谈 小程序维护](https://github.com/wsafight/personBlog/issues/3)
