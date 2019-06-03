@@ -18,4 +18,4 @@
     * [从 VantComponent 谈 小程序维护](https://github.com/wsafight/personBlog/issues/3)
 
 * 工程维护
-    * [探讨奇技淫巧](ttps://github.com/wsafight/personBlog/issues/7)    
+    * [探讨奇技淫巧](https://github.com/wsafight/personBlog/issues/7)    
