@@ -17,5 +17,6 @@
     * [小程序绑定用户方案 优化](https://github.com/wsafight/personBlog/issues/6)
     * [从 VantComponent 谈 小程序维护](https://github.com/wsafight/personBlog/issues/3)
 
-* 工程维护
+* 工程实践
     * [探讨奇技淫巧](https://github.com/wsafight/personBlog/issues/7)    
+    * [震惊，使用imba.io框架,得到比 vue 快50倍的性能基准](https://github.com/wsafight/personBlog/issues/8)    
