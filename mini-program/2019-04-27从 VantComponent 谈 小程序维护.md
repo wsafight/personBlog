@@ -422,5 +422,3 @@ export const behavior = Behavior({
 
 - 同时，vant-weapp是一个非常不错的项目，推荐各位可以去查看以及star。
 
-
-<Valine></Valine>
