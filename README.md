@@ -8,7 +8,7 @@
 目录
 
 * web前端
-    * [如何提升 web 应用程序性能](https://github.com/wsafight/personBlog/issues/10)
+    * [优化 web 应用程序性能方案总结](https://github.com/wsafight/personBlog/issues/10)
     * [利用 es6 new.target 来对模拟抽象类](https://github.com/wsafight/personBlog/issues/5)
     * [谈谈前端工程化 js加载](https://github.com/wsafight/personBlog/issues/4)
     * [前端 api 请求缓存方案](https://github.com/wsafight/personBlog/issues/2)
