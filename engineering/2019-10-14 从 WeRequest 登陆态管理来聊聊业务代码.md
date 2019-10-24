@@ -371,5 +371,9 @@ weRequest 是一个非常小而美的库，代码非常简单干练,我个人非
 
 同时 weRequest 不是万能的，它符合大众的需求，但不一定符合每个业务的需求。你也可以根据代码改造甚至改进。
 
-
+## 参考
+[weRequest](https://github.com/IvinWu/weRequest)   
+[如何在Javascript中优雅的使用Async和Await进行错误的处理?](https://blog.csdn.net/xjl271314/article/details/79566447)    
+[从不用 try-catch 实现的 async/await 语法说错误处理](https://segmentfault.com/a/1190000011802045)   
+[axios请求超时,设置重新请求的完美解决方法](https://juejin.im/post/5abe0f94518825558a06bcd9)
 
