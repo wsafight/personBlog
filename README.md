@@ -18,6 +18,7 @@
 
 
 * 工程实践
+    * [从 WeRequest 登陆态管理来聊聊业务代码](https://github.com/wsafight/personBlog/issues/11)
     * [优化 web 应用程序性能方案总结](https://github.com/wsafight/personBlog/issues/10)
     * [探讨奇技淫巧](https://github.com/wsafight/personBlog/issues/7)    
     * [谈谈前端工程化 js加载](https://github.com/wsafight/personBlog/issues/4)
