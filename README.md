@@ -8,6 +8,7 @@
 目录
 
 * web前端
+    * [promise 3种妙用](https://github.com/wsafight/personBlog/issues/13)
     * [利用 es6 new.target 来对模拟抽象类](https://github.com/wsafight/personBlog/issues/5)   
     * [前端 api 请求缓存方案](https://github.com/wsafight/personBlog/issues/2)
     * [利用 WeakMap 对 Vue 新建数组中的对象赋予 :key](https://github.com/wsafight/personBlog/issues/1)
@@ -24,5 +25,6 @@
     * [谈谈前端工程化 js加载](https://github.com/wsafight/personBlog/issues/4)
     
 * 工具
-    * [手把手教你使用issue作为博客评论系统](https://github.com/wsafight/personBlog/issues/9)
     * [从 UX 与 DX 来谈一谈 React  SWR](https://github.com/wsafight/personBlog/issues/12) 
+    * [手把手教你使用issue作为博客评论系统](https://github.com/wsafight/personBlog/issues/9)
+   
