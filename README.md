@@ -23,6 +23,9 @@
     * [优化 web 应用程序性能方案总结](https://github.com/wsafight/personBlog/issues/10)
     * [探讨奇技淫巧](https://github.com/wsafight/personBlog/issues/7)    
     * [谈谈前端工程化 js加载](https://github.com/wsafight/personBlog/issues/4)
+
+* 代码风格
+    * [2020年 我要这样写代码](https://github.com/wsafight/personBlog/issues/14)
     
 * 工具
     * [从 UX 与 DX 来谈一谈 React  SWR](https://github.com/wsafight/personBlog/issues/12) 
