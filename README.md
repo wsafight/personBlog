@@ -28,6 +28,7 @@
     * [2020年 我要这样写代码](https://github.com/wsafight/personBlog/issues/14)
     
 * 工具
+    * [谈谈魔法消失UI框架 Svelte](https://github.com/wsafight/personBlog/issues/15)
     * [从 UX 与 DX 来谈一谈 React  SWR](https://github.com/wsafight/personBlog/issues/12) 
     * [手把手教你使用issue作为博客评论系统](https://github.com/wsafight/personBlog/issues/9)
    
