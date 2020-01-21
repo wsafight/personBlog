@@ -14,6 +14,7 @@
     * [利用 WeakMap 对 Vue 新建数组中的对象赋予 :key](https://github.com/wsafight/personBlog/issues/1)
 
 * 小程序
+    * [小程序跨页面交互的作用与方法](https://github.com/wsafight/personBlog/issues/16)
     * [小程序绑定用户方案 优化](https://github.com/wsafight/personBlog/issues/6)
     * [从 VantComponent 谈 小程序维护](https://github.com/wsafight/personBlog/issues/3)
 
