@@ -4,20 +4,21 @@
 
 博客包括个人理解以及个人学习知识汇综，不一定大而全，但一定会在不断的写作中提高博客质量。
 
-
 目录
 
-* web前端
+* javascript
     * [Promise 对象 3 种妙用](https://github.com/wsafight/personBlog/issues/13)
     * [利用 es6 new.target 来对模拟抽象类](https://github.com/wsafight/personBlog/issues/5)   
     * [前端 api 请求缓存方案](https://github.com/wsafight/personBlog/issues/2)
     * [利用 WeakMap 对 Vue 新建数组中的对象赋予 :key](https://github.com/wsafight/personBlog/issues/1)
 
+* css
+    * [记一次愚蠢的 issue (css env)](https://github.com/wsafight/personBlog/issues/17)
+    
 * 小程序
     * [小程序跨页面交互的作用与方法](https://github.com/wsafight/personBlog/issues/16)
     * [小程序绑定用户方案 优化](https://github.com/wsafight/personBlog/issues/6)
     * [从 VantComponent 谈 小程序维护](https://github.com/wsafight/personBlog/issues/3)
-
 
 * 工程实践
     * [从 WeRequest 登陆态管理来聊聊业务代码](https://github.com/wsafight/personBlog/issues/11)
@@ -32,4 +33,3 @@
     * [谈谈魔法消失UI框架 Svelte](https://github.com/wsafight/personBlog/issues/15)
     * [从 UX 与 DX 来谈一谈 React  SWR](https://github.com/wsafight/personBlog/issues/12) 
     * [手把手教你使用issue作为博客评论系统](https://github.com/wsafight/personBlog/issues/9)
-   
