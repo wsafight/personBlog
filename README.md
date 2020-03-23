@@ -16,6 +16,7 @@
     * [记一次愚蠢的 issue (css env)](https://github.com/wsafight/personBlog/issues/17)
     
 * 小程序
+	* [记一次小程序样式优化重构](https://github.com/wsafight/personBlog/issues/19)
     * [小程序跨页面交互的作用与方法](https://github.com/wsafight/personBlog/issues/16)
     * [小程序绑定用户方案 优化](https://github.com/wsafight/personBlog/issues/6)
     * [从 VantComponent 谈 小程序维护](https://github.com/wsafight/personBlog/issues/3)
