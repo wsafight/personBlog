@@ -16,7 +16,7 @@
     * [记一次愚蠢的 issue (css env)](https://github.com/wsafight/personBlog/issues/17)
     
 * 小程序
-	* [记一次小程序样式优化重构](https://github.com/wsafight/personBlog/issues/19)
+    * [记一次小程序样式优化重构](https://github.com/wsafight/personBlog/issues/19)
     * [小程序跨页面交互的作用与方法](https://github.com/wsafight/personBlog/issues/16)
     * [小程序绑定用户方案 优化](https://github.com/wsafight/personBlog/issues/6)
     * [从 VantComponent 谈 小程序维护](https://github.com/wsafight/personBlog/issues/3)
@@ -29,8 +29,10 @@
     * [谈谈前端工程化 js加载](https://github.com/wsafight/personBlog/issues/4)
 
 * 编程实践
+    * [移动端列表查询最佳实践](https://github.com/wsafight/personBlog/issues/22)
     * [从微前端聊聊架构演进](https://github.com/wsafight/personBlog/issues/18)
     * [2020年 我要这样写代码](https://github.com/wsafight/personBlog/issues/14)
+   
     
 * 工具
     * [谈谈魔法消失UI框架 Svelte](https://github.com/wsafight/personBlog/issues/15)
@@ -38,3 +40,4 @@
     * [手把手教你使用issue作为博客评论系统](https://github.com/wsafight/personBlog/issues/9)
 * 读书感悟
     * [读 《HTML5 揭秘》有感](https://github.com/wsafight/personBlog/issues/20)    
+    
