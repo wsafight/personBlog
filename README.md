@@ -14,6 +14,10 @@
 
 * css
     * [记一次愚蠢的 issue (css env)](https://github.com/wsafight/personBlog/issues/17)
+	
+* 浏览器
+    * [聊聊游戏开发与动画利器 raf](https://github.com/wsafight/personBlog/issues/23)
+	
     
 * 小程序
     * [记一次小程序样式优化重构](https://github.com/wsafight/personBlog/issues/19)
