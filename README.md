@@ -28,8 +28,8 @@
     * [探讨奇技淫巧](https://github.com/wsafight/personBlog/issues/7)    
     * [谈谈前端工程化 js加载](https://github.com/wsafight/personBlog/issues/4)
 *  api 设计
-    - REST
-    - GraphQL 
+    * REST
+    * GraphQL 
 * 编程实践
     * [移动端列表查询最佳实践](https://github.com/wsafight/personBlog/issues/22)
     * [从微前端聊聊架构演进](https://github.com/wsafight/personBlog/issues/18)
