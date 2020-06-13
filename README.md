@@ -34,6 +34,7 @@
     * [移动端列表查询最佳实践](https://github.com/wsafight/personBlog/issues/22)
     * [从微前端聊聊架构演进](https://github.com/wsafight/personBlog/issues/18)
     * [2020年 我要这样写代码](https://github.com/wsafight/personBlog/issues/14)
+    * [漫谈受控与非受控组件](https://github.com/wsafight/personBlog/issues/24)
      
 * 工具
     * [谈谈魔法消失UI框架 Svelte](https://github.com/wsafight/personBlog/issues/15)
