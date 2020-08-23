@@ -43,4 +43,7 @@
     * [手把手教你使用issue作为博客评论系统](https://github.com/wsafight/personBlog/issues/9)
 * 读书感悟
     * [读 《HTML5 揭秘》有感](https://github.com/wsafight/personBlog/issues/20)    
+
+* 算法
+    * [重修算法(1)—以 O(n) 复杂度构建树结构](https://github.com/wsafight/personBlog/issues/26)
     
