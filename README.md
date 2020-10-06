@@ -38,6 +38,7 @@
     * [漫谈受控与非受控组件](https://github.com/wsafight/personBlog/issues/24)
      
 * 工具
+    * [尝试 headless-recorder]
     * [谈谈魔法消失UI框架 Svelte](https://github.com/wsafight/personBlog/issues/15)
     * [从 UX 与 DX 来谈一谈 React  SWR](https://github.com/wsafight/personBlog/issues/12) 
     * [手把手教你使用issue作为博客评论系统](https://github.com/wsafight/personBlog/issues/9)
