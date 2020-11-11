@@ -53,6 +53,7 @@
     * [读 《HTML5 揭秘》有感](https://github.com/wsafight/personBlog/issues/20)    
 
 * 算法
+    * [命令行错误提示—学习模糊集](https://github.com/wsafight/personBlog/issues/29)
     * [根据背景色自适应文本颜色](https://github.com/wsafight/personBlog/issues/27)
     * [重修算法(1)—以 O(n) 复杂度构建树结构](https://github.com/wsafight/personBlog/issues/26)
     
