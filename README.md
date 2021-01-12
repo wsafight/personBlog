@@ -27,6 +27,7 @@
     * [从 VantComponent 谈 小程序维护](https://github.com/wsafight/personBlog/issues/3)
     
 * 工程实践
+    * [使用 AVIF 图片格式](https://github.com/wsafight/personBlog/issues/32)
     * [总结对象安全访问处理方案](https://github.com/wsafight/personBlog/issues/30)
     * [探讨不需要打包的构建工具 Snowpack](https://github.com/wsafight/personBlog/issues/21)
     * [从 WeRequest 登陆态管理来聊聊业务代码](https://github.com/wsafight/personBlog/issues/11)
