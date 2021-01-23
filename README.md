@@ -7,7 +7,7 @@
 目录
 
 * javascript
-    * [聊聊不可变数据结构](https://github.com/wsafight/personBlog/issues/32)	
+    * [聊聊不可变数据结构](https://github.com/wsafight/personBlog/issues/33)	
     * [Promise 对象 3 种妙用](https://github.com/wsafight/personBlog/issues/13)
     * [利用 es6 new.target 来对模拟抽象类](https://github.com/wsafight/personBlog/issues/5)   
     * [前端 api 请求缓存方案](https://github.com/wsafight/personBlog/issues/2)
