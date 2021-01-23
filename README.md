@@ -7,10 +7,11 @@
 目录
 
 * javascript
+    * [聊聊不可变数据结构](https://github.com/wsafight/personBlog/issues/32)	
     * [Promise 对象 3 种妙用](https://github.com/wsafight/personBlog/issues/13)
     * [利用 es6 new.target 来对模拟抽象类](https://github.com/wsafight/personBlog/issues/5)   
     * [前端 api 请求缓存方案](https://github.com/wsafight/personBlog/issues/2)
-    * [利用 WeakMap 对 Vue 新建数组中的对象赋予 :key](https://github.com/wsafight/personBlog/issues/1)
+    * [利用 WeakMap 对 Vue 新建数组中的对象赋予 :key](https://github.com/wsafight/personBlog/issues/1)    
     
 * css
     * [组织和管理 CSS](https://github.com/wsafight/personBlog/issues/31)
