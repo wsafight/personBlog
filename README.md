@@ -67,5 +67,5 @@
 * 测试
 
 * 架构模式
-    * [从组件 boolean 值属性谈谈分层架构](https://github.com/wsafight/personBlog/issues/35)
+    * [从组件 boolean 值属性谈谈分层架构](https://github.com/wsafight/personBlog/issues/36)
     
