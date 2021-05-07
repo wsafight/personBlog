@@ -169,12 +169,6 @@ Charts.css 同时支持用户使用 CSS3 为当前图表添加各种效果，详
 
 
 
-## 鼓励一下
-
-如果你觉得这篇文章不错，希望可以给与我一些鼓励，在我的 github 博客下帮忙 star 一下。
-
-[博客地址](https://github.com/wsafight/personBlog)
-
 ## 参考资料
 
 《如何融合数据可视化与物理世界》
