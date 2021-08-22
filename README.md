@@ -54,13 +54,14 @@
     * [漫谈受控与非受控组件](https://github.com/wsafight/personBlog/issues/24)
      
 * 工具
+    * [使用 better-queue 管理复杂任务](https://github.com/wsafight/personBlog/issues/42)
     * [利用增量构建工具 Preset 打造自己的样板库](https://github.com/wsafight/personBlog/issues/38)
     * [尝试 headless-recorder]
     * [利用 XState(有限状态机) 编写易于变更的代码](https://github.com/wsafight/personBlog/issues/28)
     * [谈谈魔法消失UI框架 Svelte](https://github.com/wsafight/personBlog/issues/15)
     * [从 UX 与 DX 来谈一谈 React  SWR](https://github.com/wsafight/personBlog/issues/12) 
     * [手把手教你使用issue作为博客评论系统](https://github.com/wsafight/personBlog/issues/9)
-    * [使用 better-queue 管理复杂任务]()
+    
 
 * 读书感悟
     * [读 《HTML5 揭秘》有感](https://github.com/wsafight/personBlog/issues/20)    
