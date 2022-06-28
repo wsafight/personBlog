@@ -7,6 +7,7 @@
 目录
 
 * 手写工具
+    * [确保从列表中获取可用值](https://github.com/wsafight/personBlog/issues/46) 
     * [手写一个基于 Proxy 的缓存库](https://github.com/wsafight/personBlog/issues/34)
 
 * 可视化
