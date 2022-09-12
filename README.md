@@ -57,6 +57,7 @@
     * [漫谈受控与非受控组件](https://github.com/wsafight/personBlog/issues/24)
      
 * 工具
+    * [极简 webComponent 库 el](https://github.com/wsafight/personBlog/issues/48)
     * [使用 better-queue 管理复杂任务](https://github.com/wsafight/personBlog/issues/42)
     * [利用增量构建工具 Preset 打造自己的样板库](https://github.com/wsafight/personBlog/issues/38)
     * [利用 XState(有限状态机) 编写易于变更的代码](https://github.com/wsafight/personBlog/issues/28)
