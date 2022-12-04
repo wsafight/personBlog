@@ -1,11 +1,267 @@
 # 不可变数据工具库 immutability-helper
 
-当前端开发谈到不可变性数据时候，第一个一定会想到 Immer 库，此库利用 ES6 的 proxy，几乎以最小的成本实现了 js 的不可变数据结构。
+之前学习函数式编程语言的过程中，有 3 比较重要的特性：
 
-在开发复杂系统的情况下，不可变性会带来巨大的优势。它具有两个最大的优势：不可修改 (减少错误的发生) 以及结构共享 (节省空间)。
+- 函数是一等公民
+- 数据不可变
+- 惰性求值
 
-不可修改也意味着数据容易回溯，易于观察。
+JavaScript 虽然具有函数式语言的特性，但是很可惜，它还是没有具备不可变数据这一大优势。
 
-JavaScript 虽然给予了我们一些函数式语言的特性，但是很可惜，它还是没有具备不可变数据这一大优势。
+在开发复杂系统的情况下，不可变性会带来巨大的优势。它具有两个最大的优势：不可修改 (减少错误的发生) 以及结构共享
+(节省空间)。不可修改也意味着数据容易回溯，易于观察。
 
-我们修改数据时候，往往需要会这样改变数据。
+当前端开发谈到不可变性数据时候，第一个一定会想到 Immer 库，该库利用 ES6 的 proxy，几乎以最小的成本实现了 js 的不可变数据结构。React
+也通过不可变数据结构结合提升性能。不过 Immer 还是有一定侵入性。那么有没有较好且没有侵入的解决方案呢？我们可以去看看
+[immutability-helper](https://github.com/kolodny/immutability-helper)。
+
+## 浅拷贝实现不可变数据
+
+最简单的不可变数据结构就是深拷贝了。
+
+```ts
+const newUser = JSON.parse(JSON.stringify(user));
+newUser[key] = value;
+```
+
+但是这对于大部分的情况是无法接受的，这里大量消耗了性能和内存，使得系统变得不可用。
+
+事实上，开发中完全可以利用浅拷贝来实现不可变数据结构的，这也是 immutability-helper 所使用的方案。我们来看一下以下数据：
+
+```ts
+const user = {
+  name: "wsafight",
+  company: {
+    name: "测试公司",
+    otherInfo: {
+      owner: "测试公司老板",
+    },
+  },
+  schools: [
+    { name: "测试小学" },
+    { name: "测试初中" },
+    { name: "测试高中" },
+  ],
+};
+```
+
+我们怎么才能在不改变原有数据的情况下改变 user.company.name 呢？代码如下
+
+```ts
+// 修改公司名称
+const newUser = {
+  ...user,
+  company: {
+    ...user.company,
+    name: "升级测试公司",
+  },
+};
+
+user === newUser;
+// false
+
+user.company === newUser.company;
+// false
+
+user.company.otherInfo === newUser.company.otherInfo;
+// true
+
+newUser.schools === user.schools;
+// true
+```
+
+我们没有改变原有的 user，同时我们获取了共用其他数据结构的
+newUser。同时，如果需要数据回溯，即使我们将当前对象直接存入数组中，内存占用也不会出现非常大的情况。当然，[Immer Patches](https://immerjs.github.io/immer/zh-CN/patches/)
+对于回溯的处理更优，后续我也会继续解读不可变结构的其他工具库。
+
+## immutability-helper 用法
+
+上述方案是不错，但是编写起来过于复杂。面对复杂的数据结构，未免捉襟见肘。还很容易写出 bug。
+
+于是 kolodny 出手编写了 immutability-helper 来帮助我们构建不可变的数据结构。
+
+```ts
+import update from "immutability-helper";
+
+// 修改公司名称
+const newUser = update(user, {
+  company: {
+    name: {
+      $set: "升级测试公司",
+    },
+  },
+});
+```
+
+我们可以看到 update 函数传入之前的数据以及一个对象结构，得到了新的数据。$set 是替换目前的数据的意思。除此之外，还有其他的命令。
+
+针对数组的操作
+
+- { $push: any[] } 针对当前数组数据 push 一些数组
+- { $unshift: any[] } 针对当前数组数据 unshift 一些数组
+- { $splice: {start: number, deleteCount: number, ...items: T[]}[] }
+  使的参数调用目标上的每个项目,注意顺序
+
+```ts
+const target = update(user, {
+  schools: {
+    $push: [
+      { name: "测试大学" },
+    ],
+  },
+});
+
+const target = update(user, {
+  schools: {
+    $unshift: [
+      { name: "测试幼儿园" },
+    ],
+  },
+});
+
+// 排序操作
+const sourceItem = user[sourceIndex];
+const newUser = update(user, {
+  schools: {
+    $splice: [
+      [sourceIndex, 1],
+      [targetIndex, 0, sourceItem!],
+    ],
+  },
+});
+```
+
+还有一个可以基于当前数据进行操作的 $apply.
+
+```ts
+const newObj = update(user, {
+  name: {
+    $apply: (name) => `${name} change`,
+  },
+});
+```
+
+还有针对对象的 $set, $unset, $merge 以及针对 Map，Set 的 $add, $remove。这些就不一一介绍了，遇到了就自行查阅一下文档。
+
+## 添加辅助函数
+
+对比之前的写法无疑对我们已经有很大的帮助了。但是针对当前操作还是非常难受。还是需要编写复杂的数据结构。
+
+我们直接编写如下函数
+
+```ts
+export const convertImmutabilityByPath = (
+  path: string,
+  value: Record<string, any>
+) => {
+  if (typeof path !== 'string' || !path) {
+    return {}
+  }
+
+  if (!value || Object.prototype.toString.call(value) !== '[object Object]') {
+    return {}
+  }
+
+  const keys = path.replace(/\[/g, '.')
+    .replace(/\]/g, '')
+    .split('.')
+    .filter(Boolean)
+
+  const result: Record<string, any> = {}
+  let current = result
+  
+  const len = keys.length
+  
+  keys.forEach((key: string, index: number) => {
+    current[key] = index === len - 1 ? value : {}
+    current = current[key]
+  })
+
+  return result
+}
+```
+
+代码在 [val-path-helper](https://github.com/wsafight/val-path-helper) 中，库还在编写中。
+
+如此一来我们就可以直接编辑数据了。
+
+```ts
+convertImmutabilityByPath(
+	'schools[0].name', 
+	{ $set: '试试小学' }
+)
+
+// 如此，我们就可以用这种方式编写
+convertImmutabilityByPath(
+	`schools[${index}].name`, 
+	{ $set: '试试小学' },
+)
+```
+
+## 实测 React
+
+我们可以实测 immutability-helper 对于 react 渲染的帮助。
+
+
+## 源代码分析
+
+## 其他
+
+```ts
+convertImmutabilityByPath(
+	`schools[${index}].name`, 
+	{ $set: '试试小学' },
+)
+```
+
+大家在看到如上代码会想到什么呢？没错，就是我之前在 [手写一个业务数据比对库](https://github.com/wsafight/personBlog/issues/49) 中推荐的 westore diff 函数。
+
+```ts
+const result = diff({
+  a: 1,
+  b: 2,
+  c: "str",
+  d: { e: [2, { a: 4 }, 5] },
+  f: true,
+  h: [1],
+  g: { a: [1, 2], j: 111 },
+}, {
+  a: [],
+  b: "aa",
+  c: 3,
+  d: { e: [3, { a: 3 }] },
+  f: false,
+  h: [1, 2],
+  g: { a: [1, 1, 1], i: "delete" },
+  k: "del",
+});
+// 结果
+{ 
+  "a": 1, 
+  "b": 2, 
+  "c": "str", 
+  "d.e[0]": 2, 
+  "d.e[1].a": 4, 
+  "d.e[2]": 5, 
+  "f": true, 
+  "h": [1], 
+  "g.a": [1, 2], 
+  "g.j": 111, 
+  "g.i": null, 
+  "k": null 
+}
+```
+
+之前的文章我就考虑该库的 diff 算法有其他功能，后续个人会结合 diff 以及 immutability-helper 开发一些工具库。
+
+## 参考资料
+
+[immutability-helper](https://github.com/kolodny/immutability-helper)
+
+[val-path-helper](https://github.com/wsafight/val-path-helper)
+
+[immutability-helper实践与优化](https://cloud.tencent.com/developer/article/1907994)
+
+
+
+
