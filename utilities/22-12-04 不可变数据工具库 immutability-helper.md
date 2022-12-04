@@ -154,14 +154,18 @@ export const convertImmutabilityByPath = (
   path: string,
   value: Record<string, any>
 ) => {
-  if (typeof path !== 'string' || !path) {
+	// 路径 path 没有或者不是字符串，直接返回空对象
+  if (!path || typeof path !== 'string') {
     return {}
   }
 
+	// value 没有或者不是对象，直接返回空对象
   if (!value || Object.prototype.toString.call(value) !== '[object Object]') {
     return {}
   }
 
+	// 简单替换 [ 和 ] 为 . 和 空字符串，没有做太多逻辑处理
+	// 请不要建立奇怪的路径，否则可能有未知错误
   const keys = path.replace(/\[/g, '.')
     .replace(/\]/g, '')
     .split('.')
@@ -181,7 +185,9 @@ export const convertImmutabilityByPath = (
 }
 ```
 
-代码在 [val-path-helper](https://github.com/wsafight/val-path-helper) 中，库还在编写中。
+
+
+代码在 [val-path-helper](https://github.com/wsafight/val-path-helper) 中，库还有其他的功能，目前还在编写中。
 
 如此一来我们就可以直接编辑数据了。
 
@@ -190,20 +196,228 @@ convertImmutabilityByPath(
 	'schools[0].name', 
 	{ $set: '试试小学' }
 )
+// 也可以使用 'schools.0.name' 'schools.[0].name' 
 
 // 如此，我们就可以用这种方式编写
 convertImmutabilityByPath(
 	`schools[${index}].name`, 
 	{ $set: '试试小学' },
 )
+
 ```
 
 ## 实测 React
 
 我们可以实测 immutability-helper 对于 react 渲染的帮助。
 
+// TODO
+
+```
+
+```
+
 
 ## 源代码分析
+
+immutability-helper 仅有几百行代码，我们来解析一下。
+
+先是工具函数(保留核心,环境判断，错误警告等逻辑去除):
+
+```ts
+// 提取函数，大量使用时有一定性能优势，且简明(更重要)
+const hasOwnProperty = Object.prototype.hasOwnProperty;
+const splice = Array.prototype.splice;
+const toString = Object.prototype.toString;
+
+// 检查类型
+function type<T>(obj: T) {
+  return (toString.call(obj) as string).slice(8, -1);
+}
+
+// 浅拷贝，使用 Object.assign 
+const assign = Object.assign || /* istanbul ignore next */ (<T, S>(target: T & any, source: S & Record<string, any>) => {
+  getAllKeys(source).forEach(key => {
+    if (hasOwnProperty.call(source, key)) {
+      target[key] = source[key] ;
+    }
+  });
+  return target as T & S;
+});
+
+// 获取对象 key
+const getAllKeys = typeof Object.getOwnPropertySymbols === 'function'
+  ? (obj: Record<string, any>) => Object.keys(obj).concat(Object.getOwnPropertySymbols(obj) as any)
+  /* istanbul ignore next */
+  : (obj: Record<string, any>) => Object.keys(obj);
+
+// 所有数据的浅拷贝
+function copy<T, U, K, V, X>(
+  object: T extends ReadonlyArray<U>
+    ? ReadonlyArray<U>
+    : T extends Map<K, V>
+      ? Map<K, V>
+      : T extends Set<X>
+        ? Set<X>
+        : T extends object
+          ? T
+          : any,
+) {
+  return Array.isArray(object)
+    ? assign(object.constructor(object.length), object)
+    : (type(object) === 'Map')
+      ? new Map(object as Map<K, V>)
+      : (type(object) === 'Set')
+        ? new Set(object as Set<X>)
+        : (object && typeof object === 'object')
+          ? assign(Object.create(Object.getPrototypeOf(object)), object) as T
+          /* istanbul ignore next */
+          : object as T;
+}
+
+```
+
+然后是核心代码(同样保留核心) :
+
+```ts
+export class Context {
+  // 导入所有指令
+  private commands: Record<string, any> = assign({}, defaultCommands);
+
+  // 添加扩展指令
+  public extend<T>(directive: string, fn: (param: any, old: T) => T) {
+    this.commands[directive] = fn;
+  }
+  
+  // 功能核心
+  public update<T, C extends CustomCommands<object> = never>(
+    object: T,
+    $spec: Spec<T, C>,
+  ): T {
+    // 增强健壮性，如果操作命令是函数,修改为 $apply
+    const spec = (typeof $spec === 'function') ? { $apply: $spec } : $spec;
+
+    // 数组(数组) 检查，报错
+      
+    // 返回对象(数组) 
+    let nextObject = object;
+    // 遍历指令
+    getAllKeys(spec).forEach((key: string) => {
+      // 如果指令在指令集中
+      if (hasOwnProperty.call(this.commands, key)) {
+        // 性能优化,遍历过程中，如果 object 还是当前之前数据
+        const objectWasNextObject = object === nextObject;
+        
+        // 用指令修改对象
+        nextObject = this.commands[key]((spec as any)[key], nextObject, spec, object);
+        
+        // 修改后，两者使用传入函数计算，还是相等的情况下，直接使用之前数据
+				// 这样的话，react 就不会出发渲染函数
+        if (objectWasNextObject && this.isEquals(nextObject, object)) {
+          nextObject = object;
+        }
+      } else {
+        // 不在指令集中，做其他操作
+        // 类似于 update(collection, {2: {a: {$splice: [[1, 1, 13, 14]]}}});
+        // 解析对象规则后继续递归调用 update, 不断递归，不断返回
+        // ...
+      }
+    });
+    return nextObject;
+  }
+}
+```
+
+最后是通用指令的解析
+
+```ts
+const defaultCommands = {
+  $push(value: any, nextObject: any, spec: any) {
+    // 数组添加，返回 concat 新数组
+    return value.length ? nextObject.concat(value) : nextObject;
+  },
+  $unshift(value: any, nextObject: any, spec: any) {
+    return value.length ? value.concat(nextObject) : nextObject;
+  },
+  $splice(value: any, nextObject: any, spec: any, originalObject: any) {
+    // 循环 splice 调用
+    value.forEach((args: any) => {
+      if (nextObject === originalObject && args.length) {
+        nextObject = copy(originalObject);
+      }
+      splice.apply(nextObject, args);
+    });
+    return nextObject;
+  },
+  $set(value: any, _nextObject: any, spec: any) {
+    // 直接替换当前数值
+    return value;
+  },
+  $toggle(targets: any, nextObject: any) {
+    const nextObjectCopy = targets.length ? copy(nextObject) : nextObject;
+    // 当前对象或者数组切换
+    targets.forEach((target: any) => {
+      nextObjectCopy[target] = !nextObject[target];
+    });
+
+    return nextObjectCopy;
+  },
+  $unset(value: any, nextObject: any, _spec: any, originalObject: any) {
+    // 拷贝后循环删除
+    value.forEach((key: any) => {
+      if (Object.hasOwnProperty.call(nextObject, key)) {
+        if (nextObject === originalObject) {
+          nextObject = copy(originalObject);
+        }
+        delete nextObject[key];
+      }
+    });
+    return nextObject;
+  },
+  $add(values: any, nextObject: any, _spec: any, originalObject: any) {
+    if (type(nextObject) === 'Map') {
+      values.forEach(([key, value]) => {
+        if (nextObject === originalObject && nextObject.get(key) !== value) {
+          nextObject = copy(originalObject);
+        }
+        nextObject.set(key, value);
+      });
+    } else {
+      values.forEach((value: any) => {
+        if (nextObject === originalObject && !nextObject.has(value)) {
+          nextObject = copy(originalObject);
+        }
+        nextObject.add(value);
+      });
+    }
+    return nextObject;
+  },
+  $remove(value: any, nextObject: any, _spec: any, originalObject: any) {
+    value.forEach((key: any) => {
+      if (nextObject === originalObject && nextObject.has(key)) {
+        nextObject = copy(originalObject);
+      }
+      nextObject.delete(key);
+    });
+    return nextObject;
+  },
+  $merge(value: any, nextObject: any, _spec: any, originalObject: any) {
+    getAllKeys(value).forEach((key: any) => {
+      if (value[key] !== nextObject[key]) {
+        if (nextObject === originalObject) {
+          nextObject = copy(originalObject);
+        }
+        nextObject[key] = value[key];
+      }
+    });
+    return nextObject;
+  },
+  $apply(value: any, original: any) {
+    // 传入函数，直接调用函数修改
+    return value(original);
+  },
+};
+
+```
 
 ## 其他
 
