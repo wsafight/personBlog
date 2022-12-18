@@ -105,7 +105,8 @@ export function to(
 ```ts
 function resolveRef(refName, callback, time: number = 1) {
   // 超过 10 次跳出递归
-  if (time > 10) throw new Error("cannot find ref:" + refName);
+  if (time > 10) throw new Error(`cannot find ref: ${refName}`);
+  // 
   const self = this;
   // 获取 ref 节点
   const ref = this.$refs[refName];
@@ -153,7 +154,7 @@ const getDomStyle = async () => {
     // 返回 dom 节点样式，不用管是否存在 ppt
     // 千万不要添加 ?.
     // 代码不会出错而返回 undefined
-    return document.getElementById("ppt").style;
+    return document.getElementById("domId").style;
   }, {
     // 重试次数
     retryTime: 3,
@@ -330,7 +331,7 @@ const tryRunForTuple = <T>(
 }
 ```
 
-大家还会在什么情况下使用 try-run-js 呢？同时也欢迎各位提交 issue 以及 pr。
+代码都在 [await-to-js](https://github.com/scopsy/await-to-js) 中，大家还会在什么情况下使用 try-run-js 呢？同时也欢迎各位提交 issue 以及 pr。
 
 ## 参考资料
 
