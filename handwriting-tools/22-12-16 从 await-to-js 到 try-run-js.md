@@ -36,32 +36,71 @@ fetchData().then((res) => {
 }).catch((err) => {
   // 只能做一个通用的错误处理了
 });
+
+// 或者
+fetchData().then((res) => {
+  // 业务处理
+  return fetchData2(res);
+}).catch((err) => {
+  // 错误处理并且返回 null
+  return null;
+}).then((res) => {
+  if (res === null) {
+    return;
+  }
+  // 业务处理
+}).catch((err) => {
+  // 错误处理
+});
 ```
 
-于是我开始找一些方法来帮助我们解决这个问题。
+于是个人开始找一些方法来帮助我们解决这个问题。
 
 ## await-to-js
 
-[await-to-js](https://github.com/scopsy/await-to-js) 是一个辅助用户的处理异步错误的库。我们先来看看该库是如何解决我们问题的。
+[await-to-js](https://github.com/scopsy/await-to-js)
+是一个辅助开发者处理异步错误的库。我们先来看看该库是如何解决我们问题的。
 
 ```ts
-import to from 'await-to-js';
+import to from "await-to-js";
 
-const [fetch1Err, fetch1Result]  = await to(fetchData());
+const [fetch1Err, fetch1Result] = await to(fetchData());
 if (fetch1Err) {
   // 错误操作或者终止
   // return
 }
 
-const [fetch2Err, fetch1Result]  = await to(fetchData2(fetch1Result));
+const [fetch2Err, fetch1Result] = await to(fetchData2(fetch1Result));
 if (fetch2Err) {
   // 错误操作或者终止
   // return
 }
 ```
 
+我们可以看到 await-to-js 把错误作为一种正常流程逻辑去处理，这点非常的好。一方面库不是特别复杂，另一方面不会打端开发者的流程思路。其代码简化后也非常简单
 
+```js
+export function to(
+  promise,
+  errorExt,
+) {
+  return promise
+    .then((data) => [null, data])
+    .catch((err) => {
+      if (errorExt) {
+        const parsedError = Object.assign({}, err, errorExt);
+        return [parsedError, undefined];
+      }
+      return [err, undefined];
+    });
+}
+```
 
 ## 使用 try-run-js
+
+看到 await-to-js 将错误作为正常流程的一部分，于是个人想到是不是能通过 try catch 解决一些异步代码问题呢？
+
+
+
 
 ## 解析 try-run-js 源码
