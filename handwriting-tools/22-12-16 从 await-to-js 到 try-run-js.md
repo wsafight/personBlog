@@ -331,7 +331,7 @@ const tryRunForTuple = <T>(
 }
 ```
 
-代码都在 [await-to-js](https://github.com/scopsy/await-to-js) 中，大家还会在什么情况下使用 try-run-js 呢？同时也欢迎各位提交 issue 以及 pr。
+代码都在 [try-run-js](https://github.com/wsafight/try-run-js) 中，大家还会在什么情况下使用 try-run-js 呢？同时也欢迎各位提交 issue 以及 pr。
 
 ## 参考资料
 
