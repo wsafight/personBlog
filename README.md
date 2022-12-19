@@ -7,6 +7,7 @@
 目录
 
 * 手写工具
+    * [从 await-to-js 到 try-run-js](https://github.com/wsafight/personBlog/issues/52)
     * [手写一个 React 动画组件](https://github.com/wsafight/personBlog/issues/53)
     * [手写一个同步服务端时间的小工具](https://github.com/wsafight/personBlog/issues/51)
     * [手写一个业务数据比对库](https://github.com/wsafight/personBlog/issues/49)
