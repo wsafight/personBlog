@@ -61,7 +61,7 @@
     * [漫谈受控与非受控组件](https://github.com/wsafight/personBlog/issues/24)
      
 * 工具
-    * [不可变数据工具库 immutability-helper](https://github.com/wsafight/issues/50)
+    * [不可变数据工具库 immutability-helper](https://github.com/wsafight/personBlog/issues/50)
     * [极简 webComponent 库 el](https://github.com/wsafight/personBlog/issues/48)
     * [使用 better-queue 管理复杂任务](https://github.com/wsafight/personBlog/issues/42)
     * [利用增量构建工具 Preset 打造自己的样板库](https://github.com/wsafight/personBlog/issues/38)
