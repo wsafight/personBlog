@@ -55,6 +55,7 @@
     * GraphQL 
     
 * 编程实践
+    * [利用函数选项模式书写可配置的构造函数](https://github.com/wsafight/personBlog/issues/56)
     * [聊聊并发控制锁](https://github.com/wsafight/personBlog/issues/44)
     * [移动端列表查询最佳实践](https://github.com/wsafight/personBlog/issues/22)
     * [从微前端聊聊架构演进](https://github.com/wsafight/personBlog/issues/18)
