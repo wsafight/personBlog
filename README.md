@@ -55,6 +55,7 @@
     * GraphQL 
     
 * 编程实践
+    * [消除异步代码的传染性库 sync-run](https://github.com/wsafight/personBlog/issues/57)
     * [利用函数选项模式书写可配置的构造函数](https://github.com/wsafight/personBlog/issues/56)
     * [聊聊并发控制锁](https://github.com/wsafight/personBlog/issues/44)
     * [移动端列表查询最佳实践](https://github.com/wsafight/personBlog/issues/22)
