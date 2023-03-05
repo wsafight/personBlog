@@ -7,6 +7,8 @@
 目录
 
 * 手写工具
+    * [价值 2000 元的 React 范围选择器](https://github.com/wsafight/personBlog/issues/58)
+    * [消除异步代码的传染性库 sync-run](https://github.com/wsafight/personBlog/issues/57)
     * [手写一个前端存储工具库](https://github.com/wsafight/personBlog/issues/55)
     * [从 await-to-js 到 try-run-js](https://github.com/wsafight/personBlog/issues/52)
     * [手写一个 React 动画组件](https://github.com/wsafight/personBlog/issues/53)
@@ -55,7 +57,6 @@
     * GraphQL 
     
 * 编程实践
-    * [消除异步代码的传染性库 sync-run](https://github.com/wsafight/personBlog/issues/57)
     * [利用函数选项模式书写可配置的构造函数](https://github.com/wsafight/personBlog/issues/56)
     * [聊聊并发控制锁](https://github.com/wsafight/personBlog/issues/44)
     * [移动端列表查询最佳实践](https://github.com/wsafight/personBlog/issues/22)
