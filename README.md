@@ -7,6 +7,7 @@
 目录
 
 * 手写工具
+    * [手写一个幂等请求工具库](https://github.com/wsafight/personBlog/issues/59)
     * [价值 2000 元的 React 范围选择器](https://github.com/wsafight/personBlog/issues/58)
     * [消除异步代码的传染性库 sync-run](https://github.com/wsafight/personBlog/issues/57)
     * [手写一个前端存储工具库](https://github.com/wsafight/personBlog/issues/55)
