@@ -66,6 +66,7 @@
     * [漫谈受控与非受控组件](https://github.com/wsafight/personBlog/issues/24)
      
 * 工具
+    * [让 React 拥有更快的虚拟 DOM](https://github.com/wsafight/personBlog/issues/60)
     * [不可变数据工具库 immutability-helper](https://github.com/wsafight/personBlog/issues/50)
     * [极简 webComponent 库 el](https://github.com/wsafight/personBlog/issues/48)
     * [使用 better-queue 管理复杂任务](https://github.com/wsafight/personBlog/issues/42)
