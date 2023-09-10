@@ -18,6 +18,8 @@
     * [确保从列表中获取可用值](https://github.com/wsafight/personBlog/issues/46) 
     * [手写一个基于 Proxy 的缓存库](https://github.com/wsafight/personBlog/issues/34)
 
+* 设计模式  
+
 * 可视化
     * [从 CSS 开始学习数据可视化](https://github.com/wsafight/personBlog/issues/37) 
 
@@ -61,6 +63,7 @@
     * GraphQL 
     
 * 编程实践
+    * [聊聊版本号的作用与价值](https://github.com/wsafight/personBlog/issues/63)
     * [利用函数选项模式书写可配置的构造函数](https://github.com/wsafight/personBlog/issues/56)
     * [聊聊并发控制锁](https://github.com/wsafight/personBlog/issues/44)
     * [移动端列表查询最佳实践](https://github.com/wsafight/personBlog/issues/22)
