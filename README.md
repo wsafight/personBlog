@@ -18,7 +18,17 @@
     * [确保从列表中获取可用值](https://github.com/wsafight/personBlog/issues/46) 
     * [手写一个基于 Proxy 的缓存库](https://github.com/wsafight/personBlog/issues/34)
 
+* 编程实践
+    * [聊聊版本号的作用与价值](https://github.com/wsafight/personBlog/issues/63)
+    * [利用函数选项模式书写可配置的构造函数](https://github.com/wsafight/personBlog/issues/56)
+    * [聊聊并发控制锁](https://github.com/wsafight/personBlog/issues/44)
+    * [移动端列表查询最佳实践](https://github.com/wsafight/personBlog/issues/22)
+    * [从微前端聊聊架构演进](https://github.com/wsafight/personBlog/issues/18)
+    * [2020年 我要这样写代码](https://github.com/wsafight/personBlog/issues/14)
+    * [漫谈受控与非受控组件](https://github.com/wsafight/personBlog/issues/24)
+
 * 设计模式  
+    * [利用中介模式开发全局控制器](https://github.com/wsafight/personBlog/issues/64)
 
 * 可视化
     * [从 CSS 开始学习数据可视化](https://github.com/wsafight/personBlog/issues/37) 
@@ -62,14 +72,6 @@
     * REST
     * GraphQL 
     
-* 编程实践
-    * [聊聊版本号的作用与价值](https://github.com/wsafight/personBlog/issues/63)
-    * [利用函数选项模式书写可配置的构造函数](https://github.com/wsafight/personBlog/issues/56)
-    * [聊聊并发控制锁](https://github.com/wsafight/personBlog/issues/44)
-    * [移动端列表查询最佳实践](https://github.com/wsafight/personBlog/issues/22)
-    * [从微前端聊聊架构演进](https://github.com/wsafight/personBlog/issues/18)
-    * [2020年 我要这样写代码](https://github.com/wsafight/personBlog/issues/14)
-    * [漫谈受控与非受控组件](https://github.com/wsafight/personBlog/issues/24)
      
 * 工具
     * [让 React 拥有更快的虚拟 DOM](https://github.com/wsafight/personBlog/issues/60)
