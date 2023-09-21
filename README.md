@@ -19,13 +19,17 @@
     * [手写一个基于 Proxy 的缓存库](https://github.com/wsafight/personBlog/issues/34)
 
 * 编程实践
+    * [前端持久化缓存优化](https://github.com/wsafight/personBlog/issues/65)
     * [聊聊版本号的作用与价值](https://github.com/wsafight/personBlog/issues/63)
     * [利用函数选项模式书写可配置的构造函数](https://github.com/wsafight/personBlog/issues/56)
     * [聊聊并发控制锁](https://github.com/wsafight/personBlog/issues/44)
     * [移动端列表查询最佳实践](https://github.com/wsafight/personBlog/issues/22)
     * [从微前端聊聊架构演进](https://github.com/wsafight/personBlog/issues/18)
-    * [2020年 我要这样写代码](https://github.com/wsafight/personBlog/issues/14)
+    * [2020年 我要这样写代码](https://github.com/wsafight/personBlog/issues/14)	
+    * [Promise 对象 3 种妙用](https://github.com/wsafight/personBlog/issues/13)
     * [漫谈受控与非受控组件](https://github.com/wsafight/personBlog/issues/24)
+    * [前端 api 请求缓存方案](https://github.com/wsafight/personBlog/issues/2)
+    * [利用 WeakMap 对 Vue 新建数组中的对象赋予 :key](https://github.com/wsafight/personBlog/issues/1)    
 
 * 设计模式  
     * [利用中介模式开发全局控制器](https://github.com/wsafight/personBlog/issues/64)
@@ -34,11 +38,8 @@
     * [从 CSS 开始学习数据可视化](https://github.com/wsafight/personBlog/issues/37) 
 
 * javascript
-    * [聊聊不可变数据结构](https://github.com/wsafight/personBlog/issues/33)	
-    * [Promise 对象 3 种妙用](https://github.com/wsafight/personBlog/issues/13)
+    * [聊聊不可变数据结构](https://github.com/wsafight/personBlog/issues/33)
     * [利用 es6 new.target 来对模拟抽象类](https://github.com/wsafight/personBlog/issues/5)   
-    * [前端 api 请求缓存方案](https://github.com/wsafight/personBlog/issues/2)
-    * [利用 WeakMap 对 Vue 新建数组中的对象赋予 :key](https://github.com/wsafight/personBlog/issues/1)    
     
 * css
     * [组织和管理 CSS](https://github.com/wsafight/personBlog/issues/31)
@@ -58,7 +59,7 @@
     * [从 VantComponent 谈 小程序维护](https://github.com/wsafight/personBlog/issues/3)
     
 * 工程实践
-    * [前端开发中的依赖注入](https://github.com/wsafight/personBlog/issues/45)
+    * [玩转 AbortController 控制器](https://github.com/wsafight/personBlog/issues/45)
     * [Vue React 动态路由开发](https://github.com/wsafight/personBlog/issues/40)
     * [使用 AVIF 图片格式](https://github.com/wsafight/personBlog/issues/32)
     * [总结对象安全访问处理方案](https://github.com/wsafight/personBlog/issues/30)
