@@ -31,7 +31,8 @@
     * [前端 api 请求缓存方案](https://github.com/wsafight/personBlog/issues/2)
     * [利用 WeakMap 对 Vue 新建数组中的对象赋予 :key](https://github.com/wsafight/personBlog/issues/1)    
 
-* 设计模式  
+* 设计模式
+    * [简单却强大的发布订阅模式](https://github.com/wsafight/personBlog/issues/66)
     * [利用中介模式开发全局控制器](https://github.com/wsafight/personBlog/issues/64)
 
 * 可视化
