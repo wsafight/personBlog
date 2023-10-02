@@ -7,6 +7,7 @@
 目录
 
 * 手写工具
+    * [手写一个 Nest 模版库](https://github.com/wsafight/personBlog/issues/68)
     * [手写一个幂等请求工具库](https://github.com/wsafight/personBlog/issues/59)
     * [价值 2000 元的 React 范围选择器](https://github.com/wsafight/personBlog/issues/58)
     * [消除异步代码的传染性库 sync-run](https://github.com/wsafight/personBlog/issues/57)
@@ -60,6 +61,7 @@
     * [从 VantComponent 谈 小程序维护](https://github.com/wsafight/personBlog/issues/3)
     
 * 工程实践
+    * [聊聊前端框架的未来 Signals](https://github.com/wsafight/personBlog/issues/67)
     * [玩转 AbortController 控制器](https://github.com/wsafight/personBlog/issues/45)
     * [Vue React 动态路由开发](https://github.com/wsafight/personBlog/issues/40)
     * [使用 AVIF 图片格式](https://github.com/wsafight/personBlog/issues/32)
