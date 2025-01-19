@@ -1,0 +1,23 @@
+{
+  "name": "wsafight-blog",
+  "type": "module",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "format": "npx @biomejs/biome format --write ./src"
+  },
+  "dependencies": {
+    "astro": "5.1.7",
+    "@astrojs/mdx": "4.0.6",
+    "@astrojs/rss": "4.0.11",
+    "@astrojs/sitemap": "3.2.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.4"
+  }
+}
