@@ -21,15 +21,13 @@ import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://fuwari.vercel.app/",
-  base: "/",
+  site: "https://wsafight.github.io",
+  base: "personBlog",
   trailingSlash: "always",
   integrations: [
-    tailwind(
-        {
-          nesting: true,
-        }
-    ),
+    tailwind({
+      nesting: true,
+    }),
     swup({
       theme: false,
       animationClass: "transition-swup-", // see https://swup.js.org/options/#animationselector
