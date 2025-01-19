@@ -23,7 +23,8 @@ draft: false
 - 技术1： 使用自定义导航栏让头部可以配置  
 
 全局配置
-```
+
+```js
 "window": {
   "navigationStyle": "custom"
 }
@@ -31,7 +32,7 @@ draft: false
 
 如果微信 app 的版本在 7.0.0之上，我们就可以使用页面级别的配置了。
 
-```
+```json
 {
   "usingComponents": {},
   "navigationStyle": "custom"
@@ -73,7 +74,7 @@ draft: false
 
 组件代码：
 
-```
+```html
 // wxml
 <view style="z-index: {{zIndex}}" class="mask">
   <button open-type="{{ openType }}"
@@ -103,4 +104,5 @@ draft: false
 
 
 ## 结语
+
 人机交互功能是决定计算机系统“友善性”的一个重要因素。读书学习时候要先把书读厚，再把书读薄，做程序也是一样，如何把系统做的复杂而更加复杂，如何让用户的体验简单而更为简单都不是那么容易的一件事。 
