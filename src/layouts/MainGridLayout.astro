@@ -7,25 +7,38 @@ import Layout from './Layout.astro'
 import { Icon } from 'astro-icon/components'
 import { siteConfig } from '../config'
 import type { MarkdownHeading } from 'astro'
-import TOC from "../components/widget/TOC.astro";
-import ImageWrapper from "../components/misc/ImageWrapper.astro";
-import {BANNER_HEIGHT, BANNER_HEIGHT_EXTEND, MAIN_PANEL_OVERLAPS_BANNER_HEIGHT} from "../constants/constants";
+import TOC from '../components/widget/TOC.astro'
+import ImageWrapper from '../components/misc/ImageWrapper.astro'
+import {
+  BANNER_HEIGHT,
+  BANNER_HEIGHT_EXTEND,
+  MAIN_PANEL_OVERLAPS_BANNER_HEIGHT,
+} from '../constants/constants'
 
 interface Props {
   title?: string
   banner?: string
   description?: string
   lang?: string
-  setOGTypeArticle?: boolean;
-  headings? : MarkdownHeading[]
+  setOGTypeArticle?: boolean
+  headings?: MarkdownHeading[]
 }
 
-const { title, banner, description, lang, setOGTypeArticle, headings = [] } = Astro.props
+const {
+  title,
+  banner,
+  description,
+  lang,
+  setOGTypeArticle,
+  headings = [],
+} = Astro.props
 const hasBannerCredit =
   siteConfig.banner.enable && siteConfig.banner.credit.enable
 const hasBannerLink = !!siteConfig.banner.credit.url
 
-const mainPanelTop = siteConfig.banner.enable ? `calc(${BANNER_HEIGHT}vh - ${MAIN_PANEL_OVERLAPS_BANNER_HEIGHT}rem)` : "5.5rem"
+const mainPanelTop = siteConfig.banner.enable
+  ? `calc(${BANNER_HEIGHT}vh - ${MAIN_PANEL_OVERLAPS_BANNER_HEIGHT}rem)`
+  : '5.5rem'
 ---
 
 <Layout title={title} banner={banner} description={description} lang={lang} setOGTypeArticle={setOGTypeArticle}>

@@ -14,7 +14,14 @@ interface Props {
   hideTagsForMobile?: boolean
   hideUpdateDate?: boolean
 }
-const { published, updated, tags, category, hideTagsForMobile = false, hideUpdateDate = false } = Astro.props
+const {
+  published,
+  updated,
+  tags,
+  category,
+  hideTagsForMobile = false,
+  hideUpdateDate = false,
+} = Astro.props
 const className = Astro.props.class
 ---
 

@@ -8,9 +8,7 @@ import { getSortedPosts } from '@utils/content-utils'
 export async function getStaticPaths() {
   const posts = await getSortedPosts()
 
-  // タグを集めるための Set の型を指定
   const allTags = posts.reduce<Set<string>>((acc, post) => {
-    // biome-ignore lint/complexity/noForEach: <explanation>
     post.data.tags.forEach(tag => acc.add(tag))
     return acc
   }, new Set())
