@@ -4,11 +4,11 @@ import MainGridLayout from '../layouts/MainGridLayout.astro'
 import { getEntry } from 'astro:content'
 import Markdown from '@components/misc/Markdown.astro'
 
-const aboutPost = await getEntry('spec', 'about')
+const productsPost = await getEntry('spec', 'products')
 
-const { Content } = await aboutPost.render()
+const { Content } = await productsPost.render()
 ---
-<MainGridLayout title="关于" description="关于">
+<MainGridLayout title="作品" description="作品">
     <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">
         <div class="card-base z-10 px-9 py-6 relative w-full ">
             <Markdown class="mt-2">
