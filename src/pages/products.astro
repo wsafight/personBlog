@@ -79,7 +79,7 @@ const { Content } = await productsPost.render();
                   `git-${repo}`,
                   JSON.stringify({ data, expire: nowSeconds() + 4 * 60 * 60 })
                 );
-                repoCache.data(data, uuid);
+                renderCard(data, uuid);
               });
           }
         </script>
