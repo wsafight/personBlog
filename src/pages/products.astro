@@ -1,19 +1,86 @@
 ---
-import MainGridLayout from '../layouts/MainGridLayout.astro'
+import MainGridLayout from "../layouts/MainGridLayout.astro";
 
-import { getEntry } from 'astro:content'
-import Markdown from '@components/misc/Markdown.astro'
+import { getEntry } from "astro:content";
+import Markdown from "@components/misc/Markdown.astro";
 
-const productsPost = await getEntry('spec', 'products')
+const productsPost = await getEntry("spec", "products");
 
-const { Content } = await productsPost.render()
+const { Content } = await productsPost.render();
 ---
+
 <MainGridLayout title="作品" description="作品">
-    <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">
-        <div class="card-base z-10 px-9 py-6 relative w-full ">
-            <Markdown class="mt-2">
-                <Content />
-            </Markdown>
-        </div>
+  <div
+    class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32"
+  >
+    <div class="card-base z-10 px-9 py-6 relative w-full">
+      <Markdown class="mt-2">
+        <script is:inline>
+          const nowSeconds = () => Date.now() / 1000;
+          const renderCard = (data, uuid) => {
+            console.log("fetching", uuid, data);
+            try {
+              document.getElementById(`${uuid}-description`).innerText =
+                data.description?.replace(/:[a-zA-Z0-9_]+:/g, "") ||
+                "Description not set";
+              document.getElementById(`${uuid}-language`).innerText =
+                data.language;
+              document.getElementById(`${uuid}-forks`).innerText =
+                Intl.NumberFormat("en-us", {
+                  notation: "compact",
+                  maximumFractionDigits: 1,
+                })
+                  .format(data.forks)
+                  .replaceAll("\u202f", "");
+              document.getElementById(`${uuid}-stars`).innerText =
+                Intl.NumberFormat("en-us", {
+                  notation: "compact",
+                  maximumFractionDigits: 1,
+                })
+                  .format(data.stargazers_count)
+                  .replaceAll("\u202f", "");
+              const avatarEl = document.getElementById(`${uuid}-avatar`);
+              avatarEl.style.backgroundImage =
+                "url(" + data.owner.avatar_url + ")";
+              avatarEl.style.backgroundColor = "transparent";
+              document.getElementById(`${uuid}-license`).innerText =
+                data.license?.spdx_id || "no-license";
+              document
+                .getElementById(`${uuid}-card`)
+                .classList.remove("fetch-waiting");
+            } catch {
+              const c = document.getElementById(`${uuid}-card`);
+              c?.classList.add("fetch-error");
+            }
+          };
+
+          function getGitRepoInfoThenRenderCard(repo, uuid) {
+            const repoCacheStr = localStorage.getItem(`git-${repo}`);
+            let repoCache;
+            if (repoCacheStr) {
+              try {
+                repoCache = JSON.parse(repoCacheStr);
+              } catch {}
+              if (repoCache && nowSeconds() < repoCache.expire) {
+                renderCard(repoCache.data, uuid);
+                return;
+              }
+            }
+            fetch(`https://api.github.com/repos/${repo}`, {
+              referrerPolicy: "no-referrer",
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                localStorage.setItem(
+                  `git-${repo}`,
+                  JSON.stringify({ data, expire: nowSeconds() + 24 * 60 * 60 })
+                );
+                repoCache.data(data, uuid);
+              });
+          }
+        </script>
+        <Content />
+      </Markdown>
     </div>
+  </div>
 </MainGridLayout>
