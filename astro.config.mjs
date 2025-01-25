@@ -20,6 +20,7 @@ import { parseDirectiveNode } from "./src/plugins/remark-directive-rehype.js";
 import { remarkExcerpt } from "./src/plugins/remark-excerpt.js";
 import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs";
 
+const compressBr = process.env.COMPRESS_BR === "true";
 // https://astro.build/config
 export default defineConfig({
   site: "https://wsafight.github.io",
@@ -60,7 +61,7 @@ export default defineConfig({
         Passed: async () => true, // https://github.com/PlayForm/Compress/issues/376
       },
     }),
-    compressor({ gzip: true, brotli: false }),
+    ...[compressBr && compressor({ gzip: false, brotli: true })],
   ],
   markdown: {
     remarkPlugins: [

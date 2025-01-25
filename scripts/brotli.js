@@ -1,11 +1,11 @@
 import { createReadStream, createWriteStream } from "node:fs";
 import { pipeline } from "node:stream";
-import { createGzip } from "node:zlib";
+import { createBrotliCompress } from "node:zlib";
 
 const gzipCode = (file) => {
-  const gzip =  createGzip({ level: 9 })
+  const gzip =  createBrotliCompress()
   const source = createReadStream(file);
-  const destination = createWriteStream(`${file}.gz`);
+  const destination = createWriteStream(`${file}.br`);
   
   pipeline(source, gzip, destination, (err) => {
     if (err) {

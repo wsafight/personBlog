@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build && pagefind --site dist && node scripts/gzip.js",
+    "build": "astro build && pagefind --site dist",
+    "build:br": "COMPRESS_BR=true astro build && pagefind --site dist && node scripts/brotli.js",
     "preview": "astro preview",
     "astro": "astro",
     "type-check": "tsc --noEmit --isolatedDeclarations",
