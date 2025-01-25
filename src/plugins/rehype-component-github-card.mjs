@@ -60,8 +60,8 @@ export function GithubCardComponent(properties, children) {
     `script#${cardUuid}-script`,
     { type: 'text/javascript', defer: true },
     `
-      const repo${cardUuid} = '${repo}';
-      const uuid${cardUuid} = '${cardUuid}';
+      var repo${cardUuid} = '${repo}';
+      var uuid${cardUuid} = '${cardUuid}';
       getGitRepoInfoThenRenderCard(repo${cardUuid}, uuid${cardUuid})
     `,
   )

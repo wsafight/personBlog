@@ -16,8 +16,10 @@ const { Content } = await productsPost.render();
     <div class="card-base z-10 px-9 py-6 relative w-full">
       <Markdown class="mt-2">
         <script is:inline>
-          const nowSeconds = () => Date.now() / 1000;
-          const renderCard = (data, uuid) => {
+          function nowSeconds() {
+            return Date.now() / 1000;
+          }
+          function renderCard(data, uuid) {
             try {
               document.getElementById(`${uuid}-description`).innerText =
                 data.description?.replace(/:[a-zA-Z0-9_]+:/g, "") ||
@@ -51,7 +53,7 @@ const { Content } = await productsPost.render();
               const c = document.getElementById(`${uuid}-card`);
               c?.classList.add("fetch-error");
             }
-          };
+          }
 
           function getGitRepoInfoThenRenderCard(repo, uuid) {
             const repoCacheStr = localStorage.getItem(`git-${repo}`);
