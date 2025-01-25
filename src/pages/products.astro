@@ -18,7 +18,6 @@ const { Content } = await productsPost.render();
         <script is:inline>
           const nowSeconds = () => Date.now() / 1000;
           const renderCard = (data, uuid) => {
-            console.log("fetching", uuid, data);
             try {
               document.getElementById(`${uuid}-description`).innerText =
                 data.description?.replace(/:[a-zA-Z0-9_]+:/g, "") ||
@@ -71,6 +70,11 @@ const { Content } = await productsPost.render();
             })
               .then((response) => response.json())
               .then((data) => {
+                if (data.message?.startWith("API rate limit exceeded")) {
+                  const c = document.getElementById(`${uuid}-card`);
+                  c?.classList.add("fetch-error");
+                  return;
+                }
                 localStorage.setItem(
                   `git-${repo}`,
                   JSON.stringify({ data, expire: nowSeconds() + 24 * 60 * 60 })
