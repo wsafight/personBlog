@@ -1,12 +1,12 @@
 ---
-import MainGridLayout from '../layouts/MainGridLayout.astro'
+import MainGridLayout from "../layouts/MainGridLayout.astro";
 
-import { getEntry } from 'astro:content'
-import Markdown from '@components/misc/Markdown.astro'
+import { getEntry } from "astro:content";
+import Markdown from "@components/misc/Markdown.astro";
 
-const productsPost = await getEntry('spec', 'products')
+const productsPost = await getEntry("spec", "products");
 
-const { Content } = await productsPost.render()
+const { Content } = await productsPost.render();
 ---
 
 <MainGridLayout title="作品" description="作品">
@@ -54,7 +54,116 @@ const { Content } = await productsPost.render()
               c?.classList.add("fetch-error");
             }
           }
-
+          //         {
+          //   "id": 338545952,
+          //   "node_id": "MDEwOlJlcG9zaXRvcnkzMzg1NDU5NTI=",
+          //   "name": "little-virtual-computer",
+          //   "full_name": "wsafight/little-virtual-computer",
+          //   "private": false,
+          //   "owner": {
+          //     "login": "wsafight",
+          //     "id": 20734256,
+          //     "node_id": "MDQ6VXNlcjIwNzM0MjU2",
+          //     "avatar_url": "https://avatars.githubusercontent.com/u/20734256?v=4",
+          //     "gravatar_id": "",
+          //     "url": "https://api.github.com/users/wsafight",
+          //     "html_url": "https://github.com/wsafight",
+          //     "followers_url": "https://api.github.com/users/wsafight/followers",
+          //     "following_url": "https://api.github.com/users/wsafight/following{/other_user}",
+          //     "gists_url": "https://api.github.com/users/wsafight/gists{/gist_id}",
+          //     "starred_url": "https://api.github.com/users/wsafight/starred{/owner}{/repo}",
+          //     "subscriptions_url": "https://api.github.com/users/wsafight/subscriptions",
+          //     "organizations_url": "https://api.github.com/users/wsafight/orgs",
+          //     "repos_url": "https://api.github.com/users/wsafight/repos",
+          //     "events_url": "https://api.github.com/users/wsafight/events{/privacy}",
+          //     "received_events_url": "https://api.github.com/users/wsafight/received_events",
+          //     "type": "User",
+          //     "user_view_type": "public",
+          //     "site_admin": false
+          //   },
+          //   "html_url": "https://github.com/wsafight/little-virtual-computer",
+          //   "description": "little-virtual-computer",
+          //   "fork": false,
+          //   "url": "https://api.github.com/repos/wsafight/little-virtual-computer",
+          //   "forks_url": "https://api.github.com/repos/wsafight/little-virtual-computer/forks",
+          //   "keys_url": "https://api.github.com/repos/wsafight/little-virtual-computer/keys{/key_id}",
+          //   "collaborators_url": "https://api.github.com/repos/wsafight/little-virtual-computer/collaborators{/collaborator}",
+          //   "teams_url": "https://api.github.com/repos/wsafight/little-virtual-computer/teams",
+          //   "hooks_url": "https://api.github.com/repos/wsafight/little-virtual-computer/hooks",
+          //   "issue_events_url": "https://api.github.com/repos/wsafight/little-virtual-computer/issues/events{/number}",
+          //   "events_url": "https://api.github.com/repos/wsafight/little-virtual-computer/events",
+          //   "assignees_url": "https://api.github.com/repos/wsafight/little-virtual-computer/assignees{/user}",
+          //   "branches_url": "https://api.github.com/repos/wsafight/little-virtual-computer/branches{/branch}",
+          //   "tags_url": "https://api.github.com/repos/wsafight/little-virtual-computer/tags",
+          //   "blobs_url": "https://api.github.com/repos/wsafight/little-virtual-computer/git/blobs{/sha}",
+          //   "git_tags_url": "https://api.github.com/repos/wsafight/little-virtual-computer/git/tags{/sha}",
+          //   "git_refs_url": "https://api.github.com/repos/wsafight/little-virtual-computer/git/refs{/sha}",
+          //   "trees_url": "https://api.github.com/repos/wsafight/little-virtual-computer/git/trees{/sha}",
+          //   "statuses_url": "https://api.github.com/repos/wsafight/little-virtual-computer/statuses/{sha}",
+          //   "languages_url": "https://api.github.com/repos/wsafight/little-virtual-computer/languages",
+          //   "stargazers_url": "https://api.github.com/repos/wsafight/little-virtual-computer/stargazers",
+          //   "contributors_url": "https://api.github.com/repos/wsafight/little-virtual-computer/contributors",
+          //   "subscribers_url": "https://api.github.com/repos/wsafight/little-virtual-computer/subscribers",
+          //   "subscription_url": "https://api.github.com/repos/wsafight/little-virtual-computer/subscription",
+          //   "commits_url": "https://api.github.com/repos/wsafight/little-virtual-computer/commits{/sha}",
+          //   "git_commits_url": "https://api.github.com/repos/wsafight/little-virtual-computer/git/commits{/sha}",
+          //   "comments_url": "https://api.github.com/repos/wsafight/little-virtual-computer/comments{/number}",
+          //   "issue_comment_url": "https://api.github.com/repos/wsafight/little-virtual-computer/issues/comments{/number}",
+          //   "contents_url": "https://api.github.com/repos/wsafight/little-virtual-computer/contents/{+path}",
+          //   "compare_url": "https://api.github.com/repos/wsafight/little-virtual-computer/compare/{base}...{head}",
+          //   "merges_url": "https://api.github.com/repos/wsafight/little-virtual-computer/merges",
+          //   "archive_url": "https://api.github.com/repos/wsafight/little-virtual-computer/{archive_format}{/ref}",
+          //   "downloads_url": "https://api.github.com/repos/wsafight/little-virtual-computer/downloads",
+          //   "issues_url": "https://api.github.com/repos/wsafight/little-virtual-computer/issues{/number}",
+          //   "pulls_url": "https://api.github.com/repos/wsafight/little-virtual-computer/pulls{/number}",
+          //   "milestones_url": "https://api.github.com/repos/wsafight/little-virtual-computer/milestones{/number}",
+          //   "notifications_url": "https://api.github.com/repos/wsafight/little-virtual-computer/notifications{?since,all,participating}",
+          //   "labels_url": "https://api.github.com/repos/wsafight/little-virtual-computer/labels{/name}",
+          //   "releases_url": "https://api.github.com/repos/wsafight/little-virtual-computer/releases{/id}",
+          //   "deployments_url": "https://api.github.com/repos/wsafight/little-virtual-computer/deployments",
+          //   "created_at": "2021-02-13T10:09:39Z",
+          //   "updated_at": "2024-05-08T12:20:14Z",
+          //   "pushed_at": "2023-10-16T16:33:45Z",
+          //   "git_url": "git://github.com/wsafight/little-virtual-computer.git",
+          //   "ssh_url": "git@github.com:wsafight/little-virtual-computer.git",
+          //   "clone_url": "https://github.com/wsafight/little-virtual-computer.git",
+          //   "svn_url": "https://github.com/wsafight/little-virtual-computer",
+          //   "homepage": "https://wsafight.github.io/little-virtual-computer/",
+          //   "size": 180,
+          //   "stargazers_count": 5,
+          //   "watchers_count": 5,
+          //   "language": "TypeScript",
+          //   "has_issues": true,
+          //   "has_projects": true,
+          //   "has_downloads": true,
+          //   "has_wiki": true,
+          //   "has_pages": true,
+          //   "has_discussions": false,
+          //   "forks_count": 1,
+          //   "mirror_url": null,
+          //   "archived": false,
+          //   "disabled": false,
+          //   "open_issues_count": 0,
+          //   "license": {
+          //     "key": "mit",
+          //     "name": "MIT License",
+          //     "spdx_id": "MIT",
+          //     "url": "https://api.github.com/licenses/mit",
+          //     "node_id": "MDc6TGljZW5zZTEz"
+          //   },
+          //   "allow_forking": true,
+          //   "is_template": false,
+          //   "web_commit_signoff_required": false,
+          //   "topics": [],
+          //   "visibility": "public",
+          //   "forks": 1,
+          //   "open_issues": 0,
+          //   "watchers": 5,
+          //   "default_branch": "main",
+          //   "temp_clone_token": null,
+          //   "network_count": 1,
+          //   "subscribers_count": 2
+          // }
           function getGitRepoInfoThenRenderCard(repo, uuid) {
             const repoCacheStr = localStorage.getItem(`git-${repo}`);
             let repoCache;
@@ -77,11 +186,26 @@ const { Content } = await productsPost.render()
                   c?.classList.add("fetch-error");
                   return;
                 }
+                const formatData = {
+                  description: data.description,
+                  language: data.language,
+                  forks: data.forks,
+                  stargazers_count: data.stargazers_count,
+                  owner: {
+                    avatar_url: data.owner.avatar_url,
+                  },
+                  license: {
+                    spdx_id: data.license?.spdx_id,
+                  },
+                };
                 localStorage.setItem(
                   `git-${repo}`,
-                  JSON.stringify({ data, expire: nowSeconds() + 4 * 60 * 60 })
+                  JSON.stringify({
+                    data: formatData,
+                    expire: nowSeconds() + 4 * 60 * 60,
+                  })
                 );
-                renderCard(data, uuid);
+                renderCard(formatData, uuid);
               });
           }
         </script>
