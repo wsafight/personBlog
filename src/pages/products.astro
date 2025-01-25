@@ -1,12 +1,12 @@
 ---
-import MainGridLayout from "../layouts/MainGridLayout.astro";
+import MainGridLayout from '../layouts/MainGridLayout.astro'
 
-import { getEntry } from "astro:content";
-import Markdown from "@components/misc/Markdown.astro";
+import { getEntry } from 'astro:content'
+import Markdown from '@components/misc/Markdown.astro'
 
-const productsPost = await getEntry("spec", "products");
+const productsPost = await getEntry('spec', 'products')
 
-const { Content } = await productsPost.render();
+const { Content } = await productsPost.render()
 ---
 
 <MainGridLayout title="作品" description="作品">
