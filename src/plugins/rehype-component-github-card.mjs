@@ -54,6 +54,8 @@ export function GithubCardComponent(properties, children) {
   const nForks = h(`div#${cardUuid}-forks`, { class: 'gc-forks' }, '0K')
   const nLicense = h(`div#${cardUuid}-license`, { class: 'gc-license' }, '0K')
 
+  // 未经身份验证的请求的主要速率限制为每小时 60 个请求。
+  // 所以在这里添加 4 个小时的缓存，避免重复请求
   const nScript = h(
     `script#${cardUuid}-script`,
     { type: 'text/javascript', defer: true },

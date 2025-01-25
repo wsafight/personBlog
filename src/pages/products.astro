@@ -77,7 +77,7 @@ const { Content } = await productsPost.render();
                 }
                 localStorage.setItem(
                   `git-${repo}`,
-                  JSON.stringify({ data, expire: nowSeconds() + 24 * 60 * 60 })
+                  JSON.stringify({ data, expire: nowSeconds() + 4 * 60 * 60 })
                 );
                 repoCache.data(data, uuid);
               });
