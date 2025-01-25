@@ -60,7 +60,7 @@ export default defineConfig({
         Passed: async () => true, // https://github.com/PlayForm/Compress/issues/376
       },
     }),
-    compressor({ gzip: false, brotli: true }),
+    compressor({ gzip: true, brotli: false }),
   ],
   markdown: {
     remarkPlugins: [
