@@ -124,7 +124,7 @@ top-20 left-4 md:left-[unset] right-4 shadow-2xl rounded-2xl p-2">
     outline: 0;
   }
   .search-panel {
-    max-height: calc(100vh - 90px);
+    max-height: calc(100vh - 100px);
     overflow-y: auto;
   }
 </style>
