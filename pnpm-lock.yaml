@@ -150,6 +150,9 @@ importers:
       '@types/sanitize-html':
         specifier: ^2.13.0
         version: 2.13.0
+      astro-compressor:
+        specifier: ^1.0.0
+        version: 1.0.0
       postcss-import:
         specifier: ^16.1.0
         version: 16.1.0(postcss@8.5.1)
@@ -1849,6 +1852,9 @@ packages:
 
   astro-compress@2.3.6:
     resolution: {integrity: sha512-P93OXRRykS2iLGN20KAr1tJUAUGptKOnUybqg00/8N4aHrZxR76giBhK/C9RCLm8tsnxL0nR5FCXR53MUza9Mg==}
+
+  astro-compressor@1.0.0:
+    resolution: {integrity: sha512-MNGRmjIsb73BIJivbU/HnTbPu5CEFvXp1NCev0bpsuK/cp4cCPX6C1omUPXzw2oQbtKv0phTTTtEk+h20SrF1Q==}
 
   astro-icon@1.1.5:
     resolution: {integrity: sha512-CJYS5nWOw9jz4RpGWmzNQY7D0y2ZZacH7atL2K9DeJXJVaz7/5WrxeyIxO8KASk1jCM96Q4LjRx/F3R+InjJrw==}
@@ -6910,6 +6916,8 @@ snapshots:
       - typescript
       - uploadthing
       - yaml
+
+  astro-compressor@1.0.0: {}
 
   astro-icon@1.1.5:
     dependencies:
