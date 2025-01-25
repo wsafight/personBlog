@@ -2,8 +2,6 @@
 import { formatDateToYYYYMMDD } from '../../utils/date-utils'
 import { Icon } from 'astro-icon/components'
 import { licenseConfig, profileConfig } from '../../config'
-import { i18n } from '../../i18n/translation'
-import I18nKey from '../../i18n/i18nKey'
 
 interface Props {
   title: string
@@ -27,15 +25,15 @@ const postUrl = decodeURIComponent(Astro.url.toString())
     </a>
     <div class="flex gap-6 mt-2">
         <div>
-            <div class="transition text-black/30 dark:text-white/30 text-sm">{i18n(I18nKey.author)}</div>
+            <div class="transition text-black/30 dark:text-white/30 text-sm">作者</div>
             <div class="transition text-black/75 dark:text-white/75 whitespace-nowrap">{profileConf.name}</div>
         </div>
         <div>
-            <div class="transition text-black/30 dark:text-white/30 text-sm">{i18n(I18nKey.publishedAt)}</div>
+            <div class="transition text-black/30 dark:text-white/30 text-sm">发布于</div>
             <div class="transition text-black/75 dark:text-white/75 whitespace-nowrap">{formatDateToYYYYMMDD(pubDate)}</div>
         </div>
         <div>
-            <div class="transition text-black/30 dark:text-white/30 text-sm">{i18n(I18nKey.license)}</div>
+            <div class="transition text-black/30 dark:text-white/30 text-sm">许可协议</div>
             <a href={licenseConf.url} target="_blank" class="link text-[var(--primary)] whitespace-nowrap">{licenseConf.name}</a>
         </div>
     </div>

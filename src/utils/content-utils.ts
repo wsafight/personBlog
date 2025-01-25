@@ -1,7 +1,5 @@
 import { getCollection } from 'astro:content'
 import type { BlogPostData } from '@/types/config'
-import I18nKey from '@i18n/i18nKey'
-import { i18n } from '@i18n/translation'
 
 export async function getSortedPosts(): Promise<
   { body: string; data: BlogPostData; slug: string }[]
@@ -68,7 +66,7 @@ export async function getCategoryList(): Promise<Category[]> {
   const count: { [key: string]: number } = {}
   allBlogPosts.map((post: { data: { category: string | number } }) => {
     if (!post.data.category) {
-      const ucKey = i18n(I18nKey.uncategorized)
+      const ucKey = '未分类'
       count[ucKey] = count[ucKey] ? count[ucKey] + 1 : 1
       return
     }
