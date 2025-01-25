@@ -2,7 +2,6 @@ import sitemap from "@astrojs/sitemap";
 import svelte from "@astrojs/svelte";
 import tailwind from "@astrojs/tailwind";
 import swup from "@swup/astro";
-import partytown from '@astrojs/partytown';
 import Compress from "astro-compress";
 import icon from "astro-icon";
 import { defineConfig } from "astro/config";
@@ -26,7 +25,6 @@ export default defineConfig({
   base: "personBlog",
   trailingSlash: "always",
   integrations: [
-    partytown(),
     tailwind({
       nesting: true,
     }),
