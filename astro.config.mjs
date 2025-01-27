@@ -23,8 +23,8 @@ import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs";
 const compressBr = process.env.COMPRESS_BR === "true";
 // https://astro.build/config
 export default defineConfig({
-  site: "https://wsafight.github.io",
-  base: "personBlog",
+  site: "https://person-blog-iota.vercel.app",
+  base: "/",
   trailingSlash: "always",
   integrations: [
     tailwind({
