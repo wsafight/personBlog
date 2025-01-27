@@ -1,0 +1,30 @@
+{
+    "headers": [
+        {
+            "source": "/(.*)\\.html\\.br",
+            "headers": [
+                {
+                    "key": "Content-Encoding",
+                    "value": "br"
+                },
+                {
+                    "key": "Content-Type",
+                    "value": "text/html"
+                }
+            ]
+        },
+        {
+            "source": "/(.*)\\.js\\.br",
+            "headers": [
+                {
+                    "key": "Content-Encoding",
+                    "value": "br"
+                },
+                {
+                    "key": "Content-Type",
+                    "value": "application/javascript"
+                }
+            ]
+        }
+    ]
+}
