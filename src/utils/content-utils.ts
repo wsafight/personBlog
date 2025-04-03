@@ -1,13 +1,21 @@
 import { getCollection } from 'astro:content'
 import type { BlogPostData } from '@/types/config'
 
+const getAllBlogPosts = async () => {
+  const blogPosts = await getCollection('posts', ({ data }) => {
+    return import.meta.env.PROD ? data.draft !== true : true
+  })
+  return blogPosts
+}
+
 export async function getSortedPosts(): Promise<
   { body: string; data: BlogPostData; slug: string }[]
 > {
-  const allBlogPosts = (await getCollection('posts', ({ data }) => {
-    return import.meta.env.PROD ? data.draft !== true : true
-  })) as unknown as { body: string; data: BlogPostData; slug: string }[]
-
+  const allBlogPosts = (await getAllBlogPosts()) as unknown as {
+    body: string
+    data: BlogPostData
+    slug: string
+  }[]
   const sorted = allBlogPosts.sort(
     (a: { data: BlogPostData }, b: { data: BlogPostData }) => {
       const dateA = new Date(a.data.published)
@@ -34,10 +42,7 @@ export type Tag = {
 }
 
 export async function getTagList(): Promise<Tag[]> {
-  const allBlogPosts = await getCollection<'posts'>('posts', ({ data }) => {
-    return import.meta.env.PROD ? data.draft !== true : true
-  })
-
+  const allBlogPosts = await getAllBlogPosts()
   const countMap: { [key: string]: number } = {}
   allBlogPosts.map((post: { data: { tags: string[] } }) => {
     post.data.tags.map((tag: string) => {
@@ -60,9 +65,7 @@ export type Category = {
 }
 
 export async function getCategoryList(): Promise<Category[]> {
-  const allBlogPosts = await getCollection<'posts'>('posts', ({ data }) => {
-    return import.meta.env.PROD ? data.draft !== true : true
-  })
+  const allBlogPosts = await getAllBlogPosts()
   const count: { [key: string]: number } = {}
   allBlogPosts.map((post: { data: { category: string | number } }) => {
     if (!post.data.category) {
