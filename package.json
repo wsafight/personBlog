@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build && pagefind --site dist",
+    "build": "astro build && pagefind --site dist && node scripts/remove-pagefind-useless.js",
     "build:br": "COMPRESS_BR=true astro build && pagefind --site dist && node scripts/brotli.js",
     "preview": "astro preview",
     "astro": "astro",
