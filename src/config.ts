@@ -7,6 +7,7 @@ import type {
 import { LinkPreset } from './types/config'
 
 export const siteConfig: SiteConfig = {
+  lang: 'zh-CN',
   title: 'wsafight 的小站',
   subtitle: 'wsafight Blog Site',
   themeColor: {
