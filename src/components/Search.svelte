@@ -6,31 +6,31 @@ let keywordDesktop = ''
 let keywordMobile = ''
 
 interface PagefindResult {
-  url: string;
+  url: string
   meta: {
-    title: string;
-  };
-  excerpt: string;
+    title: string
+  }
+  excerpt: string
 }
 
-let result: PagefindResult[] = [];
+let result: PagefindResult[] = []
 
 // const fakeResult: PagefindResult[] = [
-  // {
-  //   url: url('/'),
-  //   meta: {
-  //     title: 'This Is a Fake Search Result',
-  //   },
-  //   excerpt:
-  //     'Because the search cannot work in the <mark>dev</mark> environment.',
-  // },
-  // {
-  //   url: url('/'),
-  //   meta: {
-  //     title: 'If You Want to Test the Search',
-  //   },
-  //   excerpt: 'Try running <mark>npm build && npm preview</mark> instead.',
-  // },
+// {
+//   url: url('/'),
+//   meta: {
+//     title: 'This Is a Fake Search Result',
+//   },
+//   excerpt:
+//     'Because the search cannot work in the <mark>dev</mark> environment.',
+// },
+// {
+//   url: url('/'),
+//   meta: {
+//     title: 'If You Want to Test the Search',
+//   },
+//   excerpt: 'Try running <mark>npm build && npm preview</mark> instead.',
+// },
 // ]
 
 let search = (keyword: string, isDesktop: boolean) => {}
