@@ -417,6 +417,204 @@ console.log('Heap Size Limit:', (heapLimit / 1024 / 1024).toFixed(2), 'MB');
 ### 2. 内存配置指南
 
 #### 开发环境
+
+##### 根据开发机器内存配置
+
+**16GB 内存的开发机器**
+
+遵循原则：为 Node.js 进程分配 **20-30%** 的系统内存，保留足够内存给 IDE、浏览器等工具。
+
+```bash
+# 小型项目（3-4GB heap）
+node --max-old-space-size=3072 app.js
+
+# 中型项目（4-5GB heap）- 推荐配置
+node --max-old-space-size=4096 app.js
+
+# 大型项目（5-6GB heap）- 接近上限
+node --max-old-space-size=5120 app.js
+```
+
+**注意**：
+- 16GB 机器不建议超过 6GB，否则可能影响系统稳定性
+- 如果同时运行多个 Node 进程，需要相应减少单进程内存
+- 建议关闭不必要的应用以释放内存
+
+**32GB 内存的开发机器**
+
+遵循原则：为 Node.js 进程分配 **25-35%** 的系统内存。
+
+```bash
+# 小型项目（4GB heap）
+node --max-old-space-size=4096 app.js
+
+# 中型项目（6-8GB heap）- 推荐配置
+node --max-old-space-size=6144 app.js
+node --max-old-space-size=8192 app.js
+
+# 大型项目（10-12GB heap）
+node --max-old-space-size=10240 app.js
+node --max-old-space-size=12288 app.js
+```
+
+**注意**：
+- 32GB 是较为理想的开发环境配置
+- 可以同时运行多个 8GB 内存的 Node 进程
+- 适合大型前端项目构建和复杂的全栈开发
+
+**64GB 内存的开发机器**
+
+遵循原则：为 Node.js 进程分配 **30-40%** 的系统内存。
+
+```bash
+# 小型项目（8GB heap）
+node --max-old-space-size=8192 app.js
+
+# 中型项目（12-16GB heap）
+node --max-old-space-size=12288 app.js
+node --max-old-space-size=16384 app.js
+
+# 大型项目（20-24GB heap）- 推荐配置
+node --max-old-space-size=20480 app.js
+node --max-old-space-size=24576 app.js
+
+# 超大型项目（28-32GB heap）
+node --max-old-space-size=28672 app.js
+node --max-old-space-size=32768 app.js
+```
+
+**注意**：
+- 64GB 适合超大型项目和多任务开发
+- 可以同时运行多个大内存 Node 进程
+- 适合需要编译大型 monorepo 或处理海量数据的场景
+
+##### 大型项目配置建议
+
+当项目规模较大时（如 monorepo、大型企业应用），除了增加 heap size，还需要考虑：
+
+**package.json 配置示例**
+
+```json
+{
+  "scripts": {
+    "// 16GB 机器配置": "",
+    "dev:16g": "node --max-old-space-size=4096 scripts/dev.js",
+    "build:16g": "node --max-old-space-size=5120 scripts/build.js",
+
+    "// 32GB 机器配置": "",
+    "dev:32g": "node --max-old-space-size=8192 scripts/dev.js",
+    "build:32g": "node --max-old-space-size=10240 scripts/build.js",
+
+    "// 64GB 机器配置": "",
+    "dev:64g": "node --max-old-space-size=16384 scripts/dev.js",
+    "build:64g": "node --max-old-space-size=20480 scripts/build.js",
+
+    "// 通用配置（自动检测）": "",
+    "dev": "node --max-old-space-size=8192 scripts/dev.js",
+    "build": "node --max-old-space-size=12288 scripts/build.js"
+  }
+}
+```
+
+**使用环境变量动态配置**
+
+```bash
+# .env.development
+# 根据团队成员机器配置设置
+NODE_OPTIONS=--max-old-space-size=8192
+
+# .env.development.local（个人配置，不提交到版本控制）
+# 16GB 机器开发者
+NODE_OPTIONS=--max-old-space-size=4096
+
+# 32GB 机器开发者
+NODE_OPTIONS=--max-old-space-size=8192
+
+# 64GB 机器开发者
+NODE_OPTIONS=--max-old-space-size=16384
+```
+
+**Webpack/Vite 等构建工具配置**
+
+```javascript
+// webpack.config.js
+module.exports = {
+  // 其他配置...
+
+  // 根据可用内存优化并行度
+  parallelism: process.env.CI
+    ? 2  // CI 环境保守配置
+    : getOptimalParallelism(),
+
+  optimization: {
+    // 大型项目建议关闭或限制
+    minimize: process.env.NODE_ENV === 'production',
+
+    // 代码分割策略
+    splitChunks: {
+      chunks: 'all',
+      maxSize: 244 * 1024, // 244KB
+      cacheGroups: {
+        vendor: {
+          test: /[\\/]node_modules[\\/]/,
+          priority: -10
+        }
+      }
+    }
+  }
+};
+
+function getOptimalParallelism() {
+  const totalMemGB = require('os').totalmem() / (1024 ** 3);
+
+  if (totalMemGB >= 64) return 8;
+  if (totalMemGB >= 32) return 4;
+  if (totalMemGB >= 16) return 2;
+  return 1;
+}
+```
+
+**TypeScript 项目配置**
+
+```json
+// tsconfig.json
+{
+  "compilerOptions": {
+    // 大型项目优化选项
+    "incremental": true,
+    "tsBuildInfoFile": "./.tsbuildinfo",
+
+    // 跳过库文件类型检查以节省内存
+    "skipLibCheck": true,
+
+    // 使用项目引用分割大型项目
+    "composite": true
+  },
+
+  // 对于超大型项目，考虑使用项目引用
+  "references": [
+    { "path": "./packages/core" },
+    { "path": "./packages/utils" }
+  ]
+}
+```
+
+**推荐的内存配置对照表**
+
+| 机器内存 | 小型项目 | 中型项目 | 大型项目 | 超大型项目 | 同时运行进程数 |
+|---------|---------|---------|---------|-----------|--------------|
+| **16GB** | 2-3GB | 4GB | 5-6GB | 不推荐 | 1-2 |
+| **32GB** | 4GB | 6-8GB | 10-12GB | 12-16GB | 2-3 |
+| **64GB** | 8GB | 12-16GB | 20-24GB | 28-32GB | 4-6 |
+
+**项目规模判断标准**
+
+- **小型项目**：< 100 个模块，< 50MB 代码，构建时间 < 1 分钟
+- **中型项目**：100-500 个模块，50-200MB 代码，构建时间 1-5 分钟
+- **大型项目**：500-2000 个模块，200-500MB 代码，构建时间 5-15 分钟
+- **超大型项目**：> 2000 个模块，> 500MB 代码，构建时间 > 15 分钟
+
+##### 通用开发配置
 ```bash
 # 一般开发（2GB）
 --max-old-space-size=2048
