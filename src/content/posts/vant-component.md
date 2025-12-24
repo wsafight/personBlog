@@ -2,8 +2,8 @@
 title: 从 VantComponent 谈 小程序维护
 published: 2019-04-27
 description: 探讨如何利用 VantComponent 这一工具，对项目进行高效维护
-tags: [小程序开发, 工程化]
-category: 小程序开发
+tags: [小程序, 工程化]
+category: 移动开发
 draft: false
 ---
 

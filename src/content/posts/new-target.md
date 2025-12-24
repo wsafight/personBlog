@@ -2,8 +2,8 @@
 title: 利用 es6 new.target 来对模拟抽象类
 published: 2019-05-10
 description: 深入探讨new.target属性的用法和应用场景，展示如何利用它来提高代码的健壮性和可维护性。我们将通过实际的代码示例，详细讲解如何使用new.target来模拟抽象类，以及如何在继承关系中利用它来实现更灵活的控制。
-tags: [ES6]
-category: 有趣的实践
+tags: [JavaScript]
+category: 工程实践
 draft: false
 ---
 

@@ -2,7 +2,7 @@
 title: 聊聊版本号的作用与价值
 published: 2023-09-10
 description: 探讨了版本号在软件开发中的重要性和实际应用。介绍了版本号的组成和含义，以及如何使用版本号来管理软件的更新和发布。
-tags: [版本管理]
+tags: [工程化]
 category: 工程实践
 draft: false
 ---

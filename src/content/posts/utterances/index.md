@@ -2,8 +2,8 @@
 title: 手把手教你使用 issue 作为博客评论系统
 published: 2019-06-18
 description: 手把手教你使用 utterances 作为博客评论系统
-tags: [博客工具]
-category: 博客工具
+tags: [博客]
+category: 工程实践
 draft: false
 ---
 

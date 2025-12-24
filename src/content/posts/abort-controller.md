@@ -2,8 +2,8 @@
 title: 玩转 AbortController 控制器
 published: 2022-06-18
 description: 介绍了如何使用AbortController来管理异步操作，包括取消请求、移除绑定事件等，还展示了如何封装AbortController以实现更复杂的功能。
-tags: [前端 API]
-category: 前端 API
+tags: [JavaScript, Web API]
+category: 工程实践
 draft: false
 ---
 

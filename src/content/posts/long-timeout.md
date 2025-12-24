@@ -2,8 +2,8 @@
 title: 超长定时器 long-timeout
 description: 深入解析 JavaScript 定时器限制及 long-timeout 库的实现与应用
 published: 2025-10-08
-tags: [定时器]
-category: 业务工具
+tags: [JavaScript, 定时器]
+category: 工程实践
 draft: false
 ---
 

@@ -2,8 +2,8 @@
 title: IPFS 简介
 published: 2025-10-05
 description: 深入解析IPFS（星际文件系统）技术原理、应用场景及优缺点，探索Web3时代的分布式存储解决方案。
-tags: [IPFS, 分布式存储, 去中心化]
-category: 去中心化
+tags: [IPFS, 分布式]
+category: Web服务
 draft: false
 ---
 

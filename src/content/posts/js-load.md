@@ -2,7 +2,7 @@
 title: 谈谈前端工程化 js加载
 published: 2019-05-03
 description: 回顾当年前端工程化尚未普及的时代，探讨那时 JavaScript 的加载方式及其局限性
-tags: [js 加载, 性能优化]
+tags: [JavaScript, 性能优化]
 category: 工程实践
 draft: false
 ---

@@ -2,8 +2,8 @@
 title: 手写一个同步服务端时间的小工具
 published: 2022-12-08
 description: 探讨了如何以O(n)复杂度构建树结构，包括for循环、递归构建和利用对象引用构建树等方法，分析了它们的优缺点和适用场景，帮助读者深入理解树结构的构建算法。
-tags: [工具开发]
-category: 工具开发
+tags: [JavaScript, 工具开发]
+category: 工程实践
 draft: false
 ---
 

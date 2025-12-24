@@ -2,8 +2,8 @@
 title: 从 WeRequest 登陆态管理来聊聊业务代码
 published: 2019-10-24
 description: 探讨了业务代码中的登陆态管理，特别是以微信小程序为例，详细分析了如何通过 WeRequest 组件实现无感知登陆和状态管理。
-tags: [缓存, 性能优化]
-category: 工程实践
+tags: [小程序, 缓存, 性能优化]
+category: 移动开发
 draft: false
 ---
 

@@ -2,8 +2,8 @@
 title: 手写一个前端存储工具库
 published: 2023-02-14
 description: 介绍了如何手写一个前端存储工具库，包括工具库的使用、源码解析等内容，帮助读者深入理解前端存储工具库的实现原理。
-tags: [工具开发]
-category: 工具开发
+tags: [JavaScript, 工具开发]
+category: 工程实践
 draft: false
 ---
 在项目开发的过程中，为了减少提高性能，减少请求，开发者往往需要将一些不易改变的数据放入本地缓存中。如把用户使用的模板数据放入 localStorage 或者 IndexedDB。代码往往如下书写。

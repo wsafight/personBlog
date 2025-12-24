@@ -2,7 +2,7 @@
 title: 确保从列表中获取可用值
 published: 2022-06-28
 description: 绍了确保从列表中获取可用值的重要性，通过封装 ensureGetValFromList 函数，实现了在列表数据查询不到时默认使用第一项的兜底策略，提高了项目的稳定性和用户体验。
-tags: [用户体验, 工程实践]
+tags: [用户体验, JavaScript]
 category: 工程实践
 draft: false
 ---

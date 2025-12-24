@@ -2,8 +2,8 @@
 title: 使用 better-queue 管理复杂的任务
 published: 2021-08-24
 description: 介绍了如何使用better-queue库来管理复杂的任务队列。通过示例代码和详细的解释，读者将了解如何创建、控制和优化任务队列，以提高系统的处理能力和性能。
-tags: [服务端]
-category: 服务端
+tags: [JavaScript, 后端]
+category: Web服务
 draft: false
 ---
 

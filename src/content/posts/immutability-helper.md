@@ -3,7 +3,7 @@ title: 不可变数据工具库 immutability-helper
 published: 2022-12-06
 description: 介绍了 immutability-helper 库的用法，包括浅拷贝实现不可变数据、immutability-helper 用法、添加辅助函数和实测 React，帮助开发者构建不可变的数据结构。
 tags: [性能优化, 不可变数据]
-category: 开发工具
+category: 工程实践
 draft: false
 ---
 

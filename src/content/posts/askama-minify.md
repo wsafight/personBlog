@@ -2,7 +2,7 @@
 title: 手写一个 Askama 模板压缩工具
 published: 2025-12-23
 description: 利用 Askama 模板压缩，让你的前端应用程序性能更上一层楼
-tags: [模板, 压缩工具]
+tags: [性能优化, 模板]
 category: 性能优化
 draft: false
 ---

@@ -2,8 +2,8 @@
 title: "Caddy服务器：现代化Web服务的极简解决方案"
 published: 2025-11-14
 description: "深入了解Caddy服务器的自动HTTPS、极简配置等核心特性，以及与Nginx的对比"
-tags: [Web 服务器, 性能优化]
-category: Web 服务器
+tags: [Web服务器]
+category: Web服务
 draft: false
 ---
 

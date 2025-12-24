@@ -2,8 +2,8 @@
 title: 手写一个业务数据比对库
 published: 2022-12-01
 description: 介绍了如何编写一个业务数据比对库，包括简单对象比对、复杂属性比对、自定义对象属性比对等功能，还介绍了如何添加异常错误抛出和其他处理。
-tags: [性能优化，数据比对]
-category: 工具开发
+tags: [JavaScript, 工具开发]
+category: 工程实践
 draft: false
 ---
 

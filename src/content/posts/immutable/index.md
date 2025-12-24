@@ -2,7 +2,7 @@
 title: 聊聊不可变数据结构
 published: 2021-01-25
 description: 回顾当年前端工程化尚未普及的时代，探讨那时 JavaScript 的加载方式及其局限性
-tags: [数据结构, 性能优化]
+tags: [性能优化, 数据结构]
 category: 工程实践
 draft: false
 ---

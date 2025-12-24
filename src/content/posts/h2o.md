@@ -2,8 +2,8 @@
 title: "H2O 服务器：极致性能的下一代 Web 服务器"
 published: 2025-11-15
 description: "探索 H2O 服务器的高性能特性、HTTP/2 优化、早期 HTTP/3 支持，以及在现代 Web 服务中的应用"
-category: Web 服务器
-tags: [Web 服务器, 性能优化]
+category: Web服务
+tags: [Web服务器]
 draft: false
 ---
 

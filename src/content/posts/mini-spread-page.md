@@ -2,8 +2,8 @@
 title: 小程序跨页面交互的作用与方法
 published: 2020-01-07
 description: 涵盖了从缓存数据到优化页面跳转等多个方面的技巧，并通过实际的代码示例，帮助读者更好地理解和应用这些技巧。
-tags: [工程实践, 小程序]
-category: 小程序
+tags: [小程序]
+category: 移动开发
 draft: false
 ---
 

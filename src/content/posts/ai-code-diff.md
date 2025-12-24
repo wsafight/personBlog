@@ -2,8 +2,8 @@
 title: Claude vs Doubao Seek Code 产码能力对比
 published: 2025-11-16
 description: Claude vs Doubao Seek Code 产码能力对比
-tags: [AI 工具, 效率提升]
-category: AI 工具
+tags: [AI, 效率]
+category: 工程实践
 draft: false
 ---
 

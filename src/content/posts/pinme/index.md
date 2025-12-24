@@ -2,8 +2,8 @@
 title: 前端部署工具 PinMe
 published: 2025-09-29
 description: PinMe 是一个提供免费 IPFS 托管服务的平台，专为静态网站部署设计，帮助开发者以去中心化的方式快速托管前端应用。
-tags: [IPFS, 去中心化存储, 前端部署, Web3]
-category: 服务端
+tags: [IPFS, 部署]
+category: Web服务
 draft: false
 ---
 

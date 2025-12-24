@@ -2,8 +2,8 @@
 title: 从 UX 与 DX 来谈一谈 React SWR
 published: 2019-11-23
 description: 从 UX 与 DX 来谈一谈 React SWR 这个工具带来的利好
-tags: [用户体验, 开发体验]
-category: 用户体验
+tags: [React, 用户体验]
+category: 前端框架
 draft: false
 ---
 

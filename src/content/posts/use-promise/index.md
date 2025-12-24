@@ -2,7 +2,7 @@
 title: Promise对象 3 种妙用
 published: 2019-12-16
 description: 在前端开发中，Promise对象是异步编程的核心。本文将介绍Promise对象的三种妙用：缓存、封装大量异步操作以及泄露触发转化方法，帮助读者更好地理解和应用Promise对象，提升代码的性能和可维护性。
-tags: [异步, 性能优化]
+tags: [JavaScript, 异步]
 category: 工程实践
 draft: false
 ---

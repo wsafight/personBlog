@@ -3,7 +3,7 @@ title: 读 《HTML5 揭秘》有感
 published: 2020-04-04
 description: 探讨了HTML5的发展历程与现状，从标准创建与技术实现的冲突，到交付出东西的人才是赢家，再到过于超前就会死亡，以及难以消失的浏览器兼容技术，分享了思考与见解。
 tags: [HTML5]
-category: 读书
+category: 工程实践
 draft: false
 ---
 
