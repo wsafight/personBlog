@@ -7,6 +7,7 @@
 目录
 
 * 手写工具
+    * [手写一个 Askama 模板压缩工具](https://github.com/wsafight/personBlog/issues/79)
     * [手写一个 Nest 模版库](https://github.com/wsafight/personBlog/issues/68)
     * [手写一个幂等请求工具库](https://github.com/wsafight/personBlog/issues/59)
     * [价值 2000 元的 React 范围选择器](https://github.com/wsafight/personBlog/issues/58)
