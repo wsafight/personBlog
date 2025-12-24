@@ -1,7 +1,7 @@
 ---
 title: "Caddy服务器：现代化Web服务的极简解决方案"
 published: 2025-11-14
-description: "深入了解Caddy服务器的自动HTTPS、极简配置等核心特性，以及与Nginx的对比"
+description: Caddy 是一个 Go 语言开发的 Web 服务器，以自动 HTTPS、极简配置和现代化特性著称。文章介绍了其核心特性、Caddyfile 语法以及与 Nginx 的对比。
 tags: [Web服务器]
 category: Web服务
 draft: false

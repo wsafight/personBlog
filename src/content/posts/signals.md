@@ -1,7 +1,7 @@
 ---
 title: 聊聊前端框架的未来 Signals
 published: 2023-10-07
-description: 探讨了前端框架的未来发展趋势，特别是聚焦于 Signals 在前端框架中的应用。Signals 是一种新的状态管理机制，它提供了一种高效、灵活且可预测的方式来处理前端应用中的状态变化。
+description: 探讨了前端框架的 Signals 趋势。Signals 是一种新的状态管理机制，通过自动状态绑定和依赖跟踪，实现更细粒度的状态响应，解决 React 类似框架的渲染问题。
 tags: [性能优化, 框架]
 category: 前端框架
 draft: false

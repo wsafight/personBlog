@@ -1,7 +1,7 @@
 ---
 title: 优化 web 应用程序性能方案总结
 published: 2019-10-13
-description: 探讨了如 optimize-js 跳过v8 pre-Parse、Polyfill.io根据浏览器适配polyfill、type='module'辅助打包部署es2015+代码等技巧。通过实际代码示例，详细讲解了如何利用这些技术提升前端应用的性能和用户体验，帮助读者应对前端开发挑战。
+description: 探讨了多种 Web 应用性能优化技巧，包括 optimize-js 跳过 V8 pre-Parse、Polyfill.io 根据浏览器适配 polyfill、type='module' 辅助打包部署 es2015+ 代码等，帮助开发者应对前端性能挑战。
 tags: [性能优化]
 category: 性能优化
 draft: false

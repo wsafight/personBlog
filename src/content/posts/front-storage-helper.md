@@ -1,7 +1,7 @@
 ---
 title: 手写一个前端存储工具库
 published: 2023-02-14
-description: 介绍了如何手写一个前端存储工具库，包括工具库的使用、源码解析等内容，帮助读者深入理解前端存储工具库的实现原理。
+description: 介绍了如何手写一个前端存储工具库，通过适配器模式统一处理内存、IndexedDB、localStorage 等不同存储介质，帮助读者深入理解存储工具库的实现原理。
 tags: [JavaScript, 工具开发]
 category: 工程实践
 draft: false

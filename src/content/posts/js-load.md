@@ -1,7 +1,7 @@
 ---
 title: 谈谈前端工程化 js加载
 published: 2019-05-03
-description: 回顾当年前端工程化尚未普及的时代，探讨那时 JavaScript 的加载方式及其局限性
+description: 回顾了前端工程化尚未普及时代的 JavaScript 加载方式，包括 loadjs 动态加载、Nginx concat 模块合并文件、BigPipe 分块渲染等方案，并与 Webpack 时代的按需加载进行了对比。
 tags: [JavaScript, 性能优化]
 category: 工程实践
 draft: false

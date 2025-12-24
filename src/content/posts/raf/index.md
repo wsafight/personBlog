@@ -1,7 +1,7 @@
 ---
 title: 聊聊游戏开发与动画利器 raf
 published: 2020-06-01
-description: 探讨了游戏开发中的动画利器raf，介绍了其原理、优势以及使用方式，帮助开发者更好地利用raf提升动画性能，优化用户体验。
+description: 探讨了 requestAnimationFrame 在游戏开发中的应用，介绍了其原理、优势以及使用方式，帮助开发者更好地利用 RAF 实现流畅的游戏循环和动画。
 tags: [动画]
 category: 工程实践
 draft: false

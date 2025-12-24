@@ -1,7 +1,7 @@
 ---
 title: Porffor：用 JavaScript 写的 JavaScript AOT 编译器
 published: 2025-12-24
-description: 探讨了 Porffor，一个用 JavaScript 写的 JavaScript AOT 编译器。通过 Porffor，你可以将 JavaScript 代码提前编译为 WebAssembly 或原生二进制文件，实现更快的执行速度和更小的内存占用。
+description: Porffor 是一个实验性的 JavaScript AOT 编译器，能将 JS/TS 代码编译为 WebAssembly 和原生二进制文件。文章介绍了其 100% AOT 编译、极简运行时的核心特点以及三个自研子引擎。
 tags: [性能优化, 编译器]
 category: 性能优化
 draft: false

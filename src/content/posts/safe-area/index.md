@@ -1,7 +1,7 @@
 ---
 title: 记一次愚蠢的 issue (css env)
 published: 2020-01-21
-description: 分享了在微信小程序开发中遇到的 Vant Weapp 库底边适配问题，以及在不了解 css env 实际作用和开发工具适配情况下，鲁莽发issue的经历，同时记录了学习和查阅的过程。
+description: 记录了一次鲁莽发 issue 的经历：在微信小程序开发中发现 Vant Weapp 库底边适配问题，后经查阅才发现是 css env 在开发者工具中未适配，分享学习与反思过程。
 tags: [移动端, CSS]
 category: 移动开发
 draft: false

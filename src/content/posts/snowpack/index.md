@@ -1,7 +1,7 @@
 ---
 title: 探讨不需要打包的构建工具 Snowpack
 published: 2020-04-30
-description: 深入研究了Snowpack这一创新的前端构建工具，它基于ESM，旨在解决现代前端开发中的痛点，如打包速度慢和开发效率低等问题。
+description: 深入介绍了 Snowpack 这一基于 ESM 的前端构建工具。它采用 bundleless 理念，文件更改立即反映在浏览器中，解决了打包速度慢和开发效率低的问题，保护开发者心流。
 tags: [工程化]
 category: 构建工具
 draft: false

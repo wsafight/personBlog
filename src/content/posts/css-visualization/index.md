@@ -1,7 +1,7 @@
 ---
 title: 从 CSS 开始学习数据可视化
 published: 2021-05-07
-description: 探讨了使用 CSS 进行数据可视化的方法和优势。通过CSS的强大表现能力，如 Grid Layout 和 Linear-gradient，我们可以轻松实现柱状图等常规图表，而无需引入额外的库。同时，文章还介绍了 Chart.css 这一 CSS 框架，它使用 CSS3 将 HTML 元素设置为图表样式，为数据可视化提供了一种简洁而高效的解决方案。
+description: 探讨了使用 CSS 进行数据可视化的方法。通过 Grid Layout 和 Linear-gradient，可以轻松实现柱状图等常规图表，而无需引入 ECharts 等额外库。还介绍了 Chart.css 这一 CSS 框架。
 tags: [数据可视化, CSS]
 category: 数据可视化
 draft: false

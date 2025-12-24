@@ -1,7 +1,7 @@
 ---
 title: 手写一个 React 动画组件
 published: 2022-12-13
-description: 介绍了如何手写一个 React 动画组件，包括组件的使用、源码解析等内容，帮助读者深入理解 React 动画组件的实现原理。
+description: 介绍了如何手写一个 React 动画组件 rc-css-animate，基于 animate.css 实现，包括组件的使用方式、源码解析等内容，帮助读者深入理解 React 动画组件的实现原理。
 tags: [React, 工具开发]
 category: 前端框架
 draft: false

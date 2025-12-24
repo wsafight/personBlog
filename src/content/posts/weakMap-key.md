@@ -1,7 +1,7 @@
 ---
 title: 利用 WeakMap 对 Vue 新建数组中的对象赋予 :key
 published: 2018-05-03
-description: 利用 WeakMap 对 Vue 新建数组中的对象赋予 :key，无需往数据中添加唯一的 id 以及删除 id ，即插即用且不影响垃圾回收。
+description: 针对前端生成的新建对象没有唯一 key 的问题，介绍了一种利用 WeakMap 为对象赋予身份的方案，无需修改原数据或在上传前删除 id，即插即用且不影响垃圾回收。
 tags: [Vue, 性能优化]
 category: 前端框架
 draft: false

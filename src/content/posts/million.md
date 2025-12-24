@@ -1,7 +1,7 @@
 ---
 title: 让 React 拥有更快的虚拟 DOM
 published: 2023-06-18
-description: 介绍了如何通过 Million.js 来优化 React 的虚拟 DOM，包括 Million.js 的使用方法、Block Virtual DOM 的原理、适用场景等内容。
+description: Million.js 是一个 <4kb 的虚拟 DOM 库，可以显著提升 React 性能。文章介绍了其使用方法、Block Virtual DOM 原理，以及它适应场景极其有限但在特定场景下大放异彩的特点。
 tags: [性能优化, React]
 category: 前端框架
 draft: false

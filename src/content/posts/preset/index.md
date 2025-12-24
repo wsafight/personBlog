@@ -1,7 +1,7 @@
 ---
 title: 利用增量构建工具 Preset 打造自己的样板库
 published: 2021-05-21
-description: 介绍了如何使用Preset工具来构建自己的样板库。通过Preset的强大功能，如 extract、editJson、installDependencies等，我们可以轻松地创建和管理样板库，提高开发效率和代码质量。
+description: 介绍了如何使用 Preset 工具来构建自己的样板库。通过 extract、editJson、installDependencies 等功能，可以轻松创建和管理样板库，避免脚手架升级时的修改冲突。
 tags: [工程化]
 category: 构建工具
 draft: false

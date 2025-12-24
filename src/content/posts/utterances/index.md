@@ -1,7 +1,7 @@
 ---
 title: 手把手教你使用 issue 作为博客评论系统
 published: 2019-06-18
-description: 手把手教你使用 utterances 作为博客评论系统
+description: utterances 是一个基于 GitHub issue 的轻量级博客评论系统。本文手把手介绍了如何在 VuePress 中集成 utterances，包括 GitHub 应用安装、仓库配置和 Vue 组件封装。
 tags: [博客]
 category: 工程实践
 draft: false

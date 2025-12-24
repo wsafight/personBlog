@@ -1,7 +1,7 @@
 ---
 title: 从 UX 与 DX 来谈一谈 React SWR
 published: 2019-11-23
-description: 从 UX 与 DX 来谈一谈 React SWR 这个工具带来的利好
+description: 从用户体验(UX)和开发者体验(DX)两个角度，分析 React SWR 这个数据获取 Hook 库的设计理念，探讨它如何简化错误处理、加载状态管理和数据同步。
 tags: [React, 用户体验]
 category: 前端框架
 draft: false

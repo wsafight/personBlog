@@ -1,7 +1,7 @@
 ---
 title: 聊聊不可变数据结构
 published: 2021-01-25
-description: 回顾当年前端工程化尚未普及的时代，探讨那时 JavaScript 的加载方式及其局限性
+description: 探讨了不可变数据结构的优势和应用场景，介绍了使用浅拷贝实现不可变数据、immutability-helper 库的使用方法与源码解析，以及 Immer 库如何利用 Proxy 实现更简洁的不可变数据操作。
 tags: [性能优化, 数据结构]
 category: 工程实践
 draft: false

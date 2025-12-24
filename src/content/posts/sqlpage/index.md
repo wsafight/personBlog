@@ -1,7 +1,7 @@
 ---
 title: SQL 语句构建网页工具 SQLPage
 published: 2025-09-30
-description: SQLPage 是一个革新性的 SQL-only 网页应用构建工具，让你仅用 SQL 语句就能快速创建交互式数据应用。
+description: SQLPage 是一个 SQL-only 的网页应用构建工具，让开发者仅用 SQL 语句就能快速创建交互式数据应用，无需掌握 JavaScript、HTML 或 CSS。
 tags: [后端, 快速开发]
 category: Web服务
 draft: false

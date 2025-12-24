@@ -1,7 +1,7 @@
 ---
 title: 使用 AVIF 图片格式
 published: 2021-01-13
-description: 介绍了AVIF这一新型图片格式，包括其优势、兼容性及生成方法。AVIF由AOMedia开发，具有强压缩能力，可通过Sharp工具库生成，虽浏览器支持有限，但有polyfill可用。
+description: AVIF 是 Netflix 推出的新一代图片格式，压缩率比 JPEG 高 10 倍。本文介绍了 AVIF 的核心优势、浏览器兼容性解决方案以及使用 Sharp 工具生成 AVIF 图片的完整方法。
 tags: [性能优化, 图片]
 category: 性能优化
 draft: false

@@ -1,7 +1,7 @@
 ---
 title: 手写一个基于 Proxy 的缓存库
 published: 2021-02-17
-description: 探讨了如何使用Proxy来创建一个高效的缓存库。通过 Proxy 的拦截机制，可以实现对对象属性的访问控制和缓存管理，从而提高代码的性能和可维护性。
+description: 介绍了如何使用 Proxy 创建一个高效的缓存库。通过 Proxy 的拦截机制，可以实现对对象属性的访问控制和缓存管理，减少业务代码的侵入性。
 tags: [缓存, 性能优化]
 category: 性能优化
 draft: false

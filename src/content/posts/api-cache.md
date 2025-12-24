@@ -1,7 +1,7 @@
 ---
 title: 前端 api 请求缓存方案 
 published: 2019-04-21
-description: 利用各种数据缓存的方案，让你的前端应用程序性能更上一层楼
+description: 介绍了前端 API 请求缓存的多种方案，从简单的内存缓存到复杂的过期策略，帮助开发者在不同场景下选择合适的缓存方案来提升应用性能。
 tags: [缓存, 性能优化]
 category: 性能优化
 draft: false

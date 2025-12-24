@@ -1,7 +1,7 @@
 ---
 title: 组织和管理 CSS
 published: 2020-12-08
-description: 探讨了 CSS 的组织与管理，介绍了 BEM 命名约定、Atomic CSS、 tailwind 框架和 MVP.css 等方法，分析了它们的优缺点和适用场景，帮助开发者提高CSS的可维护性和可扩展性。
+description: 探讨了 CSS 的组织与管理，介绍了 BEM 命名约定、Atomic CSS、Tailwind 框架和 MVP.css 等方法，分析了它们的优缺点和适用场景。
 tags: [CSS]
 category: 工程实践
 draft: false

@@ -1,7 +1,7 @@
 ---
 title: 手写一个 Askama 模板压缩工具
 published: 2025-12-23
-description: 利用 Askama 模板压缩，让你的前端应用程序性能更上一层楼
+description: 介绍了 askama-minify 工具的设计与实现，这是一个专门用于压缩 Askama 模板文件的 Rust 工具。文章详细讲解了如何保留模板语法、压缩 HTML/CSS/JavaScript，压缩率可达 40-55%。
 tags: [性能优化, 模板]
 category: 性能优化
 draft: false

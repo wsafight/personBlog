@@ -1,7 +1,7 @@
 ---
 title: 使用 normalizr 进行复杂数据转换
 published: 2022-07-25
-description: 介绍了如何使用 normalizr 库来处理复杂的嵌套对象，包括数据的规范化和反规范化，以及如何通过配置选项来定制数据转换的行为。
+description: 介绍了如何使用 normalizr 库来处理复杂的嵌套 JSON 对象，包括数据的规范化和反规范化，以及如何通过配置选项来定制数据转换的行为。
 tags: [性能优化, 数据处理]
 category: 工程实践
 draft: false

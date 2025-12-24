@@ -1,7 +1,7 @@
 ---
 title: 玩转 CSS 变量
 published: 2020-08-20
-description: 探讨了CSS变量的基础用法、实现默认配置、Space Toggle逻辑切换以及新式媒体查询等内容，展示了 CSS 变量在前端开发中的强大功能和应用场景。
+description: 介绍了 CSS 变量的基础用法、默认配置实现、Space Toggle 逻辑切换以及新式媒体查询，展示了 CSS 变量的强大功能和应用场景。
 tags: [CSS]
 category: 工程实践
 draft: false

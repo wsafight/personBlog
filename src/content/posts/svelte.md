@@ -1,7 +1,7 @@
 ---
 title: 谈谈魔法消失UI框架 Svelte
 published: 2020-01-04
-description: 探讨了 Svelte 这个编译型前端组件框架，分析了它与其他框架的不同之处，如减少应用代码量、按需提供功能、提升性能等，并通过代码示例展示了其编译后的原生JS操作DOM的方式。
+description: 探讨了 Svelte 编译型前端框架的特点，分析了其与传统框架的不同之处——减少应用代码量、按需提供功能、提升性能，并展示其编译后原生 JS 操作 DOM 的方式。
 tags: [框架]
 category: 前端框架
 draft: false

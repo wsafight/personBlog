@@ -1,7 +1,7 @@
 ---
 title: 记一次小程序样式优化重构
 published: 2020-03-24
-description: 介绍了如何通过优化小程序的样式开发来减少代码量并增强功能。文章探讨了全局样式开发、组件样式隔离以及使用CSS var定制主题等技术，以提高小程序的可维护性和可定制性。
+description: 记录了一次小程序样式重构，通过 addGlobalClass 配置、组件样式隔离、CSS var 定制主题等技术，减少了代码量并增强了可维护性和可定制性。
 tags: [CSS, 小程序, 重构]
 category: 移动开发
 draft: false

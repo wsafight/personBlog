@@ -1,7 +1,7 @@
 ---
 title: Claude vs Doubao Seek Code 产码能力对比
 published: 2025-11-16
-description: Claude vs Doubao Seek Code 产码能力对比
+description: 通过构建 CrewAI agent 的实际测试任务，从项目结构、Agent 定义方式、任务描述、文档完整度等维度对比 Claude Code 和 Doubao Seek Code 的产码能力，分析各自的优势和局限性。
 tags: [AI, 效率]
 category: 工程实践
 draft: false

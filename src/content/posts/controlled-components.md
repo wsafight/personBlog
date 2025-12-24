@@ -1,7 +1,7 @@
 ---
 title: 漫谈受控与非受控组件
 published: 2020-06-13
-description: 探讨了React中受控与非受控组件的区别与应用场景，结合实际案例分析了何时选择受控组件，何时选择非受控组件，帮助开发者更好地理解和应用这两种组件。
+description: 探讨了 React 中受控与非受控组件的区别，结合实际案例分析何时选择受控组件、何时选择非受控组件，以及非受控组件在 React 中的设计价值。
 tags: [React, 组件]
 category: 前端框架
 draft: false
