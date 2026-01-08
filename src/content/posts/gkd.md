@@ -7,6 +7,10 @@ category: Android
 draft: false
 ---
 
+> 每天打开 App，先看 5 秒广告？GKD 说：不必。
+
+---
+
 ## 项目简介
 
 [GKD](https://github.com/gkd-kit/gkd) 是一款开源的 Android 屏幕自动化工具，全称是"高可定制点击"（Gu Ke Ding - 估计大概定）。它基于 Android 无障碍服务（AccessibilityService），通过自定义规则实现对屏幕元素的自动点击和操作。
@@ -423,8 +427,8 @@ SimpleGKD/
     android:accessibilityFlags="flagReportViewIds|flagRetrieveInteractiveWindows"
     android:canRetrieveWindowContent="true"
     android:notificationTimeout="100"
-    <!-- packageNames 为空时监听所有应用，实际使用时可指定目标应用包名 -->
     android:packageNames="com.example.app" />
+    <!-- packageNames 为空时监听所有应用，实际使用时可指定目标应用包名 -->
 ```
 
 ### 2. 核心服务实现
@@ -682,7 +686,7 @@ dependencies {
 }
 ```
 
-### 6. AndroidManifest 配置
+### 5. AndroidManifest 配置
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -720,7 +724,7 @@ dependencies {
 </manifest>
 ```
 
-### 7. 主界面布局
+### 6. 主界面布局
 
 **res/layout/activity_main.xml**
 
@@ -750,7 +754,7 @@ dependencies {
 </LinearLayout>
 ```
 
-### 8. 主界面（引导开启服务）
+### 7. 主界面（引导开启服务）
 
 **MainActivity.kt**
 
@@ -795,20 +799,22 @@ class MainActivity : AppCompatActivity() {
 }
 ```
 
-### 9. 使用说明
+### 8. 使用说明
 
 1. 安装应用后，打开 App
 2. 点击"开启服务"按钮
 3. 在无障碍设置中找到"SimpleGKD"并开启
 4. 返回目标应用，规则将自动生效
 
-### 10. 效果演示
+### 9. 效果演示
 
 ```
-目标应用启动 → 检测到"跳过"按钮 → 自动点击 → 广告关闭
+┌──────────────┐    ┌─────────────────┐    ┌──────────┐    ┌──────────┐
+│ 目标应用启动 │ → │ 检测到"跳过"按钮 │ → │ 自动点击 │ → │ 广告关闭 │
+└──────────────┘    └─────────────────┘    └──────────┘    └──────────┘
 ```
 
-### 11. 与完整版 GKD 的差距
+### 10. 与完整版 GKD 的差距
 
 | 功能 | 简易版 | 完整版 GKD |
 |------|--------|------------|
@@ -842,6 +848,7 @@ GKD 是一款设计精巧的 Android 自动化工具，它巧妙地利用了 And
 
 ---
 
-*本文项目地址：[https://github.com/gkd-kit/gkd](https://github.com/gkd-kit/gkd)*
+**相关链接**
 
-*许可证：GPL-3.0，仅供学习交流使用*
+- 源码：[GitHub](https://github.com/gkd-kit/gkd)
+- 许可证：GPL-3.0
