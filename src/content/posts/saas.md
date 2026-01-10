@@ -9,7 +9,7 @@ draft: false
 
 > Software as a Service → Service as a Software
 
-上周我用 Claude Code 写一个项目，从描述需求到代码跑通，3 小时。
+上周我用 Claude Code 写一个项目，从描述需求到上线，3 小时。
 
 以前这活儿我得写两周。
 
