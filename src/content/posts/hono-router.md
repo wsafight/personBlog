@@ -7,8 +7,6 @@ category: 工程实践
 draft: false
 ---
 
-# Hono 路由器为什么这么快？RegExpRouter 核心原理深度解析
-
 > 从底层引擎优化角度，深入剖析 Hono 路由器的极致性能奥秘
 
 ---
