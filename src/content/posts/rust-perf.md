@@ -1,4 +1,11 @@
-# 单机 Rust 架构处理 10 万+ 在线用户：深度分析与优化建议
+---
+title: 单机 Rust 架构处理 10 万+ 在线用户：深度分析与优化建议
+published: 2026-01-23
+description: 深度分析单机 Rust 如何处理 10 万+在线的实时推送，从数据分层、背压策略、连接管理到可观测性的全方位优化建议。
+tags: [Rust, 性能优化, WebSocket, 架构]
+category: 技术
+draft: false
+---
 
 > 本文基于 V2EX 帖子 [《独立开发：单机 Rust 如何扛住 10 万+在线的行情推送？告别 Redis/Kafka 的"极简"架构》](https://www.v2ex.com/t/1187618) 进行深度分析和扩展。
 
