@@ -40,7 +40,7 @@ draft: false
 
 **类比**：你买了一块空白画布，用自己的颜料和画笔画画。画出来的风格完全由你决定，跟画布是什么牌子的没关系。
 
-**代表框架**：Flutter、Lynx、Qt Quick、GPUI、Dioxus、Slint
+**代表框架**：Flutter、Qt Quick、GPUI、Dioxus（Blitz 模式）、Slint
 
 **优势**：
 - 跨端一致性极强——因为渲染逻辑是自己写的，不依赖系统控件
@@ -70,7 +70,7 @@ draft: false
 
 **类比**：你是导演，给演员（原生控件）下指令。演员按照各自平台的"表演风格"来演，iOS 演员演得像 iOS，Android 演员演得像 Android。
 
-**代表框架**：React Native、.NET MAUI、Uno Platform、NativeScript、Valdi
+**代表框架**：React Native、.NET MAUI、Uno Platform、NativeScript、Lynx、Valdi
 
 **优势**：
 - 原生体验——因为用的就是原生控件
@@ -135,7 +135,7 @@ draft: false
 
 #### 路线四：逻辑共享优先（Shared Logic First）
 
-**原理**：只共享业务逻辑和数据层，UI 各平台自己写（或用 Compose Multiplatform 部分共享）。
+**原理**：只共享业务逻辑和数据层，UI 各平台自己写（或用 Compose Multiplatform 共享 UI，使用 Skia 自绘）。
 
 **类比**：后厨（业务逻辑）是统一的，但前台装修（UI）各店不同。
 
@@ -173,8 +173,10 @@ draft: false
             │                 │                 │
             ▼                 ▼                 ▼
        自绘渲染           原生映射          WebView 方案
-    Flutter/Lynx/      RN/MAUI/Uno/      Electron/Tauri/
-    Dioxus/Slint/Qt    NativeScript/KMP  Wails/Electrobun
+    Flutter/           RN/MAUI/Uno/      Electron/Tauri/
+    Slint/Qt/GPUI      NativeScript/KMP/Lynx  Wails/Dioxus*
+
+    * Dioxus: 桌面默认 WebView，可选 Blitz 自绘（实验性）
 ```
 
 **技术栈快速匹配**：
@@ -593,7 +595,10 @@ public partial class MainPage : ContentPage
 **技术栈**：
 - 语言：C#
 - UI：XAML（与 UWP/WinUI 兼容）
-- 渲染：各平台原生控件 + WebAssembly 支持
+- 渲染：三种模式可选
+  - **Skia 渲染**（默认）：自绘渲染，跨端一致
+  - **Native 渲染**：映射到原生控件
+  - **WebAssembly**：渲染到 HTML/Canvas
 - 架构：基于 WinUI API surface
 
 **与 .NET MAUI 的关键区别**：
@@ -940,7 +945,7 @@ wails build -platform darwin/amd64,darwin/arm64,windows/amd64
 - 共享层：`commonMain`（纯 Kotlin，编译到各平台）
 - UI 方案：
   - 原生 UI：Android 用 Jetpack Compose，iOS 用 SwiftUI
-  - 共享 UI：Compose Multiplatform（跨平台 Compose）
+  - 共享 UI：Compose Multiplatform（Skia 自绘渲染，非原生控件）
 
 **核心概念**：
 
@@ -961,9 +966,13 @@ wails build -platform darwin/amd64,darwin/arm64,windows/amd64
 - 团队熟悉 Kotlin
 
 **不太适合**：
-- 想一套代码搞定所有 UI
+- 想一套代码搞定所有 UI（注意：Compose Multiplatform 使用 Skia 自绘，非原生控件）
 - 团队对 Kotlin 不熟悉
 - iOS 是主要平台（用 SwiftUI 原生可能更顺）
+
+**重要说明**：
+- **原生 UI 方案**：真正使用各平台原生控件（iOS 用 SwiftUI，Android 用 Jetpack Compose）
+- **Compose Multiplatform**：使用 Skia 自绘渲染，跨平台一致性强，但不是原生控件
 
 **代码示例**：
 
@@ -991,12 +1000,12 @@ val user = repo.getUser("123")
 
 ### 2.11 Lynx（ByteDance，2024 开源）
 
-**一句话定位**：字节跳动的跨端方案，用 Web 语法写原生渲染的 UI。
+**一句话定位**：字节跳动的跨端方案，用 Web 语法映射到原生控件。
 
 **技术栈**：
 - 语言：JavaScript/TypeScript
 - UI 语法：类 React/CSS（支持 Flexbox）
-- 渲染：自研原生渲染引擎（非 WebView）
+- 渲染：原生控件映射（类似 React Native）
 
 **核心特点**：
 - **双线程架构**：UI 线程和 JS 线程分离，避免 JS 阻塞渲染
@@ -1017,25 +1026,27 @@ val user = repo.getUser("123")
 
 ```tsx
 // Lynx 的语法对 React 开发者很熟悉
-import { Component, View, Text, Image } from '@anthropic/lynx';
+import { useState } from '@lynx-js/react';
+import { View, Text } from '@lynx-js/components';
+import { createApp } from '@lynx-js/react-lynx';
 
-export default class App extends Component {
-  state = { count: 0 };
+function App() {
+  const [count, setCount] = useState(0);
 
-  render() {
-    return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text style={{ fontSize: 24 }}>点击了 {this.state.count} 次</Text>
-        <View
-          style={{ padding: 15, backgroundColor: '#007AFF', borderRadius: 8 }}
-          onClick={() => this.setState({ count: this.state.count + 1 })}
-        >
-          <Text style={{ color: 'white' }}>+1</Text>
-        </View>
+  return (
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text style={{ fontSize: 24 }}>点击了 {count} 次</Text>
+      <View
+        style={{ padding: 15, backgroundColor: '#007AFF', borderRadius: 8 }}
+        bindtap={() => setCount(count + 1)}
+      >
+        <Text style={{ color: 'white' }}>+1</Text>
       </View>
-    );
-  }
+    </View>
+  );
 }
+
+createApp(App);
 ```
 
 **入门步骤**：
@@ -1048,17 +1059,19 @@ export default class App extends Component {
 
 ### 2.12 Valdi（Snapchat，2024 Beta）
 
-**一句话定位**：TypeScript 编译成原生视图，追求 TS 开发体验 + 原生性能。
+**一句话定位**：TypeScript AOT 编译成原生控件视图，追求 TS 开发体验 + 原生性能。
 
 **技术栈**：
 - 语言：TypeScript
-- 编译：TS → 原生视图代码（不是解释执行）
-- 渲染：原生控件
+- 编译：TS → .valdimodule（AOT 编译，不是解释执行）
+- 渲染：原生控件（类似 React Native，但无运行时桥接）
+- 布局引擎：C++ Flexbox 引擎
 
 **核心理念**：
-- 不走 WebView，也不走 JS 运行时
-- 把 TS 代码编译成原生代码
-- 类型安全 + 原生性能
+- 不走 WebView，也不走 JS Bridge
+- AOT 编译避免了运行时性能损耗
+- 类型安全 + 原生控件性能
+- 内存占用仅为 React Native 的 1/4
 
 **适合场景**：
 - 喜欢 TypeScript 但不想用 WebView
@@ -1116,7 +1129,12 @@ export default class App extends Component {
 **技术栈**：
 - 语言：Rust
 - 语法：类 React Hooks（但是 Rust 宏实现）
-- 渲染：多后端（Web/Desktop/Mobile/TUI）
+- 渲染：**多后端架构**（一套代码，多种渲染方式）
+  - **Web**: 渲染到 DOM（浏览器原生渲染）
+  - **Desktop（默认）**: WebView（WKWebView/WebView2/WebKitGTK）
+  - **Desktop（Blitz）**: **自绘渲染**（WGPU + Taffy + Stylo）- 实验性
+  - **Mobile**: WebView 或 Blitz（开发中）
+  - **TUI**: 终端字符渲染（Ratatui）
 - 架构：虚拟 DOM + 响应式
 
 **核心优势**：
@@ -1125,6 +1143,7 @@ export default class App extends Component {
 |------|------|--------|
 | **React-like 语法** | 前端开发者易上手 | Rust GUI 中最像 React |
 | **多渲染后端** | Web/Desktop/Mobile/TUI | 一套代码多平台 |
+| **Blitz 原生渲染** | WGPU 自绘引擎（实验性） | 12-15MB 二进制，无 JS 引擎 |
 | **WASM 性能** | 接近原生的 Web 性能 | 比 JS 快 2-10 倍 |
 | **类型安全** | Rust 编译时检查 | 内存安全 + 线程安全 |
 | **TUI 支持** | 终端 UI 独特优势 | 其他框架都不支持 |
@@ -1169,13 +1188,14 @@ export default class App extends Component {
 use dioxus::prelude::*;
 
 fn main() {
-    dioxus_desktop::launch(App);
+    launch(App);
 }
 
-fn App(cx: Scope) -> Element {
-    let mut count = use_state(cx, || 0);
+#[component]
+fn App() -> Element {
+    let mut count = use_signal(|| 0);
 
-    cx.render(rsx! {
+    rsx! {
         div {
             style: "display: flex; flex-direction: column; align-items: center; gap: 20px;",
             h1 { "计数器" }
@@ -1189,7 +1209,7 @@ fn App(cx: Scope) -> Element {
                 "+1"
             }
         }
-    })
+    }
 }
 ```
 
@@ -1198,28 +1218,25 @@ fn App(cx: Scope) -> Element {
 ```rust
 // 可复用的 Button 组件
 #[component]
-fn MyButton<'a>(
-    cx: Scope<'a>,
-    onclick: EventHandler<'a, MouseEvent>,
-    children: Element<'a>,
-) -> Element<'a> {
-    cx.render(rsx! {
+fn MyButton(onclick: EventHandler<MouseEvent>, children: Element) -> Element {
+    rsx! {
         button {
             class: "custom-button",
             onclick: move |evt| onclick.call(evt),
-            children
+            {children}
         }
-    })
+    }
 }
 
 // 使用组件
-fn App(cx: Scope) -> Element {
-    cx.render(rsx! {
+#[component]
+fn App() -> Element {
+    rsx! {
         MyButton {
             onclick: |_| println!("Clicked!"),
             "点击我"
         }
-    })
+    }
 }
 ```
 
@@ -1228,25 +1245,27 @@ fn App(cx: Scope) -> Element {
 ```rust
 use dioxus::prelude::*;
 
-fn App(cx: Scope) -> Element {
-    let user_data = use_future(cx, (), |_| async move {
+#[component]
+fn App() -> Element {
+    let mut user_data = use_resource(|| async move {
         // 异步请求数据
         reqwest::get("https://api.example.com/user")
-            .await?
+            .await
+            .ok()?
             .json::<User>()
             .await
+            .ok()
     });
 
-    cx.render(match user_data.value() {
+    match &*user_data.read_unchecked() {
         None => rsx! { p { "加载中..." } },
-        Some(Ok(user)) => rsx! {
+        Some(user) => rsx! {
             div {
                 h1 { "欢迎, {user.name}" }
                 p { "邮箱: {user.email}" }
             }
         },
-        Some(Err(e)) => rsx! { p { "错误: {e}" } },
-    })
+    }
 }
 ```
 
@@ -1257,22 +1276,22 @@ fn App(cx: Scope) -> Element {
 
 // 1. 桌面应用（WebView）
 fn main() {
-    dioxus_desktop::launch(App);
+    launch(App);
 }
 
 // 2. Web 应用（WASM）
 fn main() {
-    dioxus_web::launch(App);
+    launch(App);
 }
 
 // 3. 终端 UI（TUI）
 fn main() {
-    dioxus_tui::launch(App);
+    launch(App);
 }
 
 // 4. 服务端渲染（SSR）
 fn main() {
-    let html = dioxus_ssr::render(&App(cx));
+    let html = dioxus_ssr::render(|| rsx! { App {} });
     // 返回 HTML 字符串
 }
 ```
@@ -1322,16 +1341,17 @@ fn main() {
 // 组件会在编译时优化
 #[inline(always)]
 #[component]
-fn FastComponent(cx: Scope) -> Element {
+fn FastComponent() -> Element {
     // 编译器会内联这个组件
+    rsx! { div { "Fast Component" } }
 }
 ```
 
 2. **使用 memo 避免重渲染**：
 ```rust
-let expensive = use_memo(cx, (dep1, dep2), |(d1, d2)| {
-    // 只在 dep1 或 dep2 变化时重新计算
-    heavy_computation(d1, d2)
+let expensive = use_memo(move || {
+    // 只在依赖变化时重新计算
+    heavy_computation(dep1(), dep2())
 });
 ```
 
@@ -1347,19 +1367,16 @@ dx build --release --platform web
 ```rust
 // 用同样的代码创建漂亮的终端 UI
 use dioxus::prelude::*;
-use dioxus_tui::Config;
 
 fn main() {
-    dioxus_tui::launch_cfg(
-        App,
-        Config::new().with_rendering_mode(RenderingMode::Ansi),
-    );
+    launch(App);
 }
 
-fn App(cx: Scope) -> Element {
-    let mut count = use_state(cx, || 0);
+#[component]
+fn App() -> Element {
+    let mut count = use_signal(|| 0);
 
-    cx.render(rsx! {
+    rsx! {
         div {
             border_width: "1px",
             padding: "2",
@@ -1370,7 +1387,7 @@ fn App(cx: Scope) -> Element {
                 "Increment"
             }
         }
-    })
+    }
 }
 ```
 
@@ -1388,6 +1405,42 @@ fn App(cx: Scope) -> Element {
   - 不同渲染后端的样式支持不同
   - Web 支持完整 CSS，桌面支持子集
 
+**Blitz 原生渲染引擎详解**（Dioxus 的核心技术）：
+
+Blitz 是 Dioxus 团队开发的**模块化 HTML/CSS 渲染引擎**，旨在替代桌面端的 WebView，提供真正的原生渲染体验。
+
+**架构组成**：
+```
+┌────────────────────────────────────┐
+│     Dioxus Virtual DOM             │
+├────────────────────────────────────┤
+│     Blitz DOM (核心抽象层)          │
+├────────────────────────────────────┤
+│  Stylo (CSS)  │  Taffy (布局)      │
+│  Firefox 引擎  │  Flexbox/Grid     │
+├────────────────┼───────────────────┤
+│  Parley (文本) │  WGPU (渲染)      │
+│  文本排版      │  GPU 加速         │
+└────────────────┴───────────────────┘
+```
+
+**核心组件**：
+- **Stylo**: Firefox Servo 的 CSS 引擎（工业级，经过实战验证）
+- **Taffy**: Rust 编写的布局引擎，支持 Flexbox、Grid、Block 等（也被 Zed、Bevy UI 使用）
+- **Parley**: 高性能文本布局和排版引擎
+- **WGPU**: 跨平台 GPU 抽象层（支持 Vulkan、Metal、DirectX 12、OpenGL）
+
+**优势**：
+- ✅ 二进制大小仅 12-15MB（vs Electron 100MB+）
+- ✅ 无需 JavaScript 引擎
+- ✅ 完全用 Rust 编写，易于维护
+- ✅ GPU 加速渲染，性能接近原生
+
+**开发时间线**：
+- 2024: Alpha 阶段（实验性）
+- 2025 年底: Beta 版
+- 2026: 生产就绪版本
+
 **Rust GUI 框架选择指南**：
 
 | 需求 | 推荐框架 | 理由 |
@@ -1399,12 +1452,15 @@ fn App(cx: Scope) -> Element {
 | 追求极致性能（编辑器） | **GPUI** | 为 Zed 设计 |
 | 嵌入式设备 | **Slint** | 轻量级 |
 | 要 npm 生态 | **Tauri** | Web 前端 |
+| 想要原生渲染 + React 语法 | **Dioxus + Blitz** | 最佳组合（2026 稳定）|
 
 **未来展望**：
 
+- 🎨 **Blitz 渲染引擎**：2025 年底 Beta，2026 年生产就绪（真正的原生渲染）
 - 📱 **移动端支持**：Dioxus Mobile 正在开发，预计 2026 稳定
-- 🎨 **组件库**：社区正在建设类似 shadcn/ui 的组件库
+- 🧩 **组件库**：社区正在建设类似 shadcn/ui 的组件库
 - 🔧 **开发者工具**：DevTools 正在完善，类似 React DevTools
+- 🚀 **性能优化**：持续优化 WASM 包体积和运行时性能
 
 ---
 
@@ -1690,14 +1746,14 @@ impl Render for Counter {
 | Electron | WebView | JS/TS | 桌面 | 5/5 成熟 | Web 做桌面的事实标准 |
 | Qt Quick | 自绘 | C++/QML | 全平台+嵌入式 | 5/5 成熟 | 工业级、嵌入式首选 |
 | .NET MAUI | 原生映射 | C# | 全平台 | 4/5 稳定 | C# 团队的官方方案 |
-| Uno Platform | 原生/WASM | C# | 全平台+Web | 4/5 稳定 | C# + WebAssembly |
+| Uno Platform | 原生/Skia/WASM | C# | 全平台+Web | 4/5 稳定 | C# + 多渲染模式 |
 | Tauri | 系统WebView+Rust | Rust+Web | 桌面+移动 | 4/5 稳定 | 轻量级 Electron 替代 |
 | Wails | 系统WebView+Go | Go+Web | 桌面 | 3/5 成长中 | Go 技术栈做桌面 |
-| KMP | 原生/Compose | Kotlin | 移动+桌面 | 4/5 稳定 | Android 团队扩 iOS |
-| Lynx | 自绘 | JS/TS | 移动+Web | 3/5 成长中 | 高性能+Web语法 |
-| Valdi | 编译到原生 | TypeScript | 移动 | 2/5 早期 | TS 编译到原生 |
+| KMP | 自绘(Compose)/原生 | Kotlin | 移动+桌面 | 4/5 稳定 | Android 团队扩 iOS |
+| Lynx | 原生映射 | JS/TS | 移动+Web | 3/5 成长中 | 高性能+Web语法 |
+| Valdi | AOT编译+原生映射 | TypeScript | 移动 | 2/5 早期 | TS AOT 编译到原生控件 |
 | Electrobun | 系统WebView/CEF | TypeScript | 桌面 | 2/5 早期 | 轻量桌面方案 |
-| Dioxus | 自绘/多后端 | Rust | 全平台+TUI | 3/5 成长中 | Rust 版 React |
+| Dioxus | 多后端(WebView/Blitz自绘/DOM) | Rust | 全平台+TUI | 3/5 成长中 | Rust 版 React，多渲染后端 |
 | Slint | 自绘 | Rust/C++/JS | 桌面+嵌入式 | 3/5 成长中 | 轻量嵌入式 GUI |
 | GPUI | 自绘 | Rust | 桌面 | 2/5 早期 | Rust 高性能 GUI |
 
@@ -1720,7 +1776,7 @@ impl Render for Counter {
 | Lynx | 4 小/快 | 5 极强 | 3 一般 | 5 极强 | 4 高 | 高 |
 | Valdi | 4 小/快 | 5 极强 | 5 极强 | 3 一般 | 3 中等 | 高 |
 | Electrobun | 4 小/快 | 3 中等 | 3 一般 | 4 强 | 4 高 | 高 |
-| Dioxus | 4 小/快 | 5 极强 | 3 一般 | 4 强 | 4 高 | 高 |
+| Dioxus | 4 小/快* | 5 极强 | 3 一般* | 4 强* | 4 高 | 高 |
 | Slint | 5 小/快 | 4 强 | 3 一般 | 5 极强 | 3 中等 | 中 |
 | GPUI | 4 小/快 | 5 极强 | 3 一般 | 3 一般 | 3 中等 | 高 |
 
@@ -1731,6 +1787,14 @@ impl Render for Counter {
 - **跨端一致**：不同平台上 UI 的统一程度（5=完全一致，1=差异大）
 - **开发效率**：上手速度、调试体验、工具链成熟度（5=极高，1=很低）
 - **生产风险**：生态稳定性、长期维护的不确定性（低/中/高）
+
+**特殊说明**：
+- **KMP**: 评分"视UI方案"是因为 KMP 本身只共享逻辑层，UI 可选原生或 Compose Multiplatform（自绘）
+- **Dioxus**: 带 * 的评分因渲染后端不同而异
+  - WebView 模式（默认）: 包体 3/5，原生体验 2/5，跨端一致 5/5
+  - Blitz 模式（实验）: 包体 5/5，原生体验 3/5，跨端一致 5/5
+  - 表中评分为 Blitz 模式预期值（2026 稳定后）
+- **Uno Platform**: 支持三种渲染模式，评分为综合考量
 
 ---
 
@@ -1771,14 +1835,16 @@ impl Render for Counter {
 
 > 典型产品：电商首页、社交 feed、游戏化应用
 
-**推荐**：Flutter / Lynx
+**推荐**：Flutter
 
 **理由**：
 - 自绘渲染保证跨端一致性
 - 动效性能有保障
-- Flutter 生态成熟，Lynx 性能更极致（但风险更高）
+- 生态成熟，组件丰富
 
-**备选**：Qt Quick（如果团队熟悉 C++）
+**备选**：
+- Qt Quick（如果团队熟悉 C++）
+- Lynx（如果是前端团队且接受原生控件映射方案）
 
 ---
 
@@ -1948,9 +2014,9 @@ impl Render for Counter {
 ```
 Step 1: 确定渲染路线
     │
-    ├── 需要跨端视觉完全一致 → 自绘渲染（Flutter/Lynx/Qt）
-    ├── 需要原生体验优先 → 原生映射（RN/MAUI/KMP）
-    └── 需要快速上线、前端技术栈 → WebView（Electron/Tauri）
+    ├── 需要跨端视觉完全一致 → 自绘渲染（Flutter/Qt/Dioxus+Blitz）
+    ├── 需要原生体验优先 → 原生映射（RN/MAUI/KMP/Lynx）
+    └── 需要快速上线、前端技术栈 → WebView（Electron/Tauri/Dioxus默认）
 
 Step 2: 确定平台覆盖
     │
