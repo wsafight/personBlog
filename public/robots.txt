@@ -1,0 +1,9 @@
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://wsafight.github.io/personBlog/sitemap-index.xml
+
+# Disallow search results and admin pages if any
+Disallow: /pagefind/

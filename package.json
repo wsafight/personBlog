@@ -7,12 +7,14 @@
     "start": "astro dev",
     "build": "astro build && pagefind --site dist && node scripts/remove-pagefind-useless.js",
     "build:br": "COMPRESS_BR=true astro build && pagefind --site dist && node scripts/brotli.js",
+    "build:analyze": "astro build && pagefind --site dist && node scripts/remove-pagefind-useless.js && node scripts/analyze-build.js",
     "preview": "astro preview",
     "astro": "astro",
     "type-check": "tsc --noEmit --isolatedDeclarations",
     "new-post": "node scripts/new-post.js",
     "format": "biome format --write ./src",
     "lint": "biome check --apply ./src",
+    "analyze": "node scripts/analyze-build.js",
     "preinstall": "npx only-allow pnpm"
   },
   "dependencies": {
