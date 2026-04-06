@@ -2,15 +2,15 @@
 
 👋 嘿，我是 wsafight！
 
-- 95 后全栈工程师，一个喜欢“瞎折腾”的技术多面手。
+一个 95 后全栈工程师，前端、后端、DevOps 都会亿点点。
+带过团队，打过硬仗，是个喜欢瞎折腾的技术多面手。
 
-- 💻 技术栈：前端 / 后端 / DevOps (都会亿点点)
-- 🚀 经历：带过团队，打过硬仗。
+24 年选择停下来，休息一年，处理生活中的事。
+25 年重新出发，找到了新工作，继续在技术路上探索前行。
 
-- 现已开启“独立开发”模式，正在赋闲期间憋大招，致力于构建一款属于自己的产品。
-
-- 偶尔在此驻足，记录技术思考与折腾日记。
+偶尔在此驻足，记录技术思考与折腾日记。
 
 🔗 Find me:
-Github: https://github.com/wsafight/personBlog
-SegmentFault: https://segmentfault.com/u/jump_and_jump
+
+- Github: https://github.com/wsafight/personBlog
+- SegmentFault: https://segmentfault.com/u/jump_and_jump

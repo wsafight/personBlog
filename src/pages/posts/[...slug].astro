@@ -1,32 +1,39 @@
 ---
 import path from 'node:path'
-import { getCollection } from 'astro:content'
+import { getCollection, render } from 'astro:content'
 import License from '@components/misc/License.astro'
 import Markdown from '@components/misc/Markdown.astro'
 import MainGridLayout from '@layouts/MainGridLayout.astro'
+import type { BlogPostData } from '@/types/config'
 import { getDir, getPostUrlBySlug } from '@utils/url-utils'
 import { Icon } from 'astro-icon/components'
-import { licenseConfig } from 'src/config'
+import { licenseConfig } from '@/config'
 import PostMetadata from '../../components/PostMeta.astro'
 import ImageWrapper from '../../components/misc/ImageWrapper.astro'
 import Comments from '@components/Comments.astro'
 import { profileConfig, siteConfig } from '../../config'
 import { formatDateToYYYYMMDD } from '../../utils/date-utils'
 
+type PostEntry = {
+  id: string
+  body?: string
+  collection: 'posts'
+  data: BlogPostData
+}
+
 export async function getStaticPaths() {
-  const blogEntries = await getCollection('posts', ({ data }) => {
+  const blogEntries = await getCollection('posts', post => {
+    const data = post.data as BlogPostData
     return import.meta.env.PROD ? data.draft !== true : true
   })
   return blogEntries.map(entry => ({
-    params: { slug: entry.slug },
-    props: { entry },
+    params: { slug: entry.id },
+    props: { entry: entry as PostEntry },
   }))
 }
 
-const { entry } = Astro.props
-const { Content, headings } = await entry.render()
-
-const { remarkPluginFrontmatter } = await entry.render()
+const { entry } = Astro.props as { entry: PostEntry }
+const { Content, headings, remarkPluginFrontmatter } = await render(entry)
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -43,9 +50,11 @@ const jsonLd = {
   inLanguage: 'zh-CN',
   // TODO include cover image here
 }
+const hasMath = remarkPluginFrontmatter.hasMath
 ---
 <MainGridLayout banner={entry.data.image} title={entry.data.title} description={entry.data.description} lang='zh-CN' setOGTypeArticle={true} headings={headings}>
     <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
+    {hasMath && <link slot="head" rel="stylesheet" href={`${import.meta.env.BASE_URL}katex/katex.min.css`} />}
     <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative mb-4">
         <div id="post-container" class:list={["card-base z-10 px-6 md:px-9 pt-6 pb-4 relative w-full ",
             {}
@@ -87,7 +96,7 @@ const jsonLd = {
                         published={entry.data.published}
                         updated={entry.data.updated}
                         tags={entry.data.tags}
-                        category={entry.data.category}
+                        category={entry.data.category || ''}
                 ></PostMetadata>
                 {!entry.data.image && <div class="border-[var(--line-divider)] border-dashed border-b-[1px] mb-5"></div>}
             </div>
@@ -103,7 +112,7 @@ const jsonLd = {
                 <Content />
             </Markdown>
 
-            {licenseConfig.enable && <License title={entry.data.title} slug={entry.slug} pubDate={entry.data.published} class="mb-6 rounded-xl license-container onload-animation"></License>}
+            {licenseConfig.enable && <License title={entry.data.title} slug={entry.id} pubDate={entry.data.published} class="mb-6 rounded-xl license-container onload-animation"></License>}
 
         </div>
     </div>
@@ -133,3 +142,65 @@ const jsonLd = {
     <Comments />
 
 </MainGridLayout>
+
+<script>
+let lightbox: import("photoswipe/lightbox").default | null = null
+let pswpModule: Promise<typeof import("photoswipe")> | null = null
+
+async function createPhotoSwipe() {
+	const [{ default: PhotoSwipeLightbox }, _] = await Promise.all([
+		import("photoswipe/lightbox"),
+		// @ts-ignore
+		import("photoswipe/style.css"),
+	])
+	if (!pswpModule) pswpModule = import("photoswipe")
+	lightbox = new PhotoSwipeLightbox({
+		gallery: ".custom-md img, #post-cover img",
+		pswpModule: () => pswpModule!,
+		closeSVG: '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#ffffff"><path d="M480-424 284-228q-11 11-28 11t-28-11q-11-11-11-28t11-28l196-196-196-196q-11-11-11-28t11-28q11-11 28-11t28 11l196 196 196-196q11-11 28-11t28 11q11 11 11 28t-11 28L536-480l196 196q11 11 11 28t-11 28q-11 11-28 11t-28-11L480-424Z"/></svg>',
+		zoomSVG: '<svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#ffffff"><path d="M340-540h-40q-17 0-28.5-11.5T260-580q0-17 11.5-28.5T300-620h40v-40q0-17 11.5-28.5T380-700q17 0 28.5 11.5T420-660v40h40q17 0 28.5 11.5T500-580q0 17-11.5 28.5T460-540h-40v40q0 17-11.5 28.5T380-460q-17 0-28.5-11.5T340-500v-40Zm40 220q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l224 224q11 11 11 28t-11 28q-11 11-28 11t-28-11L532-372q-30 24-69 38t-83 14Zm0-80q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z"/></svg>',
+		padding: { top: 20, bottom: 20, left: 20, right: 20 },
+		wheelToZoom: true,
+		arrowPrev: false,
+		arrowNext: false,
+		imageClickAction: 'close',
+		tapAction: 'close',
+		doubleTapAction: 'zoom',
+	})
+
+	lightbox.addFilter("domItemData", (itemData, element) => {
+		if (element instanceof HTMLImageElement) {
+			itemData.src = element.src
+			itemData.w = Number(element.naturalWidth || window.innerWidth)
+			itemData.h = Number(element.naturalHeight || window.innerHeight)
+			itemData.msrc = element.src
+		}
+		return itemData
+	})
+
+	lightbox.init()
+}
+
+const setup = () => {
+	if (!lightbox) {
+		createPhotoSwipe()
+	}
+	window.swup.hooks.on("page:view", () => {
+		lightbox = null
+		createPhotoSwipe()
+	})
+	window.swup.hooks.on(
+		"content:replace",
+		() => {
+			lightbox?.destroy?.()
+		},
+		{ before: true },
+	)
+}
+
+if (window.swup) {
+	setup()
+} else {
+	document.addEventListener("swup:enable", setup)
+}
+</script>

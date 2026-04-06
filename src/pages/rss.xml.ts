@@ -7,7 +7,7 @@ import sanitizeHtml from 'sanitize-html'
 
 const parser = new MarkdownIt()
 
-export async function GET(context: APIContext) {
+export async function GET(context: APIContext): Promise<Response> {
   const blogs = await getSortedPosts()
 
   // 优化：只包含最近 50 篇文章，减少 RSS 文件大小
@@ -29,7 +29,7 @@ export async function GET(context: APIContext) {
         title: post.data.title,
         pubDate: post.data.published,
         description: post.data.description || '',
-        link: `/posts/${post.slug}/`,
+        link: `/posts/${post.id}/`,
         content: content,
       }
     }),

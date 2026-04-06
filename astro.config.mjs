@@ -1,6 +1,6 @@
 import sitemap from "@astrojs/sitemap";
 import svelte from "@astrojs/svelte";
-import tailwind from "@astrojs/tailwind";
+import tailwindcss from "@tailwindcss/vite";
 import swup from "@swup/astro";
 import compressor from "astro-compressor";
 import Compress from "astro-compress";
@@ -18,6 +18,7 @@ import { AdmonitionComponent } from "./src/plugins/rehype-component-admonition.m
 import { GithubCardComponent } from "./src/plugins/rehype-component-github-card.mjs";
 import { parseDirectiveNode } from "./src/plugins/remark-directive-rehype.js";
 import { remarkExcerpt } from "./src/plugins/remark-excerpt.js";
+import { remarkHasMath } from "./src/plugins/remark-has-math.js";
 import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs";
 
 const compressBr = process.env.COMPRESS_BR === "true";
@@ -27,9 +28,6 @@ export default defineConfig({
   base: "personBlog",
   trailingSlash: "always",
   integrations: [
-    tailwind({
-      nesting: true,
-    }),
     swup({
       theme: false,
       animationClass: "transition-swup-", // see https://swup.js.org/options/#animationselector
@@ -38,7 +36,10 @@ export default defineConfig({
       containers: ["main", "#toc"],
       smoothScrolling: true,
       cache: true,
-      preload: true,
+      preload: {
+        hover: true,
+        visible: false,
+      },
       accessibility: true,
       updateHead: true,
       updateBodyClass: false,
@@ -46,17 +47,32 @@ export default defineConfig({
     }),
     icon({
       include: {
-        "preprocess: vitePreprocess(),": ["*"],
-        "fa6-brands": ["*"],
-        "fa6-regular": ["*"],
-        "fa6-solid": ["*"],
+        "material-symbols": [
+          "calendar-today-outline-rounded",
+          "edit-calendar-outline-rounded",
+          "book-2-outline-rounded",
+          "tag-rounded",
+          "notes-rounded",
+          "schedule-outline-rounded",
+          "chevron-left-rounded",
+          "chevron-right-rounded",
+          "keyboard-arrow-up-rounded",
+          "more-horiz",
+          "home-outline-rounded",
+          "palette-outline",
+          "menu-rounded",
+          "copyright-outline-rounded",
+        ],
+        "fa6-brands": ["creative-commons", "github"],
+        "fa6-regular": ["address-card"],
+        "fa6-solid": ["arrow-up-right-from-square"],
       },
     }),
     svelte(),
     sitemap(),
     Compress({
-      CSS: false,
-      Image: false,
+      CSS: true,
+      Image: true,
       Action: {
         Passed: async () => true, // https://github.com/PlayForm/Compress/issues/376
       },
@@ -66,6 +82,7 @@ export default defineConfig({
   markdown: {
     remarkPlugins: [
       remarkMath,
+      remarkHasMath,
       remarkReadingTime,
       remarkExcerpt,
       remarkGithubAdmonitionsToDirectives,
@@ -115,6 +132,7 @@ export default defineConfig({
     ],
   },
   vite: {
+    plugins: [tailwindcss()],
     build: {
       rollupOptions: {
         onwarn(warning, warn) {

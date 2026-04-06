@@ -2,16 +2,18 @@
 import { getDefaultHue, getHue, setHue } from '@utils/setting-utils'
 import Icon from '@iconify/svelte'
 
-let hue = getHue()
+let hue = $state(getHue())
 const defaultHue = getDefaultHue()
 
 function resetHue() {
   hue = getDefaultHue()
 }
 
-$: if (hue || hue === 0) {
-  setHue(hue)
-}
+$effect(() => {
+  if (hue || hue === 0) {
+    setHue(hue)
+  }
+})
 </script>
 
 <div id="display-setting" class="float-panel float-panel-closed absolute transition-all w-80 right-4 px-4 py-4">
@@ -22,7 +24,7 @@ $: if (hue || hue === 0) {
         >
             主题色
             <button aria-label="Reset to Default" class="btn-regular w-7 h-7 rounded-md  active:scale-90"
-                    class:opacity-0={hue === defaultHue} class:pointer-events-none={hue === defaultHue} on:click={resetHue}>
+                    class:opacity-0={hue === defaultHue} class:pointer-events-none={hue === defaultHue} onclick={resetHue}>
                 <div class="text-[var(--btn-content)]">
                     <Icon icon="fa6-solid:arrow-rotate-left" class="text-[0.875rem]"></Icon>
                 </div>

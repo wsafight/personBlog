@@ -1,12 +1,15 @@
 ---
 import MainGridLayout from '../layouts/MainGridLayout.astro'
 
-import { getEntry } from 'astro:content'
+import { getEntry, render } from 'astro:content'
 import Markdown from '@components/misc/Markdown.astro'
 
 const aboutPost = await getEntry('spec', 'about')
+if (!aboutPost) {
+  throw new Error('Missing spec/about.md content entry.')
+}
 
-const { Content } = await aboutPost.render()
+const { Content } = await render(aboutPost)
 ---
 <MainGridLayout title="关于" description="关于">
     <div class="flex w-full rounded-[var(--radius-large)] overflow-hidden relative min-h-32">

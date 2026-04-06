@@ -2,8 +2,12 @@
 import { onMount } from 'svelte'
 import Icon from '@iconify/svelte'
 
-let keywordDesktop = ''
-let keywordMobile = ''
+const { pagefindScriptUrl = '/pagefind/pagefind.js' } = $props<{
+  pagefindScriptUrl?: string
+}>()
+
+let keywordDesktop = $state('')
+let keywordMobile = $state('')
 
 interface PagefindResult {
   url: string
@@ -13,27 +17,79 @@ interface PagefindResult {
   excerpt: string
 }
 
-let result: PagefindResult[] = []
+interface PagefindSearchResult {
+  data: () => Promise<PagefindResult>
+}
 
-// const fakeResult: PagefindResult[] = [
-// {
-//   url: url('/'),
-//   meta: {
-//     title: 'This Is a Fake Search Result',
-//   },
-//   excerpt:
-//     'Because the search cannot work in the <mark>dev</mark> environment.',
-// },
-// {
-//   url: url('/'),
-//   meta: {
-//     title: 'If You Want to Test the Search',
-//   },
-//   excerpt: 'Try running <mark>npm build && npm preview</mark> instead.',
-// },
-// ]
+interface PagefindApi {
+  options: (options: { excerptLength: number }) => Promise<void> | void
+  init: () => Promise<void> | void
+  search: (
+    keyword: string,
+  ) => Promise<{ results: PagefindSearchResult[] }>
+}
+
+declare global {
+  interface Window {
+    pagefind?: PagefindApi
+  }
+}
+
+let result: PagefindResult[] = $state([])
+let pagefindApi: PagefindApi | null = null
+let pagefindInitPromise: Promise<PagefindApi | null> | null = null
 
 let search = (keyword: string, isDesktop: boolean) => {}
+
+const ensurePagefindLoaded = async (): Promise<PagefindApi | null> => {
+  if (!import.meta.env.PROD) {
+    return null
+  }
+
+  if (pagefindApi) {
+    return pagefindApi
+  }
+  if (window.pagefind) {
+    pagefindApi = window.pagefind
+    return pagefindApi
+  }
+  if (pagefindInitPromise) {
+    return pagefindInitPromise
+  }
+
+  pagefindInitPromise = (async () => {
+    const pagefind = (await import(
+      /* @vite-ignore */ pagefindScriptUrl
+    )) as PagefindApi
+    await pagefind.options({
+      excerptLength: 20,
+    })
+    await pagefind.init()
+    window.pagefind = pagefind
+    pagefindApi = pagefind
+    return pagefind
+  })()
+
+  try {
+    return await pagefindInitPromise
+  } catch (error) {
+    console.error('Failed to load pagefind', error)
+    return null
+  } finally {
+    pagefindInitPromise = null
+  }
+}
+
+const warmupPagefind = () => {
+  if (import.meta.env.PROD) {
+    void ensurePagefindLoaded()
+  }
+}
+
+const handleDesktopFocus = () => {
+  warmupPagefind()
+  void search(keywordDesktop, true)
+}
 
 onMount(() => {
   search = async (keyword: string, isDesktop: boolean) => {
@@ -51,6 +107,10 @@ onMount(() => {
     const arr = []
     // 如果是生产环境，使用 pagefind 搜索
     if (import.meta.env.PROD) {
+      const pagefind = await ensurePagefindLoaded()
+      if (!pagefind) {
+        return
+      }
       const ret = await pagefind.search(keyword)
       for (const item of ret.results) {
         arr.push(await item.data())
@@ -74,8 +134,8 @@ const togglePanel = () => {
   panel?.classList.toggle('float-panel-closed')
 }
 
-$: search(keywordDesktop, true)
-$: search(keywordMobile, false)
+$effect(() => { search(keywordDesktop, true) })
+$effect(() => { search(keywordMobile, false) })
 </script>
 
 <!-- search bar for desktop view -->
@@ -84,14 +144,14 @@ $: search(keywordMobile, false)
       dark:bg-white/5 dark:hover:bg-white/10 dark:focus-within:bg-white/10
 ">
     <Icon icon="material-symbols:search" class="absolute text-[1.25rem] pointer-events-none ml-3 transition my-auto text-black/30 dark:text-white/30"></Icon>
-    <input placeholder="搜索" bind:value={keywordDesktop} on:focus={() => search(keywordDesktop, true)}
+    <input placeholder="搜索" bind:value={keywordDesktop} onfocus={handleDesktopFocus}
            class="transition-all pl-10 text-sm bg-transparent outline-0
          h-full w-40 active:w-60 focus:w-60 text-black/50 dark:text-white/50"
     >
 </div>
 
 <!-- toggle btn for phone/tablet view -->
-<button on:click={togglePanel} aria-label="Search Panel" id="search-switch"
+<button onclick={togglePanel} aria-label="Search Panel" id="search-switch"
         class="btn-plain scale-animation lg:!hidden rounded-lg w-11 h-11 active:scale-90">
     <Icon icon="material-symbols:search" class="text-[1.25rem]"></Icon>
 </button>
@@ -106,7 +166,7 @@ top-20 left-4 md:left-[unset] right-4 shadow-2xl rounded-2xl p-2">
       dark:bg-white/5 dark:hover:bg-white/10 dark:focus-within:bg-white/10
   ">
         <Icon icon="material-symbols:search" class="absolute text-[1.25rem] pointer-events-none ml-3 transition my-auto text-black/30 dark:text-white/30"></Icon>
-        <input placeholder="Search" bind:value={keywordMobile}
+        <input placeholder="Search" bind:value={keywordMobile} onfocus={warmupPagefind}
                class="pl-10 absolute inset-0 text-sm bg-transparent outline-0
                focus:w-60 text-black/50 dark:text-white/50"
         >

@@ -9,3 +9,5 @@ removeuselessJs("dist/pagefind/pagefind-modular-ui.css");
 removeuselessJs("dist/pagefind/pagefind-modular-ui.js");
 removeuselessJs("dist/pagefind/pagefind-ui.js");
 removeuselessJs("dist/pagefind/pagefind-ui.css");
+removeuselessJs("dist/pagefind/pagefind-component-ui.js");
+removeuselessJs("dist/pagefind/pagefind-component-ui.css");

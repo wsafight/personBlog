@@ -195,14 +195,15 @@ class TableOfContents extends HTMLElement {
     };
 
     connectedCallback() {
+        // skip on mobile where TOC is not visible
+        if (window.innerWidth < 1024) return;
+
         // wait for the onload animation to finish, which makes the `getBoundingClientRect` return correct values
         const element = document.querySelector('.prose');
         if (element) {
             element.addEventListener('animationend', () => {
                 this.init();
             }, { once: true });
-        } else {
-            console.warn('Animation element not found');
         }
     };
 
