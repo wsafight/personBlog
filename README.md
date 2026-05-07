@@ -64,7 +64,7 @@
 - [从组件 boolean 值属性谈谈分层架构](https://wsafight.github.io/personBlog/posts/layered-architecture/)
 - [从微前端聊聊架构演进](https://wsafight.github.io/personBlog/posts/micro-front/)
 
-### DevOps/部署
+### DevOps
 
 - [Kamal：现代化的 Web 应用部署工具](https://wsafight.github.io/personBlog/posts/kamal/)
 - [K3s 完全指南：轻量级 Kubernetes 从入门到实战](https://wsafight.github.io/personBlog/posts/k3s/)
@@ -102,7 +102,7 @@
 - [GPUI：Zed 编辑器背后的高性能 UI 框架](https://wsafight.github.io/personBlog/posts/gpui/)
 - [AionUi：构建跨平台 AI 工作台的技术实践](https://wsafight.github.io/personBlog/posts/aion-ui/)
 
-### AI/LLM
+### AI
 
 - [Qwopus3.5 — 用 Reasoning SFT 释放 27B 模型的推理潜力](https://wsafight.github.io/personBlog/posts/qwopus/)
 - [RTK：给 AI 编码助手瘦身的 Rust 代理](https://wsafight.github.io/personBlog/posts/rtx/)

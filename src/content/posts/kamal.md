@@ -3,7 +3,7 @@ title: Kamal：现代化的 Web 应用部署工具
 published: 2026-02-09
 description: 深入介绍 Kamal 部署工具的核心特性与实践。Kamal 是由 Basecamp 团队开发的现代化部署工具，结合容器化技术与传统部署工具的简洁性，让开发者能够以低成本、低复杂度实现生产级别的 Web 应用部署。
 tags: [Kamal, Docker, 容器化, 部署, DevOps, 运维, Web应用]
-category: DevOps/部署
+category: DevOps
 draft: false
 ---
 

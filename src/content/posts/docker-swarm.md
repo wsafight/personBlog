@@ -3,7 +3,7 @@ title: Docker Swarm 完全指南：从原理到生产实践
 published: 2026-02-09
 description: 深入解析 Docker Swarm 原生容器编排工具，涵盖集群架构、Raft 共识算法、服务调度、路由网格、高可用部署等核心概念。对比 Kubernetes，探讨 Swarm 的适用场景与最佳实践。
 tags: [Docker Swarm, Docker, 容器编排, 集群管理, DevOps, 微服务, 负载均衡]
-category: DevOps/部署
+category: DevOps
 draft: false
 ---
 

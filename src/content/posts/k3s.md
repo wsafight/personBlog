@@ -3,7 +3,7 @@ title: K3s 完全指南：轻量级 Kubernetes 从入门到实战
 published: 2026-02-09
 description: 全面介绍 K3s 轻量级 Kubernetes 发行版，涵盖架构原理、安装配置、集群管理、存储网络、监控告警等核心内容。K3s 专为边缘计算、IoT 设备和资源受限环境设计，提供完整的生产级 Kubernetes 体验。
 tags: [K3s, Kubernetes, 容器编排, 边缘计算, IoT, DevOps, 云原生]
-category: DevOps/部署
+category: DevOps
 draft: false
 ---
 

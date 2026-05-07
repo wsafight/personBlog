@@ -3,7 +3,7 @@ title: RTK：给 AI 编码助手瘦身的 Rust 代理
 published: 2026-03-29
 description: 一个 Rust 编写的 CLI 代理，在 AI 编码工具和系统命令之间插入智能过滤，将 LLM token 消耗降低 60-90%。
 tags: [Rust, AI, CLI, 性能优化]
-category: AI/LLM
+category: AI
 draft: false
 ---
 

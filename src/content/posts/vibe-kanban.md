@@ -3,7 +3,7 @@ title: Vibe Kanban：AI 编码代理的编排利器
 published: 2026-01-01
 description: Vibe Kanban 是开源的 AI 编码代理编排工具，基于 Git worktrees 实现多 AI 并行工作，互不干扰，内置代码审查，本地运行，数据安全。
 tags: [AI, 工具, Rust, 看板]
-category: AI/LLM
+category: AI
 draft: false
 ---
 
