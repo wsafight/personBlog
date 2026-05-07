@@ -2,7 +2,7 @@
 title: "H2O 服务器：极致性能的下一代 Web 服务器"
 published: 2025-11-15
 description: H2O 是首批原生支持 HTTP/2 的 Web 服务器之一。文章介绍了其卓越性能、HTTP/2 服务器推送、HTTP/3 实验性支持、TLS 1.3 以及灵活的 YAML 配置等核心特性。
-category: Web服务
+category: Web 服务
 tags: [Web服务器]
 draft: false
 ---

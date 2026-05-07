@@ -3,7 +3,7 @@ title: 从 await-to-js 到 try-run-js
 published: 2022-12-18
 description: 探讨了 try-catch 包裹异步代码时的作用域问题，介绍了 await-to-js 的解决方案以及作者编写的 try-run-js 库，提供更优雅的异步错误处理方式。
 tags: [JavaScript, 工具开发]
-category: 工程实践
+category: 前端工程
 draft: false
 ---
 

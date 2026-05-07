@@ -3,7 +3,7 @@ title: 跨平台框架怎么选：16 个框架全景对比（2026 版）
 published: 2026-02-02
 description: 深度对比 16 个跨平台框架，从主流的 Flutter/React Native/Electron 到新兴的 Wails（Go）/Dioxus（Rust）/Slint（嵌入式），覆盖移动端、桌面端、嵌入式全场景。重点分析技术路线、适用场景、生产风险，帮你做出正确的技术选型。
 tags: [跨平台开发, Flutter, React Native, Electron, Tauri, Wails, Dioxus, Go, Rust, 技术选型, 架构设计]
-category: 架构设计
+category: 架构与系统设计
 draft: false
 ---
 

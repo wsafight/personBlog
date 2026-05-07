@@ -3,7 +3,7 @@ title: 总结对象安全访问处理方案
 published: 2020-11-15
 description: 针对前端开发中常见的"cannot read property of undefined"错误，介绍了短路运算符号嗅探、|| 单元保底值、try catch、链判断运算符等多种对象安全访问处理方案。
 tags: [JavaScript]
-category: 工程实践
+category: 前端工程
 draft: false
 ---
 

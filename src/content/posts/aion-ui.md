@@ -3,7 +3,7 @@ title: AionUi：构建跨平台 AI 工作台的技术实践
 published: 2026-01-22
 description: 深入解析 AionUi 开源项目的技术架构、核心功能实现、性能优化策略与安全设计。涵盖 Electron 多进程架构、React 前端、SQLite 数据持久化、多 AI 引擎支持、MCP 协议集成等企业级实践。
 tags: [AionUi, Electron, React, AI工作台, TypeScript, SQLite, 跨平台]
-category: 开源项目
+category: 开源项目解析
 draft: false
 ---
 

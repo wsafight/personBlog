@@ -3,7 +3,7 @@ title: 用 3100 个数字造一台计算机
 description: 用 TypeScript 重构了一台只有 3100 个内存槽位、23 条指令的虚拟计算机。从内存映射 I/O 到汇编器，从像素渲染到音频合成，拆解计算机最本质的工作原理。
 published: 2026-04-08
 tags: [TypeScript, 计算机原理]
-category: 工程实践
+category: 游戏与图形
 draft: false
 ---
 

@@ -3,7 +3,7 @@ title: Hono 路由器为什么这么快？RegExpRouter 核心原理深度解析
 published: 2026-01-20
 description: 深入剖析 Hono 框架 RegExpRouter 的核心实现原理，解释预编译、引擎下沉等技术如何在边缘计算环境中实现极致性能，包含完整代码实现和性能分析。
 tags: [Hono, 路由, 性能优化, JavaScript, Web框架]
-category: 工程实践
+category: Web 服务
 draft: false
 ---
 

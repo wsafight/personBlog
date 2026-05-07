@@ -3,7 +3,7 @@ title: 深入 JavaScript Iterator Helpers：从 API 到引擎实现
 published: 2026-03-24
 description: 从 API 用法、性能优势、规范算法三个层面深入解析 ES2025 Iterator Helpers 的设计哲学与底层实现。
 tags: [JavaScript]
-category: 前端
+category: 前端工程
 draft: false
 ---
 

@@ -3,7 +3,7 @@ title: AionUi 模型交互与数据流转架构深度解析
 published: 2026-01-23
 description: 全面剖析 AionUi 底层 AI 模型交互机制、数据流转架构与界面渲染优化。详解从用户输入到 AI 响应的完整流程，包括 IPC 通信、流式响应处理、数据库批量优化、前端状态管理与虚拟化渲染等核心技术。
 tags: [AionUi, AI模型交互, 数据流转, IPC通信, 流式处理, 性能优化, WebSocket]
-category: 架构设计
+category: 架构与系统设计
 draft: false
 ---
 

@@ -3,7 +3,7 @@ title: 从组件 boolean 值属性谈谈分层架构
 published: 2021-04-13
 description: 从组件 boolean 值属性命名（can/able/is）出发，探讨了不同工作场景下的命名方式及其背后的逻辑，并结合实际案例介绍了分层架构的优势和应用。
 tags: [架构]
-category: 工程实践
+category: 架构与系统设计
 draft: false
 ---
 

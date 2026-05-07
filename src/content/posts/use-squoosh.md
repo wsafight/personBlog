@@ -3,7 +3,7 @@ title: 基于 Squoosh WASM 的浏览器端图片转换库
 published: 2026-01-08
 description: 介绍了 use-squoosh 库的设计与实现，一个零依赖的浏览器端图片转换工具，通过 CDN 按需加载 Squoosh WASM 编解码器，支持 PNG、JPEG、WebP 格式互转。
 tags: [JavaScript, 工具开发]
-category: 工程实践
+category: 前端工程
 draft: false
 ---
 

@@ -3,7 +3,7 @@ title: 探讨奇技淫巧
 published: 2019-06-04
 description: 探讨了"奇技淫巧"的定义，强调了在工程实践中，官方未设想的代码风格或使用场景也可能成为提升开发效率和性能的有效手段。
 tags: [JavaScript]
-category: 工程实践
+category: 前端工程
 draft: false
 ---
 ## 起源

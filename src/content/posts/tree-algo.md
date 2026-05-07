@@ -3,7 +3,7 @@ title: 重修算法(1)—以 O(n) 复杂度构建树结构
 published: 2020-08-23
 description: 介绍了以 O(n) 复杂度构建树结构的多种方法，包括 for 循环、递归构建和利用对象引用构建树，分析了它们的优缺点和适用场景。
 tags: [算法]
-category: 工程实践
+category: 前端工程
 draft: false
 ---
 

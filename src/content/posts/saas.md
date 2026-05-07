@@ -3,7 +3,7 @@ title: SaaS 时代已死，SaaS 时代已来
 published: 2026-01-10
 description: AI Agent 正在改变软件开发的成本结构，从 Software as a Service 到 Service as a Software，专家经验的软件化交付将成为新趋势。
 tags: [AI, SaaS, 思考]
-category: 思考
+category: 思考与读书
 draft: false
 ---
 

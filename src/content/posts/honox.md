@@ -3,7 +3,7 @@ title: HonoX：下一代全栈 Web 框架深度解析
 published: 2026-01-25
 description: 深度解析基于 Hono 的全栈 Web 框架 HonoX，探讨 Islands 架构、文件路由系统、中间件、性能优化、边缘计算等核心特性，以及如何构建高性能的现代 Web 应用。
 tags: [HonoX, Hono, 全栈框架, Islands 架构, 边缘计算, TypeScript]
-category: 工程实践
+category: Web 服务
 draft: false
 ---
 

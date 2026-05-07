@@ -3,7 +3,7 @@ title: 从 VantComponent 谈 小程序维护
 published: 2019-04-27
 description: VantComponent 是 Vant Weapp 提供的小程序组件增强工具，支持 mixins、watch、computed、生命周期函数等 Vue 风格的语法，让小程序开发更加高效。
 tags: [小程序, 工程化]
-category: 移动开发
+category: 移动与跨端
 draft: false
 ---
 

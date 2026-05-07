@@ -3,7 +3,7 @@ title: GPUI 渲染引擎深度解析：从 CPU 到 GPU 的极致性能之旅
 published: 2026-02-15
 description: 深入剖析 GPUI 渲染引擎的实现细节，探索它如何通过多线程管线、增量渲染、GPU 直接调用等技术实现超越传统 UI 框架的性能。涵盖布局算法、文本渲染、绘制命令优化、脏标记系统等核心技术。
 tags: [Rust, GPUI, 渲染引擎, GPU编程, 性能优化]
-category: 图形渲染
+category: 游戏与图形
 draft: false
 ---
 

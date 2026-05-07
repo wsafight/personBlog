@@ -3,7 +3,7 @@ title: 小程序跨页面交互的作用与方法
 published: 2020-01-07
 description: 介绍了小程序开发中跨页面交互的多种技巧，包括利用 Promise 缓存优化页面跳转加载体验、使用全局事件总线通信等方法，解决 B 端小程序开发的复杂交互问题。
 tags: [小程序]
-category: 移动开发
+category: 移动与跨端
 draft: false
 ---
 

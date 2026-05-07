@@ -3,7 +3,7 @@ title: Hono 深入使用指南：从入门到精通
 published: 2026-01-21
 description: 一份全面的 Hono 框架实战指南，涵盖核心概念、Context API、中间件系统、RPC 模式、类型安全验证、认证授权、JSX 渲染、实时通信、测试部署等高级特性与生产环境最佳实践。
 tags: [Hono, TypeScript, Web框架, 边缘计算, Serverless]
-category: 工程实践
+category: Web 服务
 draft: false
 ---
 

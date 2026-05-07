@@ -3,7 +3,7 @@ title: Pagefind：为静态网站打造的极速搜索方案
 published: 2026-02-02
 description: 深度解析 Pagefind 静态网站搜索引擎，从快速上手到原理剖析。核心 20KB，按需加载，索引压缩率 95%。详解倒排索引、TF-IDF 评分、四层压缩策略、三层缓存架构等核心技术，帮你为静态网站构建极速离线搜索体验。
 tags: [Pagefind, 静态网站, 搜索引擎, 全文检索, 倒排索引, TF-IDF, 前端优化, WebAssembly, Rust]
-category: 前端开发
+category: 前端工程
 draft: false
 ---
 

@@ -3,7 +3,7 @@ title: 超长定时器 long-timeout
 description: JavaScript 的 setTimeout 存在 24.8 天的延时限制。本文深入解析了这一限制的根本原因，并介绍了 long-timeout 库如何突破这一限制，支持超长定时任务。
 published: 2025-10-08
 tags: [JavaScript, 定时器]
-category: 工程实践
+category: 前端工程
 draft: false
 ---
 

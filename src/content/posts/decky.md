@@ -3,7 +3,7 @@ title: 用官方模板理解 Decky 插件：一次从模板到架构的速览
 published: 2026-02-09
 description: 以官方 decky-plugin-template 为索引，拆解 Steam Deck 插件的前端 React 组件、Python 后端、Decky Loader 运行时与开发部署流程
 tags: [Decky, Steam Deck, 插件开发, React, Python, SteamOS, CEF, 开源]
-category: 插件开发
+category: 移动与跨端
 draft: false
 ---
 

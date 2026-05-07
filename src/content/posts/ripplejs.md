@@ -3,7 +3,7 @@ title: Ripple：一个现代的响应式 UI 框架
 published: 2026-01-09
 description: 深入解析 Ripple.js 的设计原理、核心特性，以及与 React、Svelte、Solid 的对比分析
 tags: [TypeScript, UI Framework, Frontend, Reactive]
-category: Frontend
+category: 前端框架
 draft: false
 ---
 

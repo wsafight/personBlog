@@ -3,7 +3,7 @@ title: GetX — Flutter 的瑞士军刀，还是过度封装的陷阱？
 published: 2026-04-22
 description: 深入分析 Flutter GetX 框架的状态管理、路由、依赖注入三大核心能力，对比原生 Flutter 方案，探讨其优势与争议
 tags: [Flutter, State Management, Mobile, Dart]
-category: 移动开发
+category: 移动与跨端
 draft: false
 ---
 

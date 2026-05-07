@@ -3,7 +3,7 @@ title: ECS 架构深度解析：从 OOP 到数据驱动的游戏开发革命
 published: 2026-02-01
 description: 文章详细介绍了 ECS（Entity-Component-System）架构的核心概念、优势、实现方式以及与传统 OOP 架构的对比，还包括了在不同游戏引擎中的实现和性能优化技巧。
 tags: [游戏开发, ECS, 架构设计, 性能优化, Rust]
-category: 游戏开发
+category: 架构与系统设计
 draft: false
 ---
 

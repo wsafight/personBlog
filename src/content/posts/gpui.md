@@ -3,7 +3,7 @@ title: GPUI：Zed 编辑器背后的高性能 UI 框架
 published: 2026-02-15
 description: 深入探讨 GPUI 这个由 Rust 编写的高性能 UI 框架，它如何支撑 Zed 编辑器实现超越传统编辑器的性能表现。本文涵盖 GPUI 核心概念、组件系统、状态管理、渲染机制以及实战开发经验。
 tags: [Rust, GPUI, UI框架, 组件开发, 性能优化]
-category: 开源项目
+category: 开源项目解析
 draft: false
 ---
 

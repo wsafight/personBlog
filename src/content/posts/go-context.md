@@ -3,7 +3,7 @@ title: 深入理解 Go Context：从原理到实战（基于 Go 1.26）
 published: 2026-03-25
 description: 深入解析 Go context 包的核心原理与实战用法，涵盖 goroutine 生命周期控制、取消传播、超时管理及最佳实践。
 tags: [Go]
-category: 工程实践
+category: Web 服务
 draft: false
 ---
 

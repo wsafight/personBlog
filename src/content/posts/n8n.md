@@ -3,7 +3,7 @@ title: n8n 完全指南：从入门到实战的 AI 工作流自动化平台
 published: 2026-01-20
 description: 深入介绍 n8n 工作流自动化平台，涵盖核心功能、AI Agent 能力、实战场景、最佳实践与竞品对比，助你快速掌握这个在 2025 年获得 112,000 颗 GitHub 星标的 AI 原生自动化工具。
 tags: [AI, 自动化, n8n, 工作流, DevOps]
-category: 工程实践
+category: Web 服务
 draft: false
 ---
 

@@ -3,7 +3,7 @@ title: 深入理解 Signal：Push-Pull 响应式算法源码解读
 published: 2026-04-03
 description: 从零开始逐层构建一个完整的 Signal 系统，深入解读 Push-Pull 混合算法、全局栈自动依赖追踪、动态依赖清理等核心机制，理解 Vue、Solid、Preact 等现代前端框架响应式系统的共同原理。
 tags: [Signal, 响应式, TypeScript, Vue, Solid, 前端框架]
-category: 前端原理
+category: 前端框架
 draft: false
 ---
 

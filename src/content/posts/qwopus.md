@@ -3,7 +3,7 @@ title: Qwopus3.5 — 用 Reasoning SFT 释放 27B 模型的推理潜力
 published: 2026-04-22
 description: 深入介绍 Qwopus3.5 开源模型，基于 Qwen3.5-27B 通过 Reasoning SFT 显著提升推理能力，可在消费级硬件本地运行
 tags: [LLM, Open Source, Local AI, Reasoning]
-category: AI
+category: AI/LLM
 draft: false
 ---
 

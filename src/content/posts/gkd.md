@@ -3,7 +3,7 @@ title: GKD：基于无障碍服务的 Android 屏幕自动化神器
 published: 2025-12-31
 description: 详细介绍了 GKD 这款开源 Android 屏幕自动化工具的技术原理，包括 AccessibilityService 工作机制、选择器引擎设计、规则引擎实现，以及如何手写一个简易版的 GKD 工具。
 tags: [Android, 无障碍服务, 自动化]
-category: Android
+category: 移动与跨端
 draft: false
 ---
 
