@@ -2,6 +2,7 @@
 import '@fontsource/roboto/latin-400.css'
 import '@fontsource/roboto/latin-500.css'
 import '@fontsource/roboto/latin-700.css'
+import roboto400 from '@fontsource/roboto/files/roboto-latin-400-normal.woff2?url'
 import '../styles/main.css'
 
 import { profileConfig, siteConfig } from '@/config'
@@ -98,7 +99,7 @@ const bannerOffset =
 
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<link rel="dns-prefetch" href="https://giscus.app" />
+		<link rel="preload" href={roboto400} as="font" type="font/woff2" crossorigin />
 		<link rel="canonical" href={Astro.url} />
 		{favicons.map(favicon => (
 			<link rel="icon"
@@ -107,6 +108,7 @@ const bannerOffset =
 				  media={favicon.theme && `(prefers-color-scheme: ${favicon.theme})`}
 			/>
 		))}
+		<noscript><style>.onload-animation { opacity: 1 !important; animation: none !important; }</style></noscript>
 
 		<!-- Set the theme before the page is rendered to avoid a flash -->
 		<script is:inline define:vars={{DEFAULT_THEME, LIGHT_MODE, DARK_MODE, AUTO_MODE, BANNER_HEIGHT_EXTEND, PAGE_WIDTH, configHue}}>
@@ -201,12 +203,31 @@ import {
 	MAIN_PANEL_OVERLAPS_BANNER_HEIGHT,
 } from "../constants/constants";
 import { siteConfig } from '@/config';
+import overlayScrollbarsCssUrl from 'overlayscrollbars/overlayscrollbars.css?url';
 
-const bannerEnabled = !!document.getElementById('banner-wrapper')
+type LayoutRuntimeState = {
+	bodyScrollbarInitialized?: boolean
+	overlayScrollbarsPromise?: Promise<{ OverlayScrollbars: any }> | null
+	overlayScrollbarsStylesheetPromise?: Promise<void> | null
+	removeClickOutsideListeners?: Array<() => void>
+	removeSwupEnableListener?: () => void
+	removeSwupListeners?: Array<() => void>
+	removeWindowListeners?: Array<() => void>
+	scrollbarInitTimer?: number | null
+}
+
+const layoutRuntime = ((window as Window & {
+	__layoutRuntime?: LayoutRuntimeState
+}).__layoutRuntime ??= {})
+
+function isBannerEnabled() {
+	return !!document.getElementById('banner-wrapper')
+}
 
 function setClickOutsideToClose(panel: string, ignores: string[]) {
-	document.addEventListener("click", event => {
+	const onDocumentClick = (event: MouseEvent) => {
 		let panelDom = document.getElementById(panel);
+		if (!panelDom) return;
 		let tDom = event.target;
 		if (!(tDom instanceof Node)) return;		// Ensure the event target is an HTML Node
 		for (let ig of ignores) {
@@ -216,11 +237,16 @@ function setClickOutsideToClose(panel: string, ignores: string[]) {
 			}
 		}
 		panelDom!.classList.add("float-panel-closed");
-	});
+	}
+	document.addEventListener("click", onDocumentClick)
+	return () => document.removeEventListener("click", onDocumentClick)
 }
-setClickOutsideToClose("display-setting", ["display-setting", "display-settings-switch"])
-setClickOutsideToClose("nav-menu-panel", ["nav-menu-panel", "nav-menu-switch"])
-setClickOutsideToClose("search-panel", ["search-panel", "search-bar", "search-switch"])
+layoutRuntime.removeClickOutsideListeners?.forEach(remove => remove())
+layoutRuntime.removeClickOutsideListeners = [
+	setClickOutsideToClose("display-setting", ["display-setting", "display-settings-switch"]),
+	setClickOutsideToClose("nav-menu-panel", ["nav-menu-panel", "nav-menu-switch"]),
+	setClickOutsideToClose("search-panel", ["search-panel", "search-bar", "search-switch"]),
+]
 
 
 function loadTheme() {
@@ -232,31 +258,97 @@ function loadHue() {
 	setHue(getHue())
 }
 
-async function initCustomScrollbar() {
-	const [{ OverlayScrollbars }, _] = await Promise.all([
+function shouldInitCustomScrollbar() {
+	return window.innerWidth >= 1024 && window.matchMedia('(pointer: fine)').matches
+}
+
+function clearScheduledScrollbarInit() {
+	if (layoutRuntime.scrollbarInitTimer) {
+		window.clearTimeout(layoutRuntime.scrollbarInitTimer)
+		layoutRuntime.scrollbarInitTimer = null
+	}
+}
+
+function ensureOverlayScrollbarsStylesheet() {
+	layoutRuntime.overlayScrollbarsStylesheetPromise ??= new Promise(resolve => {
+		const existing = document.querySelector<HTMLLinkElement>('link[data-overlay-scrollbars-stylesheet]')
+		if (existing) {
+			resolve()
+			return
+		}
+
+		const link = document.createElement('link')
+		link.rel = 'stylesheet'
+		link.href = overlayScrollbarsCssUrl
+		link.setAttribute('data-overlay-scrollbars-stylesheet', '')
+		link.onload = () => resolve()
+		link.onerror = () => resolve()
+		document.head.append(link)
+	})
+
+	return layoutRuntime.overlayScrollbarsStylesheetPromise
+}
+
+async function loadOverlayScrollbars() {
+	layoutRuntime.overlayScrollbarsPromise ??= Promise.all([
 		import('overlayscrollbars'),
-		// @ts-ignore
-		import('overlayscrollbars/overlayscrollbars.css'),
-	])
+		ensureOverlayScrollbarsStylesheet(),
+	]).then(([module]) => module)
+	return layoutRuntime.overlayScrollbarsPromise
+}
+
+async function initCustomScrollbar(forcePreScrollbars = false) {
+	if (!shouldInitCustomScrollbar()) return
+	const { OverlayScrollbars } = await loadOverlayScrollbars()
 	const bodyElement = document.querySelector('body');
 	if (!bodyElement) return;
-	OverlayScrollbars(
-		// docs say that a initialization to the body element would affect native functionality like window.scrollTo
-		// but just leave it here for now
-		{
-			target: bodyElement,
-			cancel: {
-				nativeScrollbarsOverlaid: true,    // don't initialize the overlay scrollbar if there is a native one
-			}
-		}, {
-		scrollbars: {
-			theme: 'scrollbar-base scrollbar-auto py-1',
-			autoHide: 'move',
-			autoHideDelay: 500,
-			autoHideSuspend: false,
-		},
-	});
-	document.querySelectorAll('pre').forEach((ele) => {
+	if (!layoutRuntime.bodyScrollbarInitialized) {
+		OverlayScrollbars(
+			{
+				target: bodyElement,
+				cancel: {
+					nativeScrollbarsOverlaid: true,
+				}
+			}, {
+			scrollbars: {
+				theme: 'scrollbar-base scrollbar-auto py-1',
+				autoHide: 'move',
+				autoHideDelay: 500,
+				autoHideSuspend: false,
+			},
+		});
+		layoutRuntime.bodyScrollbarInitialized = true
+	}
+	if (forcePreScrollbars || document.querySelector('pre')) {
+		initPreScrollbars(OverlayScrollbars);
+	}
+}
+
+function scheduleCustomScrollbarInit(immediate = false, forcePreScrollbars = false) {
+	if (!shouldInitCustomScrollbar()) {
+		clearScheduledScrollbarInit()
+		return
+	}
+
+	if (immediate) {
+		clearScheduledScrollbarInit()
+		void initCustomScrollbar(forcePreScrollbars)
+		return
+	}
+
+	if (layoutRuntime.scrollbarInitTimer) {
+		return
+	}
+
+	layoutRuntime.scrollbarInitTimer = window.setTimeout(() => {
+		layoutRuntime.scrollbarInitTimer = null
+		void initCustomScrollbar(forcePreScrollbars)
+	}, 300)
+}
+
+function initPreScrollbars(OverlayScrollbars: any) {
+	document.querySelectorAll('pre:not([data-os-init])').forEach((ele) => {
+		ele.setAttribute('data-os-init', '');
 		OverlayScrollbars(ele, {
 			scrollbars: {
 				theme: 'scrollbar-base scrollbar-dark px-2',
@@ -282,19 +374,31 @@ function showBanner() {
 function init() {
 	loadTheme();
 	loadHue();
-	initCustomScrollbar();
+	scheduleCustomScrollbarInit();
 	showBanner();
 }
 
 init();
 
+let backToTopBtn = document.getElementById('back-to-top-btn');
+let toc = document.getElementById('toc-wrapper');
+let navbar = document.getElementById('navbar-wrapper')
+
+function refreshLayoutElements() {
+	backToTopBtn = document.getElementById('back-to-top-btn')
+	toc = document.getElementById('toc-wrapper')
+	navbar = document.getElementById('navbar-wrapper')
+}
+
 const setup = () => {
-	window.swup.hooks.on('link:click', () => {
+	layoutRuntime.removeSwupListeners?.forEach(remove => remove())
+	layoutRuntime.removeSwupListeners = [
+		window.swup.hooks.on('link:click', () => {
 		// Remove the delay for the first time page load
 		document.documentElement.style.setProperty('--content-delay', '0ms')
 
 		// prevent elements from overlapping the navbar
-		if (!bannerEnabled) {
+		if (!isBannerEnabled()) {
 			return
 		}
 		let threshold = window.innerHeight * (BANNER_HEIGHT / 100) - 72 - 16
@@ -305,15 +409,18 @@ const setup = () => {
 		if (document.body.scrollTop >= threshold || document.documentElement.scrollTop >= threshold) {
 			navbar.classList.add('navbar-hidden')
 		}
-	})
-	window.swup.hooks.on('content:replace', initCustomScrollbar)
-	window.swup.hooks.on('visit:start', (visit: {to: {url: string}}) => {
+		}),
+		window.swup.hooks.on('content:replace', async () => {
+			scheduleCustomScrollbarInit(true, true)
+		}),
+		window.swup.hooks.on('visit:start', (visit: {to: {url: string}}) => {
 		// change banner height immediately when a link is clicked
 		const bodyElement = document.querySelector('body')
+		if (!bodyElement) return
 		if (pathsEqual(visit.to.url, url('/'))) {
-			bodyElement!.classList.add('lg:is-home');
+			bodyElement.classList.add('lg:is-home');
 		} else {
-			bodyElement!.classList.remove('lg:is-home');
+			bodyElement.classList.remove('lg:is-home');
 		}
 
 		// increase the page height during page transition to prevent the scrolling animation from jumping
@@ -327,38 +434,46 @@ const setup = () => {
 		if (toc) {
 			toc.classList.add('toc-not-ready')
 		}
-	});
-	window.swup.hooks.on('page:view', () => {
+		}),
+		window.swup.hooks.on('page:view', () => {
+			refreshLayoutElements()
 		// hide the temp high element when the transition is done
 		const heightExtend = document.getElementById('page-height-extend')
 		if (heightExtend) {
 			heightExtend.classList.remove('hidden')
 		}
-	});
-	window.swup.hooks.on('visit:end', (visit: {to: {url: string}}) => {
-		setTimeout(() => {
-			const heightExtend = document.getElementById('page-height-extend')
-			if (heightExtend) {
-				heightExtend.classList.add('hidden')
-			}
+		}),
+		window.swup.hooks.on('visit:end', () => {
+			setTimeout(() => {
+				const heightExtend = document.getElementById('page-height-extend')
+				if (heightExtend) {
+					heightExtend.classList.add('hidden')
+				}
 
-            // Just make the transition looks better
-            const toc = document.getElementById('toc-wrapper');
-            if (toc) {
-                toc.classList.remove('toc-not-ready')
-            }
-        }, 200)
-	});
+				const toc = document.getElementById('toc-wrapper')
+				if (toc) {
+					toc.classList.remove('toc-not-ready')
+				}
+			}, 200)
+		}),
+	]
 }
+
+layoutRuntime.removeSwupEnableListener?.()
 if (window?.swup?.hooks) {
 	setup()
 } else {
-	document.addEventListener('swup:enable', setup)
+	const onSwupEnable = () => {
+		layoutRuntime.removeSwupEnableListener?.()
+		layoutRuntime.removeSwupEnableListener = undefined
+		setup()
+	}
+	document.addEventListener('swup:enable', onSwupEnable)
+	layoutRuntime.removeSwupEnableListener = () => {
+		document.removeEventListener('swup:enable', onSwupEnable)
+	}
 }
 
-let backToTopBtn = document.getElementById('back-to-top-btn');
-let toc = document.getElementById('toc-wrapper');
-let navbar = document.getElementById('navbar-wrapper')
 function scrollFunction() {
 	let bannerHeight = window.innerHeight * (BANNER_HEIGHT / 100)
 
@@ -370,7 +485,7 @@ function scrollFunction() {
 		}
 	}
 
-	if (bannerEnabled && toc) {
+	if (isBannerEnabled() && toc) {
 		if (document.body.scrollTop > bannerHeight || document.documentElement.scrollTop > bannerHeight) {
 			toc.classList.remove('toc-hide')
 		} else {
@@ -378,7 +493,7 @@ function scrollFunction() {
 		}
 	}
 
-	if (!bannerEnabled) return
+	if (!isBannerEnabled()) return
 	if (navbar) {
 		const NAVBAR_HEIGHT = 72
 		const MAIN_PANEL_EXCESS_HEIGHT = MAIN_PANEL_OVERLAPS_BANNER_HEIGHT * 16			// The height the main panel overlaps the banner
@@ -405,14 +520,22 @@ function onScroll() {
 		})
 	}
 }
-window.onscroll = onScroll
 
-window.onresize = () => {
+function onResize() {
 	// calculate the --banner-height-extend, which needs to be a multiple of 4 to avoid blurry text
 	let offset = Math.floor(window.innerHeight * (BANNER_HEIGHT_EXTEND / 100));
 	offset = offset - offset % 4;
 	document.documentElement.style.setProperty('--banner-height-extend', `${offset}px`);
+	scheduleCustomScrollbarInit()
 }
 
-</script>
+refreshLayoutElements()
+layoutRuntime.removeWindowListeners?.forEach(remove => remove())
+window.addEventListener('scroll', onScroll, { passive: true })
+window.addEventListener('resize', onResize)
+layoutRuntime.removeWindowListeners = [
+	() => window.removeEventListener('scroll', onScroll),
+	() => window.removeEventListener('resize', onResize),
+]
 
+</script>

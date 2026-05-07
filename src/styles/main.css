@@ -116,7 +116,7 @@
 }
 
 h1, h2, h3, h4, h5, h6, p, a, blockquote, code, pre {
-  @apply transition;
+  transition: color 0.15s ease, background-color 0.15s ease;
 }
 
 .btn-card.disabled {

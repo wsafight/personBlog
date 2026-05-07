@@ -14,13 +14,8 @@ const className = Astro.props.class
 </div>
 
 <script>
-  const observer = new MutationObserver(addPreCopyButton);
-  observer.observe(document.body, { childList: true, subtree: true });
-  
-  function addPreCopyButton() {
-    observer.disconnect();
-    
-    let codeBlocks = Array.from(document.querySelectorAll("pre"));
+  function addPreCopyButton(root: Document | Element = document) {
+    let codeBlocks = Array.from(root.querySelectorAll('pre:not([data-copy-bound])'));
 
     for (let codeBlock of codeBlocks) {
       if (codeBlock.parentElement?.nodeName === "DIV" && codeBlock.parentElement?.classList.contains("code-block")) continue
@@ -31,6 +26,7 @@ const className = Astro.props.class
       let copyButton = document.createElement("button");
       copyButton.className = "copy-btn btn-regular-dark absolute active:scale-90 h-8 w-8 top-2 right-2 opacity-75 text-sm p-1.5 rounded-lg transition-all ease-in-out";
 
+      codeBlock.setAttribute("data-copy-bound", "");
       codeBlock.setAttribute("tabindex", "0");
       if (codeBlock.parentNode) {
         codeBlock.parentNode.insertBefore(wrapper, codeBlock);
@@ -58,7 +54,16 @@ const className = Astro.props.class
         }, 1000);
       });
     }
-    
-    observer.observe(document.body, { childList: true, subtree: true });
   }
+
+  const target = document.querySelector('.custom-md[data-pagefind-body]');
+  if (target) {
+    const observer = new MutationObserver(() => {
+      observer.disconnect();
+      addPreCopyButton(target);
+      observer.observe(target, { childList: true, subtree: true });
+    });
+    observer.observe(target, { childList: true, subtree: true });
+  }
+  addPreCopyButton(target ?? document);
 </script>

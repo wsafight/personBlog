@@ -144,14 +144,47 @@ const hasMath = remarkPluginFrontmatter.hasMath
 </MainGridLayout>
 
 <script>
+import photoSwipeCssUrl from 'photoswipe/style.css?url'
+
+type PostLightboxRuntimeState = {
+	photoSwipeStylesheetPromise?: Promise<void> | null
+	removeSwupEnableListener?: () => void
+	removeSwupListeners?: Array<() => void>
+}
+
+const postLightboxRuntime = ((window as Window & {
+	__postLightboxRuntime?: PostLightboxRuntimeState
+}).__postLightboxRuntime ??= {})
+const imageSelector = '.custom-md img, #post-cover img'
+
 let lightbox: import("photoswipe/lightbox").default | null = null
 let pswpModule: Promise<typeof import("photoswipe")> | null = null
+let initialized = false
+
+function ensurePhotoSwipeStyles() {
+	postLightboxRuntime.photoSwipeStylesheetPromise ??= new Promise(resolve => {
+		const existing = document.querySelector<HTMLLinkElement>('link[data-photoswipe-stylesheet]')
+		if (existing) {
+			resolve()
+			return
+		}
+
+		const link = document.createElement('link')
+		link.rel = 'stylesheet'
+		link.href = photoSwipeCssUrl
+		link.setAttribute('data-photoswipe-stylesheet', '')
+		link.onload = () => resolve()
+		link.onerror = () => resolve()
+		document.head.append(link)
+	})
+
+	return postLightboxRuntime.photoSwipeStylesheetPromise
+}
 
 async function createPhotoSwipe() {
 	const [{ default: PhotoSwipeLightbox }, _] = await Promise.all([
 		import("photoswipe/lightbox"),
-		// @ts-ignore
-		import("photoswipe/style.css"),
+		ensurePhotoSwipeStyles(),
 	])
 	if (!pswpModule) pswpModule = import("photoswipe")
 	lightbox = new PhotoSwipeLightbox({
@@ -179,28 +212,78 @@ async function createPhotoSwipe() {
 	})
 
 	lightbox.init()
+	return lightbox
+}
+
+function getInitialPoint(event: MouseEvent) {
+	if (!event.clientX && !event.clientY) {
+		return null
+	}
+	return { x: event.clientX, y: event.clientY }
+}
+
+function findGalleryFor(target: HTMLElement): { gallery: HTMLElement; index: number } | null {
+	const galleryRoot = target.closest<HTMLElement>('.custom-md, #post-cover')
+	if (!galleryRoot) return null
+	const items = Array.from(galleryRoot.querySelectorAll<HTMLImageElement>('img'))
+	const index = items.indexOf(target as HTMLImageElement)
+	if (index < 0) return null
+	return { gallery: galleryRoot, index }
+}
+
+async function openPhotoSwipeForImage(target: HTMLElement, event: MouseEvent) {
+	const currentLightbox = lightbox ?? await createPhotoSwipe()
+	const match = findGalleryFor(target)
+	if (!match) return
+	currentLightbox?.loadAndOpen(match.index, { gallery: match.gallery }, getInitialPoint(event))
+}
+
+function initLazyPhotoSwipe() {
+	if (initialized) return
+	initialized = true
+	document.querySelectorAll(imageSelector).forEach(img => {
+		img.addEventListener('click', async event => {
+			if (!(event instanceof MouseEvent)) return
+			if (!(event.currentTarget instanceof HTMLElement)) return
+			event.preventDefault()
+			await openPhotoSwipeForImage(event.currentTarget, event)
+		}, { once: true })
+	})
 }
 
 const setup = () => {
-	if (!lightbox) {
-		createPhotoSwipe()
-	}
-	window.swup.hooks.on("page:view", () => {
-		lightbox = null
-		createPhotoSwipe()
-	})
-	window.swup.hooks.on(
-		"content:replace",
-		() => {
+	postLightboxRuntime.removeSwupListeners?.forEach(remove => remove())
+	initLazyPhotoSwipe()
+	postLightboxRuntime.removeSwupListeners = [
+		window.swup.hooks.on("page:view", () => {
+			lightbox = null
+			initialized = false
+			initLazyPhotoSwipe()
+		}),
+		window.swup.hooks.on(
+			"content:replace",
+			() => {
 			lightbox?.destroy?.()
-		},
-		{ before: true },
-	)
+			lightbox = null
+			initialized = false
+			},
+			{ before: true },
+		),
+	]
 }
 
+postLightboxRuntime.removeSwupEnableListener?.()
 if (window.swup) {
 	setup()
 } else {
-	document.addEventListener("swup:enable", setup)
+	const onSwupEnable = () => {
+		postLightboxRuntime.removeSwupEnableListener?.()
+		postLightboxRuntime.removeSwupEnableListener = undefined
+		setup()
+	}
+	document.addEventListener("swup:enable", onSwupEnable)
+	postLightboxRuntime.removeSwupEnableListener = () => {
+		document.removeEventListener("swup:enable", onSwupEnable)
+	}
 }
 </script>

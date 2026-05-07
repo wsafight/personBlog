@@ -1,15 +1,24 @@
 <script lang="ts">
 import { getDefaultHue, getHue, setHue } from '@utils/setting-utils'
-import Icon from '@iconify/svelte'
+import { onMount } from 'svelte'
+import ResetIcon from '../icons/ResetIcon.svelte'
 
-let hue = $state(getHue())
-const defaultHue = getDefaultHue()
+let hue = $state(250)
+let defaultHue = $state(250)
+let initialized = $state(false)
+
+onMount(() => {
+  defaultHue = getDefaultHue()
+  hue = getHue()
+  initialized = true
+})
 
 function resetHue() {
-  hue = getDefaultHue()
+  hue = defaultHue
 }
 
 $effect(() => {
+  if (!initialized) return
   if (hue || hue === 0) {
     setHue(hue)
   }
@@ -26,7 +35,7 @@ $effect(() => {
             <button aria-label="Reset to Default" class="btn-regular w-7 h-7 rounded-md  active:scale-90"
                     class:opacity-0={hue === defaultHue} class:pointer-events-none={hue === defaultHue} onclick={resetHue}>
                 <div class="text-[var(--btn-content)]">
-                    <Icon icon="fa6-solid:arrow-rotate-left" class="text-[0.875rem]"></Icon>
+                    <ResetIcon />
                 </div>
             </button>
         </div>
