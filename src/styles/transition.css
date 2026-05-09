@@ -30,14 +30,8 @@ html.is-animating .transition-swup-fade {
 #navbar {
     animation-delay: 0ms
 }
-#sidebar {
-    animation-delay: 100ms
-}
 #swup-container {
     outline: none;
-}
-#content-wrapper {
-    animation-delay: var(--content-delay);
 }
 .footer {
     animation-delay: 250ms;
@@ -59,5 +53,10 @@ html.is-animating .transition-swup-fade {
         opacity: 1;
         animation: none;
     }
+}
+
+html.has-swup-visit .onload-animation {
+    opacity: 1;
+    animation: none;
 }
 

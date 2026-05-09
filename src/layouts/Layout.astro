@@ -414,6 +414,7 @@ const setup = () => {
 			scheduleCustomScrollbarInit(true, true)
 		}),
 		window.swup.hooks.on('visit:start', (visit: {to: {url: string}}) => {
+		document.documentElement.classList.add('has-swup-visit')
 		// change banner height immediately when a link is clicked
 		const bodyElement = document.querySelector('body')
 		if (!bodyElement) return

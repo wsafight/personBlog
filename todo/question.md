@@ -71,15 +71,7 @@
 
 视觉上就是“正文往上了两次”。
 
-文章页也有类似问题。虽然 `transition.css` 里有：
-
-```css
-#post-container .onload-animation {
-  animation-name: fade-in;
-}
-```
-
-它把文章内部元素改成只淡入，不再 `translateY`。但是外层 `#content-wrapper` 仍然会整体 `translateY`，所以文章页仍然存在外层上移。
+文章页也有类似问题。当前 `transition.css` 中并没有针对 `#post-container .onload-animation` 覆盖 `animation-name` 的规则，只有 `#post-container :nth-child(n)` 设置了 `animation-delay`。这意味着文章页内部元素仍然使用 `fade-in-up`（带 `translateY`），与外层 `#content-wrapper` 的 `translateY` 叠加，双重位移问题同样存在。
 
 ### 2. Swup 页面切换和首屏入场动画职责重叠
 
@@ -130,7 +122,7 @@ html.is-animating .transition-swup-fade {
 
 这和正文区域的问题一致：外层侧栏整体动一次，里面分类和标签再各自动一次。
 
-### 4. 当前全局样式入口存在断裂
+### 4. 全局样式入口不完整
 
 当前 `Layout.astro` 只导入了：
 
@@ -138,17 +130,16 @@ html.is-animating .transition-swup-fade {
 import '../styles/main.css'
 ```
 
-但项目中这些样式文件没有被全局导入：
+但项目中这些样式文件没有被任何地方显式导入：
 
-- `src/styles/variables.styl`
 - `src/styles/transition.css`
 - `src/styles/markdown.css`
-- `src/styles/markdown-extend.styl`
 - `src/styles/scrollbar.css`
+- `src/styles/photoswipe.css`
 
-这意味着当前源码里存在一个更基础的问题：大量类名和 CSS 变量在组件中被使用，但对应样式文件没有统一接入入口。
+这些文件内部使用了 `@reference "tailwindcss"` 来获取 Tailwind 的 `@apply` 能力，但 `@reference` 只是类型引用，不会让文件被包含到构建产物中。`main.css` 中的 `@source` 指令也只扫描模板文件提取类名，不会自动导入独立 CSS 文件。
 
-如果某个环境里动画确实生效，通常说明它加载到了这些样式；但从当前源码看，样式入口本身不完整。后续修动画时应该一并整理全局样式入口，否则不同环境可能表现不一致。
+如果当前环境中动画确实生效，说明存在某种隐式加载路径（可能是 Vite/Astro 的 CSS 自动发现机制），但从源码层面看没有显式的导入链。后续修动画时应该一并整理全局样式入口，将这些文件显式导入到 `Layout.astro` 或 `main.css` 中，否则不同构建环境可能表现不一致。
 
 ## 推荐改法
 
@@ -268,7 +259,7 @@ html.has-swup-visit .onload-animation {
 
 当前本地验证存在两个阻塞点：
 
-1. `bun run build` 失败，原因是当前 `node_modules` 中缺少 `@astrojs/rss`，但 `src/pages/rss.xml.ts` 引用了它。
+1. `bun run build` 失败，原因是当时 `node_modules` 中缺少 `@astrojs/rss`（`package.json` 中已声明该依赖，重新安装即可解决）。
 2. `bun run dev -- --host 127.0.0.1` 监听 `127.0.0.1:4321` 时返回 `EPERM`。
 
 这两个问题和动画根因无关，但会影响后续运行时验证。正式改代码前建议先恢复依赖和本地 dev server。
