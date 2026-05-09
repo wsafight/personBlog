@@ -17,7 +17,7 @@ JSX 这十几年承载了海量的生产代码——如果让 `if` / `for` / `tr
 
 ## 从 Ripple 到 TSRX
 
-几个月前我写过 [Ripple：一个现代的响应式 UI 框架](/posts/ripplejs/)——那个用 `track()` 和 `@` 让响应式变得极简的框架。
+几个月前我写过 [Ripple：一个现代的响应式 UI 框架](../ripplejs/)——那个用 `track()` 和 `@` 让响应式变得极简的框架。
 
 现在 Ripple 的作者 **Dominic Gannaway** 又推出了 [TSRX](https://tsrx.dev/)。
 
