@@ -105,6 +105,7 @@
 
 ### AI
 
+- [把一份前端 checklist 变成 AI 的 Skill：让 CR 不再靠记忆](https://wsafight.github.io/personBlog/posts/fe-checklist/)
 - [Qwopus3.5 — 用 Reasoning SFT 释放 27B 模型的推理潜力](https://wsafight.github.io/personBlog/posts/qwopus/)
 - [RTK：给 AI 编码助手瘦身的 Rust 代理](https://wsafight.github.io/personBlog/posts/rtx/)
 - [Vibe Kanban：AI 编码代理的编排利器](https://wsafight.github.io/personBlog/posts/vibe-kanban/)
