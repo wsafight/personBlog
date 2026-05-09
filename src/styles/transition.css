@@ -20,11 +20,6 @@ html.is-animating .transition-swup-fade {
     }
 }
 
-@keyframes fade-in {
-    0% { opacity: 0; }
-    100% { opacity: 1; }
-}
-
 /* Main components */
 .onload-animation {
     opacity: 0;
@@ -32,10 +27,6 @@ html.is-animating .transition-swup-fade {
     animation-fill-mode: forwards;
 }
 
-/* Post body paragraphs: fade only, no translate, to avoid perceived scroll jumps on load */
-#post-container .onload-animation {
-    animation-name: fade-in;
-}
 #navbar {
     animation-delay: 0ms
 }
