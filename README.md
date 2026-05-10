@@ -73,6 +73,7 @@
 
 ### Web 服务
 
+- [Drizzle 凭什么贴着 Go 跑——从设计哲学到热路径源码](https://wsafight.github.io/personBlog/posts/drizzle/)
 - [深入理解 Go Context：从原理到实战（基于 Go 1.26）](https://wsafight.github.io/personBlog/posts/go-context/)
 - [HonoX：下一代全栈 Web 框架深度解析](https://wsafight.github.io/personBlog/posts/honox/)
 - [Hono 深入使用指南：从入门到精通](https://wsafight.github.io/personBlog/posts/hono/)
