@@ -5,6 +5,16 @@ on:
   # Using a different branch name? Replace `main` with your branch’s name
   push:
     branches: [ master ]
+    paths:
+      - 'src/**'
+      - 'public/**'
+      - 'scripts/**'
+      - 'astro.config.mjs'
+      - 'svelte.config.js'
+      - 'tsconfig.json'
+      - 'package.json'
+      - 'bun.lock'
+      - '.github/workflows/deploy.yml'
   # Allows you to run this workflow manually from the Actions tab on GitHub.
   workflow_dispatch:
 
