@@ -4,7 +4,9 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
-  --font-sans: "Roboto", "sans-serif", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-sans:
+    "Roboto", "sans-serif", ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
 /* Source files for Tailwind to scan */
@@ -47,18 +49,15 @@
 }
 
 @utility meta-icon {
-  @apply w-8 h-8 transition rounded-md flex items-center justify-center bg-[var(--btn-regular-bg)]
-    text-[var(--btn-content)] mr-2;
+  @apply w-8 h-8 transition rounded-md flex items-center justify-center bg-[var(--btn-regular-bg)] text-[var(--btn-content)] mr-2;
 }
 
 @utility with-divider {
-  @apply before:content-['/'] before:ml-1.5 before:mr-1.5 before:text-[var(--meta-divider)] before:text-sm
-    before:font-medium before:first-of-type:hidden before:transition;
+  @apply before:content-['/'] before:ml-1.5 before:mr-1.5 before:text-[var(--meta-divider)] before:text-sm before:font-medium before:first-of-type:hidden before:transition;
 }
 
 @utility expand-animation {
-  @apply relative before:ease-out before:transition active:bg-none hover:before:bg-[var(--btn-plain-bg-hover)] active:before:bg-[var(--btn-plain-bg-active)] z-0
-    before:absolute before:rounded-[inherit] before:inset-0 before:scale-[0.85] hover:before:scale-100 before:-z-10;
+  @apply relative before:ease-out before:transition active:bg-none hover:before:bg-[var(--btn-plain-bg-hover)] active:before:bg-[var(--btn-plain-bg-active)] z-0 before:absolute before:rounded-[inherit] before:inset-0 before:scale-[0.85] hover:before:scale-100 before:-z-10;
 }
 
 @utility float-panel {
@@ -70,23 +69,19 @@
 }
 
 @utility btn-card {
-  @apply transition flex items-center justify-center bg-[var(--card-bg)] hover:bg-[var(--btn-card-bg-hover)]
-    active:bg-[var(--btn-card-bg-active)];
+  @apply transition flex items-center justify-center bg-[var(--card-bg)] hover:bg-[var(--btn-card-bg-hover)] active:bg-[var(--btn-card-bg-active)];
 }
 
 @utility btn-plain {
-  @apply transition relative flex items-center justify-center bg-none
-    text-black/75 hover:text-[var(--primary)] dark:text-white/75 dark:hover:text-[var(--primary)];
+  @apply transition relative flex items-center justify-center bg-none text-black/75 hover:text-[var(--primary)] dark:text-white/75 dark:hover:text-[var(--primary)];
 }
 
 @utility btn-regular {
-  @apply transition flex items-center justify-center bg-[var(--btn-regular-bg)] hover:bg-[var(--btn-regular-bg-hover)] active:bg-[var(--btn-regular-bg-active)]
-    text-[var(--btn-content)] dark:text-white/75;
+  @apply transition flex items-center justify-center bg-[var(--btn-regular-bg)] hover:bg-[var(--btn-regular-bg-hover)] active:bg-[var(--btn-regular-bg-active)] text-[var(--btn-content)] dark:text-white/75;
 }
 
 @utility link-underline {
-  @apply transition underline decoration-2 decoration-dashed decoration-[var(--link-underline)]
-    hover:decoration-[var(--link-hover)] active:decoration-[var(--link-active)] underline-offset-[0.25rem];
+  @apply transition underline decoration-2 decoration-dashed decoration-[var(--link-underline)] hover:decoration-[var(--link-hover)] active:decoration-[var(--link-active)] underline-offset-[0.25rem];
 }
 
 @utility toc-hide {
@@ -106,17 +101,27 @@
 }
 
 @utility btn-regular-dark {
-  @apply flex items-center justify-center
-    bg-[oklch(0.45_0.01_var(--hue))] hover:bg-[oklch(0.50_0.01_var(--hue))] active:bg-[oklch(0.55_0.01_var(--hue))]
-    dark:bg-[oklch(0.30_0.02_var(--hue))] dark:hover:bg-[oklch(0.35_0.03_var(--hue))] dark:active:bg-[oklch(0.40_0.03_var(--hue))];
+  @apply flex items-center justify-center bg-[oklch(0.45_0.01_var(--hue))] hover:bg-[oklch(0.50_0.01_var(--hue))] active:bg-[oklch(0.55_0.01_var(--hue))] dark:bg-[oklch(0.30_0.02_var(--hue))] dark:hover:bg-[oklch(0.35_0.03_var(--hue))] dark:active:bg-[oklch(0.40_0.03_var(--hue))];
 }
 
 @utility copy-btn-icon {
   @apply absolute top-1/2 left-1/2 transition -translate-x-1/2 -translate-y-1/2;
 }
 
-h1, h2, h3, h4, h5, h6, p, a, blockquote, code, pre {
-  transition: color 0.15s ease, background-color 0.15s ease;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+a,
+blockquote,
+code,
+pre {
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease;
 }
 
 .btn-card.disabled {
@@ -157,10 +162,17 @@ h1, h2, h3, h4, h5, h6, p, a, blockquote, code, pre {
 }
 
 #toc-inner-wrapper {
-  mask-image: linear-gradient(to bottom, transparent 0%, black 2rem, black calc(100% - 2rem), transparent 100%);
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0%,
+    black 2rem,
+    black calc(100% - 2rem),
+    transparent 100%
+  );
 }
 
-.custom-md img, #post-cover img {
+.custom-md img,
+#post-cover img {
   @apply cursor-zoom-in;
 }
 

@@ -43,8 +43,8 @@ const groups: { year: number; posts: typeof posts }[] = (() => {
 
   // convert the object to an array
   const groupedPostsArray = Object.keys(groupedPosts).map(key => ({
-    year: Number.parseInt(key),
-    posts: groupedPosts[Number.parseInt(key)],
+    year: Number.parseInt(key, 10),
+    posts: groupedPosts[Number.parseInt(key, 10)],
   }))
 
   // sort years by latest first

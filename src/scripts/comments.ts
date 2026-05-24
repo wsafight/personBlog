@@ -8,7 +8,17 @@ type CommentsRuntimeState = {
   observer?: IntersectionObserver | null
 }
 
-const commentsRuntime = ((window as any).__commentsRuntime ??= {}) as CommentsRuntimeState
+declare global {
+  interface Window {
+    __commentsRuntime?: CommentsRuntimeState
+  }
+}
+
+if (!window.__commentsRuntime) {
+  window.__commentsRuntime = {}
+}
+
+const commentsRuntime = window.__commentsRuntime
 
 function disconnectObserver() {
   commentsRuntime.observer?.disconnect()

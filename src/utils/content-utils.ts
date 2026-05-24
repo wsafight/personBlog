@@ -1,10 +1,8 @@
-import { getCollection } from 'astro:content'
+import { type CollectionEntry, getCollection } from 'astro:content'
 import type { BlogPostData } from '@/types/config'
 
-type BlogPostEntry = {
-  body: string
+export type BlogPostEntry = CollectionEntry<'posts'> & {
   data: BlogPostData
-  id: string
 }
 
 let allBlogPostsPromise: Promise<BlogPostEntry[]> | null = null
@@ -21,7 +19,7 @@ const getAllBlogPosts = async (): Promise<BlogPostEntry[]> => {
   allBlogPostsPromise = getCollection('posts', post => {
     const data = post.data as BlogPostData
     return isProduction ? data.draft !== true : true
-  }).then(blogPosts => blogPosts as unknown as BlogPostEntry[])
+  }).then(blogPosts => blogPosts as BlogPostEntry[])
 
   return allBlogPostsPromise
 }

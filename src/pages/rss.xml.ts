@@ -1,9 +1,9 @@
-import { siteConfig } from '@/config'
 import rss from '@astrojs/rss'
 import { getSortedPosts } from '@utils/content-utils'
 import type { APIContext } from 'astro'
 import MarkdownIt from 'markdown-it'
 import sanitizeHtml from 'sanitize-html'
+import { siteConfig } from '@/config'
 
 const parser = new MarkdownIt()
 
@@ -21,8 +21,8 @@ export async function GET(context: APIContext): Promise<Response> {
       // 优化：使用摘要而非全文，如果没有摘要则截取前 500 字符
       const content = post.data.description
         ? post.data.description
-        : sanitizeHtml(parser.render(post.body.slice(0, 500) + '...'), {
-            allowedTags: [],  // 移除所有 HTML 标签，只保留纯文本
+        : sanitizeHtml(parser.render(`${post.body?.slice(0, 500) ?? ''}...`), {
+            allowedTags: [], // 移除所有 HTML 标签，只保留纯文本
           })
 
       return {

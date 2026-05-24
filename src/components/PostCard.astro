@@ -1,23 +1,24 @@
 ---
-import path from 'path'
 import { render } from 'astro:content'
-import PostMetadata from './PostMeta.astro'
-import ImageWrapper from './misc/ImageWrapper.astro'
+import path from 'node:path'
 import { Icon } from 'astro-icon/components'
+import type { BlogPostEntry } from '../utils/content-utils'
 import { getDir } from '../utils/url-utils'
+import ImageWrapper from './misc/ImageWrapper.astro'
+import PostMetadata from './PostMeta.astro'
 
 interface Props {
   class?: string
-  entry: any
+  entry: BlogPostEntry
   title: string
   url: string
   published: Date
   updated?: Date
   tags: string[]
-  category: string
-  image: string
+  category?: string
+  image?: string
   description: string
-  draft: boolean
+  draft?: boolean
   style: string
 }
 const {

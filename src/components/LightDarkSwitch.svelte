@@ -1,5 +1,4 @@
 <script lang="ts">
-import type { LIGHT_DARK_MODE } from '@/types/config.ts'
 import { AUTO_MODE, DARK_MODE, LIGHT_MODE } from '@constants/constants.ts'
 import {
   applyThemeToDocument,
@@ -7,9 +6,10 @@ import {
   setTheme,
 } from '@utils/setting-utils.ts'
 import { onMount } from 'svelte'
-import SunIcon from './icons/SunIcon.svelte'
-import MoonIcon from './icons/MoonIcon.svelte'
+import type { LIGHT_DARK_MODE } from '@/types/config.ts'
 import AutoModeIcon from './icons/AutoModeIcon.svelte'
+import MoonIcon from './icons/MoonIcon.svelte'
+import SunIcon from './icons/SunIcon.svelte'
 
 const seq: LIGHT_DARK_MODE[] = [LIGHT_MODE, DARK_MODE, AUTO_MODE]
 let mode: LIGHT_DARK_MODE = $state(AUTO_MODE)

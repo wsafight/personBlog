@@ -1,7 +1,7 @@
 ---
-import { getCategoryList } from '@utils/content-utils'
-import MainGridLayout from '@layouts/MainGridLayout.astro'
 import ArchivePanel from '@components/ArchivePanel.astro'
+import MainGridLayout from '@layouts/MainGridLayout.astro'
+import { getCategoryList } from '@utils/content-utils'
 
 export async function getStaticPaths() {
   const categories = await getCategoryList()

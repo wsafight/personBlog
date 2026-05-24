@@ -72,7 +72,7 @@ class TableOfContents extends HTMLElement {
     }
 
     let start = i
-    let end = i
+    const end = i
     while (i >= 0 && this.active[i]) {
       start = i
       i--
@@ -206,7 +206,9 @@ class TableOfContents extends HTMLElement {
       this.init()
     }
 
-    proseElement.addEventListener('animationend', onAnimationEnd, { once: true })
+    proseElement.addEventListener('animationend', onAnimationEnd, {
+      once: true,
+    })
     this.cleanupAnimationListener = () => {
       proseElement.removeEventListener('animationend', onAnimationEnd)
     }
@@ -227,7 +229,9 @@ class TableOfContents extends HTMLElement {
     this.tocEl = document.getElementById('toc-inner-wrapper')
     if (!this.tocEl) return
 
-    this.tocEntries = Array.from(this.querySelectorAll<HTMLAnchorElement>('a[href^="#"]'))
+    this.tocEntries = Array.from(
+      this.querySelectorAll<HTMLAnchorElement>('a[href^="#"]'),
+    )
     if (this.tocEntries.length === 0) return
 
     this.initialized = true

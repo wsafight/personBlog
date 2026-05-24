@@ -1,8 +1,7 @@
 ---
-import MainGridLayout from '../layouts/MainGridLayout.astro'
-
 import { getEntry, render } from 'astro:content'
 import Markdown from '@components/misc/Markdown.astro'
+import MainGridLayout from '../layouts/MainGridLayout.astro'
 
 const productsPost = await getEntry('spec', 'products')
 if (!productsPost) {

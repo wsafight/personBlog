@@ -1,7 +1,7 @@
 <script lang="ts">
 import { onMount } from 'svelte'
-import SearchIcon from './icons/SearchIcon.svelte'
 import ChevronRightIcon from './icons/ChevronRightIcon.svelte'
+import SearchIcon from './icons/SearchIcon.svelte'
 
 const { pagefindScriptUrl = '/pagefind/pagefind.js' } = $props<{
   pagefindScriptUrl?: string
@@ -25,9 +25,7 @@ interface PagefindSearchResult {
 interface PagefindApi {
   options: (options: { excerptLength: number }) => Promise<void> | void
   init: () => Promise<void> | void
-  search: (
-    keyword: string,
-  ) => Promise<{ results: PagefindSearchResult[] }>
+  search: (keyword: string) => Promise<{ results: PagefindSearchResult[] }>
 }
 
 declare global {
@@ -46,7 +44,7 @@ let mobileSearchTimer: ReturnType<typeof setTimeout> | null = null
 const SEARCH_DEBOUNCE_MS = 180
 const MAX_SEARCH_RESULTS = 8
 
-let search = (keyword: string, isDesktop: boolean) => {}
+let search = (_keyword: string, _isDesktop: boolean) => {}
 
 function clearSearchTimer(isDesktop: boolean) {
   const timer = isDesktop ? desktopSearchTimer : mobileSearchTimer
@@ -182,8 +180,12 @@ const togglePanel = () => {
   panel?.classList.toggle('float-panel-closed')
 }
 
-$effect(() => { search(keywordDesktop, true) })
-$effect(() => { search(keywordMobile, false) })
+$effect(() => {
+  search(keywordDesktop, true)
+})
+$effect(() => {
+  search(keywordMobile, false)
+})
 </script>
 
 <!-- search bar for desktop view -->
