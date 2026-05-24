@@ -11,7 +11,7 @@ import { licenseConfig } from '@/config'
 import type { BlogPostData } from '@/types/config'
 import ImageWrapper from '../../components/misc/ImageWrapper.astro'
 import PostMetadata from '../../components/PostMeta.astro'
-import { profileConfig, siteConfig } from '../../config'
+import { profileConfig } from '../../config'
 import { formatDateToYYYYMMDD } from '../../utils/date-utils'
 
 type PostEntry = {
@@ -112,7 +112,7 @@ const hasMath = remarkPluginFrontmatter.hasMath
                 <Content />
             </Markdown>
 
-            {licenseConfig.enable && <License title={entry.data.title} slug={entry.id} pubDate={entry.data.published} class="mb-6 rounded-xl license-container onload-animation"></License>}
+            {licenseConfig.enable && <License title={entry.data.title} pubDate={entry.data.published} class="mb-6 rounded-xl license-container onload-animation"></License>}
 
         </div>
     </div>

@@ -101,16 +101,16 @@ initialArray // => [1, 2, 3]
 
 ### 可用命令
 
-- $push (类似于数组的 push,但是提供的是数组)
-- $unshift (类似于数组的 unshift,但是提供的是数组)
-- $splice (类似于数组的 splice, 但提供数组是一个数组,  $splice: [ [1, 1, 13, 14] ] ) 
+- `$push` (类似于数组的 push,但是提供的是数组)
+- `$unshift` (类似于数组的 unshift,但是提供的是数组)
+- `$splice` (类似于数组的 splice, 但提供数组是一个数组, `$splice: [ [1, 1, 13, 14] ]` )
 
 注意：*数组中的项目是顺序应用的，因此顺序很重要。目标的索引可能会在操作过程中发生变化。*
 
-- $toggle (字符串数组，切换目标对象的布尔数值)
-- $set (完全替换目标节点, 不考虑之前的数据，只用当前指令设置的数据)
-- $unset (字符串数组，移除 key 值(数组或者对象移除))
-- $merge (合并对象)
+- `$toggle` (字符串数组，切换目标对象的布尔数值)
+- `$set` (完全替换目标节点, 不考虑之前的数据，只用当前指令设置的数据)
+- `$unset` (字符串数组，移除 key 值(数组或者对象移除))
+- `$merge` (合并对象)
 
 ```ts
 const obj = {a: 5, b: 3};
@@ -571,4 +571,4 @@ const methods = state => {
 
 [Immer](https://immerjs.github.io/immer/docs/introduction) 
 
-[useMethods](https://github.com/pelotom/use-methods) 
+[useMethods](https://github.com/pelotom/use-methods)

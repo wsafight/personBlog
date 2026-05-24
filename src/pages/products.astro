@@ -18,6 +18,8 @@ const { Content } = await render(productsPost)
     <div class="card-base z-10 px-9 py-6 relative w-full">
       <Markdown class="mt-2">
         <script is:inline>
+          /** @type {(repo: string, uuid: string) => void} */
+          globalThis.getGitRepoInfoThenRenderCard;
           function nowSeconds() {
             return Date.now() / 1000;
           }
@@ -56,7 +58,7 @@ const { Content } = await render(productsPost)
               c?.classList.add("fetch-error");
             }
           }
-          function getGitRepoInfoThenRenderCard(repo, uuid) {
+          globalThis.getGitRepoInfoThenRenderCard = function (repo, uuid) {
             const repoCacheStr = localStorage.getItem(`git-${repo}`);
             let repoCache;
             if (repoCacheStr) {
@@ -99,7 +101,7 @@ const { Content } = await render(productsPost)
                 );
                 renderCard(formatData, uuid);
               });
-          }
+          };
         </script>
         <Content />
       </Markdown>

@@ -4,11 +4,10 @@ import { getSortedPosts } from '../utils/content-utils'
 import { getPostUrlBySlug } from '../utils/url-utils'
 
 interface Props {
-  keyword?: string
   tags?: string[]
   categories?: string[]
 }
-const { keyword, tags, categories } = Astro.props
+const { tags, categories } = Astro.props
 
 let posts = await getSortedPosts()
 

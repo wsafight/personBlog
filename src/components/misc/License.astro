@@ -5,12 +5,11 @@ import { formatDateToYYYYMMDD } from '../../utils/date-utils'
 
 interface Props {
   title: string
-  slug: string
   pubDate: Date
   class: string
 }
 
-const { title, slug, pubDate } = Astro.props
+const { title, pubDate } = Astro.props
 const className = Astro.props.class
 const profileConf = profileConfig
 const licenseConf = licenseConfig

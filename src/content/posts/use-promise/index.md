@@ -197,7 +197,7 @@ this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
 
 这样的话，不需要再界面上写 confirm 以及一些控制显隐的代码，基于配置(字符串) 触发 promise 开始显示后销毁。
 
-> 如果你完整引入了 Element，它会为 Vue.prototype 添加如下全局方法：$msgbox, $alert, $confirm 和 $prompt。因此在 Vue instance 中可以采用本页面中的方式调用 `MessageBox`。调用参数为：
+> 如果你完整引入了 Element，它会为 Vue.prototype 添加如下全局方法：`$msgbox`, `$alert`, `$confirm` 和 `$prompt`。因此在 Vue instance 中可以采用本页面中的方式调用 `MessageBox`。调用参数为：
 
 - `$msgbox(options)`
 - `$alert(message, title, options)` 或 `$alert(message, options)`
@@ -353,4 +353,3 @@ CancelToken 设定了取消的  promise 调用关系， xhr 在有请求配置 c
 [axios](https://github.com/axios/axios)
 
 [vue axios请求 取消上一个页面所有请求 批量取消请求](https://blog.csdn.net/qq_24833847/article/details/82454762)
-

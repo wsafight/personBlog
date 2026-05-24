@@ -72,7 +72,10 @@ export default defineConfig({
     sitemap(),
     Compress({
       CSS: true,
-      Image: true,
+      HTML: true,
+      JavaScript: false,
+      Image: false,
+      SVG: true,
       Action: {
         Passed: async () => true, // https://github.com/PlayForm/Compress/issues/376
       },
@@ -80,6 +83,18 @@ export default defineConfig({
     ...[compressBr && compressor({ gzip: false, brotli: true })],
   ],
   markdown: {
+    syntaxHighlight: {
+      type: "shiki",
+      excludeLangs: ["math", "caddy", "tsrx", "gritql", "grit", "slint"],
+    },
+    shikiConfig: {
+      langAlias: {
+        TS: "typescript",
+        TypeScript: "typescript",
+        conf: "ini",
+        wxml: "xml",
+      },
+    },
     remarkPlugins: [
       remarkMath,
       remarkHasMath,
