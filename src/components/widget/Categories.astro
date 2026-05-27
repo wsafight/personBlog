@@ -1,15 +1,17 @@
 ---
+import { Icon } from 'astro-icon/components'
 import { getCategoryList } from '../../utils/content-utils'
-import { getCategoryUrl } from '../../utils/url-utils'
+import { getCategoryUrl, url } from '../../utils/url-utils'
 import ButtonLink from '../control/ButtonLink.astro'
 import WidgetLayout from './WidgetLayout.astro'
 
 const categories = await getCategoryList()
 
-const COLLAPSED_HEIGHT = '7.5rem'
-const COLLAPSE_THRESHOLD = 5
+const SIDEBAR_CATEGORY_LIMIT = 3
 
-const isCollapsed = categories.length >= COLLAPSE_THRESHOLD
+const sidebarCategories = categories.slice(0, SIDEBAR_CATEGORY_LIMIT)
+const hasMoreCategories = categories.length > sidebarCategories.length
+const categoriesEndpoint = url('/sidebar-categories.json')
 
 interface Props {
   class?: string
@@ -19,16 +21,65 @@ const className = Astro.props.class
 const style = Astro.props.style
 ---
 
-<WidgetLayout name='分类' id="categories" isCollapsed={isCollapsed} collapsedHeight={COLLAPSED_HEIGHT}
-                class={className} style={style}
->
-    {categories.map((c) =>
-        <ButtonLink
-            url={getCategoryUrl(c.name)}
-            badge={String(c.count)}
-            label=`View all posts in the ${c.name} category`
-        >
-            {c.name}
-        </ButtonLink>
-    )}
+<WidgetLayout name='分类' id="categories" class={className} style={style}>
+    <lazy-category-list data-categories-endpoint={categoriesEndpoint}>
+        <div data-categories-list>
+            {sidebarCategories.map((c) =>
+                <ButtonLink
+                    url={getCategoryUrl(c.name)}
+                    badge={String(c.count)}
+                    label=`View all posts in the ${c.name} category`
+                >
+                    {c.name}
+                </ButtonLink>
+            )}
+        </div>
+        {hasMoreCategories && (
+            <button
+                type="button"
+                data-categories-load
+                aria-label="Load all categories"
+                class="btn-plain mt-2 h-9 w-full rounded-lg disabled:pointer-events-none disabled:opacity-70"
+            >
+                <div class="text-[var(--primary)] flex items-center justify-center gap-2 -translate-x-2">
+                    <Icon name="material-symbols:more-horiz" class="text-[1.75rem]" />
+                    <span data-categories-load-label>更多</span>
+                </div>
+            </button>
+        )}
+    </lazy-category-list>
 </WidgetLayout>
+
+<script>
+  class LazyCategoryList extends HTMLElement {
+    private isLoading = false
+
+    connectedCallback() {
+      const loadButton = this.querySelector<HTMLButtonElement>('[data-categories-load]')
+      if (!loadButton || loadButton.dataset.bound === 'true') return
+
+      loadButton.dataset.bound = 'true'
+      loadButton.addEventListener('click', event => {
+        event.preventDefault()
+        void this.loadAllCategories()
+      })
+    }
+
+    async loadAllCategories() {
+      if (this.isLoading || this.dataset.categoriesLoaded === 'true') return
+
+      this.isLoading = true
+      try {
+        const { renderSidebarCategories } = await import('../../scripts/sidebar-categories-loader')
+        const loaded = await renderSidebarCategories(this)
+        if (loaded) this.dataset.categoriesLoaded = 'true'
+      } finally {
+        this.isLoading = false
+      }
+    }
+  }
+
+  if (!customElements.get('lazy-category-list')) {
+    customElements.define('lazy-category-list', LazyCategoryList)
+  }
+</script>

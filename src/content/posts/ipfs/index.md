@@ -3,7 +3,7 @@ title: IPFS 简介
 published: 2025-10-05
 description: 深入解析 IPFS（星际文件系统）的技术原理，包括内容寻址、点对点传输、Merkle Tree 结构等核心概念，探讨其应用场景及优缺点。
 tags: [IPFS, 分布式]
-category: Web服务
+category: Web 服务
 draft: false
 ---
 
