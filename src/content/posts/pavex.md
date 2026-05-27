@@ -1,10 +1,17 @@
-# Pavex：把 Rust Web 框架从运行时库变成编译期生成器
+---
+title: Pavex：把 Rust Web 框架从运行时库变成编译期生成器
+published: 2026-05-27
+description: 介绍 Pavex 如何通过编译期代码生成重新定义 Rust Web 框架，将依赖图、生命周期和错误处理提前到构建阶段检查，对比 axum 和 Loco 的设计取舍。
+tags: [Rust, Web, Pavex]
+category: 后端工程
+draft: false
+---
 
 大多数 Rust Web 框架的心智模型很直接：写 handler、注册路由、配置中间件，然后把框架作为运行时库链接进最终二进制。axum、actix-web、rocket、warp 都属于这个范式。
 
 Pavex 走了另一条路：先用 Blueprint 描述应用结构，Pavex 在构建阶段分析蓝图，生成专属于当前应用的 Rust crate（如 `server_sdk`），再交给编译器完成最终构建。
 
-这让 Pavex 更像一个”Web 应用代码生成器”，而非传统框架——大量工作发生在构建阶段，而非请求到来时。
+这让 Pavex 更像一个"Web 应用代码生成器"，而非传统框架——大量工作发生在构建阶段，而非请求到来时。
 
 **版本说明**：本文基于 `pavex 0.2.10` / `pavex_cli 0.2.10` / `cargo-px 0.1.20`（2026-05-27）。当前版本以 `#[get]`、`#[PathParams]`、`Blueprint::routes(from![crate])` 这套 attribute-based API 为主。Pavex 仍处于 beta，完整 `pavex new` 流程需要 activation key。
 
