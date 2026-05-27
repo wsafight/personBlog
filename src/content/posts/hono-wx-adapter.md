@@ -1,10 +1,27 @@
-# Hono RPC 适配微信小程序：wx.request 与 WebSocket 落地指南
+---
+title: Hono RPC 适配微信小程序：wx.request 与 WebSocket 落地指南
+published: 2026-05-27
+description: 详解如何将 Hono RPC 客户端适配到微信小程序，用 wxFetch 包装 wx.request 保留端到端类型安全，用 WxWebSocket 包装 wx.connectSocket 连接 Hono 服务端 WebSocket，并覆盖 polyfill、坑点与生产级封装。
+tags: [Hono, 微信小程序, RPC, TypeScript, WebSocket]
+category: 前端
+draft: false
+---
 
-> 写在前面：Hono 是当下很优雅的"端到端类型安全"Web 框架之一，它的 `hc` RPC 客户端可以让前后端共享类型，写起来很顺。但问题来了：`hc` 默认按浏览器 / Node 的 Web API 设计，运行时会用到 `fetch`、`Headers`、`URLSearchParams`、`URL` 与 `WebSocket`；微信小程序的网络入口则是 `wx.request` 和 `wx.connectSocket`。本文给出一套可落地的适配方案：把小程序 API 包装成 Hono 客户端能使用的 fetch / WebSocket，同时补齐必要的 Web API polyfill，让小程序也能保留 Hono 的端到端类型安全。
+## 写在前面
+
+Hono 是当下很优雅的"端到端类型安全"Web 框架，它的 `hc` RPC 客户端可以让前后端共享类型。但问题来了：`hc` 默认基于浏览器/Node 的 Web API 设计，依赖 `fetch`、`Headers`、`URLSearchParams`、`URL` 与 `WebSocket`；而微信小程序的网络入口是 `wx.request` 和 `wx.connectSocket`。
+
+**本文方案：**
+- HTTP RPC：用 `hc + wxFetch` 保留类型安全
+- WebSocket：服务端用 Hono，客户端用 `WxWebSocket` 包装 `wx.connectSocket`
+
+这套方案已实测跑通，可减少小程序 Web API polyfill 的兼容成本。
 
 ---
 
-## 一、Hono RPC 工作原理（先理清）
+## 一、Hono RPC 工作原理
+
+### 基本用法
 
 ```ts
 // 服务端
@@ -18,16 +35,24 @@ const res = await client.users[':id'].$get({ param: { id: '1' } })
 const data = await res.json()
 ```
 
-关键点：
+### 核心机制
 
-1. `hc` 默认会调用 **全局 `fetch`** 来发请求；
-2. 返回的是标准 `Response` 对象（含 `.json()` / `.text()` / `.headers`）；
-3. 支持自定义 `fetch` 函数：`hc(url, { fetch: customFetch })` —— **这是适配小程序的核心钩子**。
+1. `hc` 默认调用**全局 `fetch`** 发送请求
+2. 返回标准 `Response` 对象（含 `.json()` / `.text()` / `.headers`）
+3. 支持自定义 `fetch`：`hc(url, { fetch: customFetch })` —— **这是适配小程序的核心钩子**
 
-但要注意：`customFetch` 只能替换最终发请求的那一步。Hono 客户端在构造请求时还会用到 `Headers` 和 `URLSearchParams`，`$url()` / `$ws()` 还会用到 `URL`。所以小程序里要同时处理两件事：
+### 适配要点
 
-- 用 `wx.request` 实现一个 fetch-like 函数；
-- 在入口处补齐 `Headers`、`URLSearchParams`、`URL` 等必要 polyfill。
+`customFetch` 只能替换发请求的步骤。Hono 客户端在构造请求时还会用到：
+
+- `Headers` 和 `URLSearchParams`（构造请求）
+- `URL`（`$url()` / `$ws()` 方法）
+
+所以小程序需要：
+
+1. 用 `wx.request` 实现 fetch-like 函数，注入给 `hc`
+2. 在入口补齐 `Headers`、`URLSearchParams`、`URL` 等 polyfill
+3. WebSocket 服务端用 Hono，客户端直接用 `WxWebSocket` 连接
 
 ---
 
@@ -38,27 +63,25 @@ const data = await res.json()
 | HTTP 请求 | `fetch` / `XMLHttpRequest` | `wx.request` |
 | WebSocket | 原生 `WebSocket` | `wx.connectSocket` |
 | URL / URLSearchParams | 原生支持 | 需要 polyfill |
-| Cookie | 浏览器自动维护 | 不会像浏览器一样自动维护 |
-| Headers 类 | 原生支持 | 需要 polyfill，或避免直接依赖 |
+| Cookie | 浏览器自动维护 | 不会自动维护 |
+| Headers 类 | 原生支持 | 需要 polyfill |
 | 文件上传 | `FormData` / `fetch` | `wx.uploadFile` |
 | AbortController | ✅ | 部分支持（`requestTask.abort`） |
 
-简单说：**不是只补一个 fetch 就结束了，Hono 客户端依赖的几个 Web API 也要一起考虑。**
+**核心结论：** 不是只补一个 fetch 就结束了，Hono 客户端依赖的几个 Web API 也要一起考虑。
 
-### 适用范围
+### 本文覆盖范围
 
-本文代码主要覆盖这类场景：
+**支持的场景：**
+- Hono RPC 的 JSON API：`json`、`query`、`param`、`header`
+- Bearer Token 等显式鉴权
+- 普通 JSON / text 响应
+- Hono 服务端 WebSocket 与小程序端 `wx.connectSocket` 连接
 
-- Hono RPC 的 JSON API：`json`、`query`、`param`、`header`；
-- Bearer Token 这类显式鉴权；
-- 普通 JSON / text 响应；
-- Hono WebSocket helper 的 `$ws()` 客户端连接。
-
-本文不把下面这些内容塞进同一个 `wxFetch`：
-
-- 文件上传、`multipart/form-data`、`File`、`Blob`：用 `wx.uploadFile` 单独封装；
-- 流式响应、`ReadableStream`、SSE：微信小程序网络模型和浏览器 Fetch 不一样，单独设计；
-- 完整 Fetch 标准：这里做的是 Hono RPC 可用的最小兼容层。
+**不包含的场景：**
+- 文件上传、`multipart/form-data`、`File`、`Blob` → 用 `wx.uploadFile` 单独封装
+- 流式响应、`ReadableStream`、SSE → 微信小程序网络模型不同，需单独设计
+- 完整 Fetch 标准 → 这里只做 Hono RPC 可用的最小兼容层
 
 ---
 
@@ -66,20 +89,40 @@ const data = await res.json()
 
 ### 1. 入口先补必要 polyfill
 
-`fetch` 注入只解决"怎么发请求"。Hono 客户端在构造请求时还会使用 `Headers`，在 `$url()` / `$ws()` 等路径上还可能使用 `URL` 和 `URLSearchParams`。所以建议在小程序入口最早处补齐这些全局对象：
+`fetch` 注入只解决"怎么发请求"。Hono 客户端在构造请求时还会使用 `Headers`、`URLSearchParams`、`URL`，所以建议在小程序入口最早处补齐这些全局对象。
+
+**注意：** 小程序里不能只判断 `typeof globalThis.URL !== 'undefined'`。实测可能存在一个不可 `new` 的 `URL`，导致 Hono 客户端内部触发 `URL is not a constructor`。更稳妥的做法是确认它能被构造：
 
 ```ts
-// app.ts
-// 下面是示意：具体 polyfill 包要选你的小程序构建链能正常打包的版本。
-import { Headers } from 'headers-polyfill'
-import 'url-polyfill'
+const canConstruct = (value: unknown, sample: string) => {
+  if (typeof value !== 'function') return false
 
-if (typeof globalThis.Headers === 'undefined') {
-  ;(globalThis as any).Headers = Headers
+  try {
+    new (value as new (input: string) => unknown)(sample)
+    return true
+  } catch {
+    return false
+  }
+}
+
+export const installWebPolyfills = () => {
+  const target = globalThis as any
+
+  if (!canConstruct(target.Headers, 'x-test=1')) {
+    target.Headers = MiniHeaders
+  }
+
+  if (!canConstruct(target.URLSearchParams, 'a=1')) {
+    target.URLSearchParams = MiniURLSearchParams
+  }
+
+  if (!canConstruct(target.URL, 'http://example.test')) {
+    target.URL = MiniURL
+  }
 }
 ```
 
-如果你的框架或基础库已经提供了 `URL` / `URLSearchParams` / `Headers`，这一步可以只做存在性检查，不要重复覆盖。
+`MiniHeaders`、`MiniURLSearchParams`、`MiniURL` 不需要实现完整 Web 标准，只要覆盖 Hono RPC 用到的 `.set()`、`.append()`、`.forEach()`、`.toString()`、`.searchParams` 等能力即可。如果构建链能稳定打包成熟 polyfill，也可以直接使用第三方包。
 
 ### 2. 类型对齐
 
@@ -87,7 +130,7 @@ if (typeof globalThis.Headers === 'undefined') {
 type FetchLike = typeof fetch
 ```
 
-如果你的 `tsconfig` 没有启用 DOM 类型，也可以在本地定义一个更窄的类型，并在传给 `hc` 时做一次类型断言。运行时重点不是类型名，而是这个函数要返回带 `.json()` / `.text()` / `.headers.get()` 的 Response-like 对象。
+如果 `tsconfig` 没有启用 DOM 类型，也可以在本地定义一个更窄的类型，并在传给 `hc` 时做类型断言。运行时重点不是类型名，而是这个函数要返回带 `.json()` / `.text()` / `.headers.get()` 的 Response-like 对象。
 
 ### 3. JSON API 最小实现
 
@@ -128,30 +171,25 @@ const setHeaderIfMissing = (
 }
 
 /**
- * 将 wx.request 适配为 Hono RPC 可用的 fetch-like 接口。
- * 这版覆盖 JSON / text API；文件上传请用 wx.uploadFile 单独封装。
+ * 将 wx.request 适配为 Hono RPC 可用的 fetch-like 接口
+ * 覆盖 JSON / text API；文件上传请用 wx.uploadFile 单独封装
  */
 export const wxFetch: FetchLike = (input, init = {}) => {
   return new Promise((resolve, reject) => {
     const url =
       typeof input === 'string'
         ? input
-        : 'url' in input
-        ? input.url
-        : String(input)
+        : typeof URL !== 'undefined' && input instanceof URL
+          ? input.toString()
+          : 'url' in input
+            ? input.url
+            : String(input)
     if (!url) {
       reject(new TypeError('wxFetch only supports string URL or Request-like input'))
       return
     }
 
-    const method = (init.method || 'GET').toUpperCase() as
-      | 'GET'
-      | 'POST'
-      | 'PUT'
-      | 'PATCH'
-      | 'DELETE'
-      | 'OPTIONS'
-      | 'HEAD'
+    const method = (init.method || 'GET').toUpperCase()
 
     const headers = normalizeHeaders(init.headers)
 
@@ -185,7 +223,7 @@ export const wxFetch: FetchLike = (input, init = {}) => {
       method,
       header: headers,
       data,
-      // 不让 wx.request 自动 JSON.parse，保持 Response.json() 的行为边界。
+      // 不让 wx.request 自动 JSON.parse，保持 Response.json() 的行为边界
       dataType: '其他',
       responseType: 'text',
       success: (res) => {
@@ -201,12 +239,11 @@ export const wxFetch: FetchLike = (input, init = {}) => {
             get: (key: string) => responseHeaders[key.toLowerCase()] ?? null,
             forEach: (cb: (v: string, k: string) => void) =>
               Object.entries(responseHeaders).forEach(([k, v]) => cb(v, k)),
+            has: (key: string) => responseHeaders[key.toLowerCase()] !== undefined,
           },
           json: async () => JSON.parse(body),
           text: async () => body,
-          arrayBuffer: async () => {
-            throw new Error('arrayBuffer not supported in wxFetch')
-          },
+          arrayBuffer: async () => new TextEncoder().encode(body).buffer,
           clone() {
             return response
           },
@@ -218,13 +255,26 @@ export const wxFetch: FetchLike = (input, init = {}) => {
     })
 
     if (init.signal) {
-      init.signal.addEventListener('abort', () => task.abort())
+      if (init.signal.aborted) {
+        task.abort()
+        reject(new DOMException('The operation was aborted.', 'AbortError'))
+        return
+      }
+
+      init.signal.addEventListener(
+        'abort',
+        () => {
+          task.abort()
+          reject(new DOMException('The operation was aborted.', 'AbortError'))
+        },
+        { once: true },
+      )
     }
   })
 }
 ```
 
-这段代码刻意没有支持 `FormData`、`Blob`、流式响应和二进制响应。把它写窄，反而更不容易在生产里误用。
+这段代码刻意不支持 `FormData`、`Blob`、流式响应和二进制响应。把它写窄，反而更不容易在生产里误用。
 
 ### 4. 注入到 hc
 
@@ -249,16 +299,20 @@ const res = await api.users[':id'].$get({ param: { id: '1' } })
 const user = await res.json()
 ```
 
-✅ 类型安全
-✅ 复用服务端类型
-✅ JSON RPC 业务代码基本不用关心小程序网络 API
+**优势：**
+- ✅ 类型安全
+- ✅ 复用服务端类型
+- ✅ JSON RPC 业务代码基本不用关心小程序网络 API
 
 ---
 
 ## 四、wxFetch 的实战坑点
 
 ### 坑 1：`Content-Type` 大小写敏感
-HTTP header 名本来就应该大小写不敏感，但现实里有些自写服务端代码会写出 `headers['Content-Type']` 这种大小写敏感逻辑。适配层建议统一转成小写，服务端也应该用框架提供的 header API 读取：
+
+HTTP header 名本来应该大小写不敏感，但现实里有些自写服务端代码会写出 `headers['Content-Type']` 这种大小写敏感逻辑。
+
+**解决方案：** 适配层统一转成小写，服务端用框架提供的 header API 读取：
 
 ```ts
 const normalize = (h: Record<string, string>) =>
@@ -266,35 +320,48 @@ const normalize = (h: Record<string, string>) =>
 ```
 
 ### 坑 2：URL 拼接
-不要假设小程序运行时一定有浏览器完整的 `URL` / `URLSearchParams`。Hono 客户端的 `$url()`、`$ws()` 以及查询参数处理都可能触达这些 API，稳妥做法是在入口处做 polyfill：
+
+不要假设小程序运行时一定有浏览器完整的 `URL` / `URLSearchParams`。Hono 客户端的 `$url()` 以及查询参数处理都可能触达这些 API。
+
+**解决方案：** 在入口处做 polyfill，并确认它真的可以被构造：
 
 ```ts
-// 在小程序入口最早处
-if (typeof globalThis.URL === 'undefined') {
-  // 注入你项目选用的 URL polyfill
-}
-if (typeof globalThis.URLSearchParams === 'undefined') {
-  // 注入 URLSearchParams polyfill
+const target = globalThis as any
+
+try {
+  new target.URL('http://example.test')
+} catch {
+  target.URL = MiniURL
 }
 ```
 
+WebSocket 如果走 `hc().$ws()` 也会触达 `new URL(...)`。为了减少这类兼容点，小程序端更推荐直接 `new WxWebSocket(wsUrl)`。
+
 ### 坑 3：域名白名单
-`request合法域名` 必须在公众平台后台配置，**自定义 fetch 改变不了这一限制**。开发期可勾选"不校验合法域名"，但真机和线上环境仍要按微信规则配置 HTTPS 域名。
+
+`request合法域名` 必须在公众平台后台配置，**自定义 fetch 改变不了这一限制**。
+
+- 开发期：可勾选"不校验合法域名"
+- 真机和线上：仍要按微信规则配置 HTTPS 域名
 
 ### 坑 4：超时 & 取消
-`wx.request` 默认 60 秒，可通过 `wx.request({ timeout })` 控制。
-要支持 fetch 的 `AbortController`，必须保留 `requestTask`，监听 `signal` 的 abort 事件并调用 `task.abort()`（上方代码已实现）。
+
+- `wx.request` 默认 60 秒，可通过 `wx.request({ timeout })` 控制
+- 要支持 fetch 的 `AbortController`，必须保留 `requestTask`，监听 `signal` 的 abort 事件并调用 `task.abort()`（上方代码已实现）
 
 ### 坑 5：Cookie 与跨端鉴权
+
 小程序不会像浏览器一样自动维护站点 Cookie。可以手动保存 `Set-Cookie` 再透传 `Cookie` header，但跨端 API 更推荐统一成 **`Authorization: Bearer xxx`** 的 token 模式，把 token 存在 `wx.getStorageSync` 里。
 
 ---
 
-## 五、WxWebSocket：把 wx.connectSocket 包装成 WebSocket-like
+## 五、WebSocket：后端用 Hono，前端用 WxWebSocket
 
-Hono 提供了 WebSocket helper（`hono/ws`），客户端常用 `hc(...).ws.$ws()` 拿到一个 `WebSocket`。但小程序的 WebSocket 是**回调式 `SocketTask`**，连接数、后台保活和域名配置都受微信平台限制，跟标准浏览器 WebSocket 接口差异较大。
+Hono 服务端可以继续使用自己的 WebSocket helper，例如 Bun 运行时下的 `upgradeWebSocket`。小程序端则建议直接用一个 **`WxWebSocket`** 类包装 `wx.connectSocket`，业务层拿到的仍然是接近浏览器 `WebSocket` 的对象。
 
-我们需要写一个 **`WxWebSocket`** 类，让它符合 Hono 客户端需要的 WebSocket 最小接口，再传给 `hc`。
+**为什么不用 `hc(...).xxx.$ws()`？**
+
+Hono 客户端的 `$ws()` 内部会构造 `new URL(...)`，而微信小程序运行时的 `URL` / `URLSearchParams` 兼容性并不总是可靠。HTTP RPC 走 `hc + wxFetch` 的收益很大；WebSocket 本质上还是一条消息通道，直接 `new WxWebSocket(url)` 更稳，用户和大部分业务代码无感。
 
 ### 1. WebSocket-like 类的最小子集
 
@@ -317,9 +384,8 @@ interface StandardWS {
 ```ts
 /**
  * 微信小程序 WebSocket 适配类
- *
- * 把 wx.connectSocket / SocketTask 包装成 WebSocket-like 接口，
- * 让 Hono 的 hc.$ws() 可以直接使用。
+ * 把 wx.connectSocket / SocketTask 包装成 WebSocket-like 接口
+ * 用来连接 Hono 服务端暴露的 ws:// / wss:// 地址
  */
 export class WxWebSocket implements StandardWS {
   static CONNECTING = 0
@@ -333,12 +399,11 @@ export class WxWebSocket implements StandardWS {
   onerror: ((ev: any) => void) | null = null
   onclose: ((ev: any) => void) | null = null
 
-  private listeners: Record<string, Set<Function>> = {}
+  private listeners: Partial<Record<'open' | 'message' | 'error' | 'close', Set<Function>>> = {}
   private task: WechatMiniprogram.SocketTask
 
   /**
    * 构造一个 WxWebSocket 实例，自动建立连接
-   *
    * @param url       WebSocket 完整地址；线上必须是 wss://，且要配置 socket 合法域名
    * @param protocols 子协议（可选）
    */
@@ -372,7 +437,7 @@ export class WxWebSocket implements StandardWS {
   }
 
   /**
-   * 发送消息。尽量保持 WebSocket 原语义，业务层自己决定是否 JSON.stringify。
+   * 发送消息。尽量保持 WebSocket 原语义，业务层自己决定是否 JSON.stringify
    */
   send(data: string | ArrayBufferLike | ArrayBufferView) {
     if (this.readyState !== WxWebSocket.OPEN) {
@@ -384,19 +449,21 @@ export class WxWebSocket implements StandardWS {
   /**
    * 主动关闭连接
    */
-  close() {
+  close(code?: number, reason?: string) {
     this.readyState = WxWebSocket.CLOSING
-    this.task.close({})
+    this.task.close({ code, reason })
   }
 
   /**
    * 事件订阅接口（兼容 ws.addEventListener('message', ...) 写法）
    */
   addEventListener(type: string, listener: Function) {
+    if (!this.isKnownType(type)) return
     ;(this.listeners[type] ||= new Set()).add(listener)
   }
 
   removeEventListener(type: string, listener: Function) {
+    if (!this.isKnownType(type)) return
     this.listeners[type]?.delete(listener)
   }
 
@@ -406,48 +473,70 @@ export class WxWebSocket implements StandardWS {
   private dispatch(type: string, ev: any) {
     const handler = (this as any)[`on${type}`]
     handler?.(ev)
-    this.listeners[type]?.forEach((fn) => fn(ev))
+    if (this.isKnownType(type)) {
+      this.listeners[type]?.forEach((fn) => fn(ev))
+    }
+  }
+
+  private isKnownType(type: string): type is 'open' | 'message' | 'error' | 'close' {
+    return type === 'open' || type === 'message' || type === 'error' || type === 'close'
   }
 }
 ```
 
-### 3. 注入到 hc
+### 3. Hono 服务端写法
 
-如果你使用的 Hono 版本支持 `webSocket` option，优先显式注入，不要污染全局：
+Bun 运行时可以直接使用 `hono/bun` 的 `upgradeWebSocket` 和 `websocket`：
 
 ```ts
-import { hc } from 'hono/client'
-import type { AppType } from '@server/index'
-import { wxFetch } from './wx-fetch'
-import { WxWebSocket } from './wx-ws'
+// server/app.ts
+import { Hono } from 'hono'
+import { upgradeWebSocket } from 'hono/bun'
 
-export const api = hc<AppType>('https://api.example.com', {
-  fetch: wxFetch,
-  webSocket: (url, protocols) =>
-    new WxWebSocket(url, protocols) as unknown as WebSocket,
+export const app = new Hono().get(
+  '/ws',
+  upgradeWebSocket(() => ({
+    onOpen(_event, ws) {
+      ws.send(JSON.stringify({ type: 'open', message: 'connected' }))
+    },
+    onMessage(event, ws) {
+      ws.send(
+        JSON.stringify({
+          type: 'echo',
+          message: typeof event.data === 'string' ? event.data : '[binary]',
+        }),
+      )
+    },
+  })),
+)
+```
+
+```ts
+// server/index.ts
+import { websocket } from 'hono/bun'
+import { app } from './app'
+
+Bun.serve({
+  port: 8787,
+  fetch: app.fetch,
+  websocket,
 })
 ```
 
-如果你的 Hono 版本没有 `webSocket` option，再退回全局 polyfill：
+### 4. 小程序端连接
 
 ```ts
-// app.ts，小程序入口最早处
-import { WxWebSocket } from './utils/wx-ws'
+import { WxWebSocket } from './wx-ws'
 
-if (typeof globalThis.WebSocket === 'undefined') {
-  ;(globalThis as any).WebSocket = WxWebSocket
-}
-```
+const ws = new WxWebSocket('ws://127.0.0.1:8787/ws')
 
-之后业务代码：
-
-```ts
-const ws = api.chat.$ws()
 ws.addEventListener('open', () => ws.send(JSON.stringify({ type: 'hello' })))
 ws.addEventListener('message', (e) => console.log('recv', e.data))
 ```
 
-WebSocket 线上还要配置 `socket合法域名`。开发者工具里关闭域名校验只能解决本地调试，不能代表真机和线上环境。
+如果确实希望小程序端也写成 `api.chat.$ws()`，理论上可以给 `hc` 注入 `webSocket` option。但这条路要求小程序端有可靠的 `URL` / `URLSearchParams` polyfill。实测里更推荐直接创建 `WxWebSocket`，少一个兼容层。
+
+**注意：** WebSocket 线上还要配置 `socket合法域名`。开发者工具里关闭域名校验只能解决本地调试，不能代表真机和线上环境。
 
 ---
 
@@ -474,24 +563,22 @@ import { WxWebSocket } from './wx-ws'
 const BASE_URL = __DEV__
   ? 'https://dev-api.example.test'
   : 'https://api.example.com'
-/**
- * 全局唯一的 API 客户端实例
- * - fetch: 小程序适配层
- * - webSocket: 小程序 SocketTask 适配层
- * - headers: 请求级动态注入 token、版本号
- */
+
 export const api = hc<AppType>(BASE_URL, {
   fetch: wxFetch,
-  webSocket: (url, protocols) =>
-    new WxWebSocket(url, protocols) as unknown as WebSocket,
   headers: () => ({
     Authorization: `Bearer ${wx.getStorageSync('token') || ''}`,
     'X-App-Version': wx.getAccountInfoSync().miniProgram.version,
   }),
 })
+
+export const createSocket = (path = '/ws') => {
+  const wsBaseUrl = BASE_URL.replace(/^http/, 'ws')
+  return new WxWebSocket(`${wsBaseUrl}${path}`)
+}
 ```
 
-这里没有直接写 `http://localhost:8787`，因为真机里的 `localhost` 指的是手机自己，不是你的电脑。开发期可以用局域网 IP、内网穿透、反向代理，或者只在微信开发者工具里配合"不校验合法域名"调试。
+**注意：** 这里没有直接写 `http://localhost:8787`，因为真机里的 `localhost` 指的是手机自己，不是你的电脑。开发期可以用局域网 IP、内网穿透、反向代理，或者只在微信开发者工具里配合"不校验合法域名"调试。
 
 ---
 
@@ -559,9 +646,6 @@ export class ReconnectingWxWS {
 ### 2. wxFetch 拦截器（401 自动刷新 token）
 
 ```ts
-/**
- * 包装 wxFetch，加入 401 自动刷新 token 的拦截逻辑
- */
 export const authFetch: FetchLike = async (input, init) => {
   const res = await wxFetch(input, init)
   if (res.status === 401) {
@@ -578,13 +662,13 @@ export const authFetch: FetchLike = async (input, init) => {
 
 | 问题 | 原因 | 解决 |
 | --- | --- | --- |
-| 请求报 `URL is not defined` | `$url()` / `$ws()` 或 query 处理触达了 URL API | 在入口注入 `URL` / `URLSearchParams` polyfill |
+| 请求报 `URL is not defined` | `$url()` 或 query 处理触达了 URL API | 在入口注入 `URL` / `URLSearchParams` polyfill |
+| WebSocket 报 `URL is not a constructor` | 小程序运行时的 `URL` 不完整，而 `hc().$ws()` 内部会 `new URL(...)` | 小程序端直接用 `new WxWebSocket(wsUrl)`，或换成可靠 URL polyfill |
 | 请求报 `Headers is not defined` | Hono 客户端构造请求时用了 `Headers` | 在入口注入 `Headers` polyfill |
 | 类型推导丢失 | 服务端没 `export type AppType` | 服务端用 `typeof app` 导出 |
 | header 大小写问题 | 小程序自动小写 | 适配层统一小写 |
 | 文件上传失败 | wx.request 不支持 multipart | 改用 `wx.uploadFile` 单独包装 |
 | WebSocket 连接被拒 | 未配置 `socket合法域名` 或协议不是 `wss://` | 在公众平台后台配置 socket 域名 |
-| `webSocket` option 类型报错 | Hono 版本较旧或类型定义不包含该 option | 升级 Hono，或先用全局 `WebSocket` polyfill |
 | WebSocket 后台断开 | 小程序后台生命周期限制 | 监听 `App.onShow` 后按业务需要重连 |
 | Cookie 不生效 | 小程序不会自动维护浏览器式 Cookie | 优先用 token + storage，必要时手动转发 Cookie |
 | 真机访问不了 `localhost` | 真机的 localhost 是手机自己 | 用局域网 IP、代理、内网穿透或开发者工具调试 |
@@ -603,21 +687,21 @@ export const authFetch: FetchLike = async (input, init) => {
 | uni-app | `uni.request` | `uni.connectSocket` |
 
 把上面 `wxFetch` / `WxWebSocket` 中的 `wx.xxx` 换成对应平台 API 后，主体思路不变。但不同框架对请求返回值、取消任务、WebSocket 事件对象的封装略有差异，适配层还是要单独测一遍。
+
 **服务端类型和大部分 `hc` 调用代码可以复用。** 这正是适配层的价值。
 
 ---
 
-## 十、一句话总结
+## 十、总结
 
-> **Hono RPC 适配小程序的本质 = 补齐必要 Web API polyfill，把 `wx.request` 包装成 fetch-like，把 `wx.connectSocket` 包装成 WebSocket-like，再注入给 `hc`。**
+> **Hono RPC 适配小程序的本质 = HTTP 用 `hc + wxFetch` 保留类型安全，WebSocket 服务端继续用 Hono，小程序端用 `WxWebSocket` 包装 `wx.connectSocket` 直连。**
 
 只要这些边界处理好：
 
-✅ JSON RPC 业务代码可以和浏览器侧高度一致
-✅ 端到端类型安全可以保留
-✅ 后续切换到 Taro / uni-app 时主要改适配层
-✅ 可叠加重连、心跳、token 刷新等生产级能力
+- ✅ JSON RPC 业务代码可以和浏览器侧高度一致
+- ✅ 端到端类型安全可以保留
+- ✅ WebSocket 服务端仍然留在 Hono 路由体系里
+- ✅ 后续切换到 Taro / uni-app 时主要改适配层
+- ✅ 可叠加重连、心跳、token 刷新等生产级能力
 
-这是我认为比较干净、可维护的小程序请求层方案。如果你正在用 Hono 写后端，又有小程序入口，可以优先按这套结构落地，再按实际业务补上传、流式响应、鉴权刷新等专项能力。
-
-> 后续我会继续写 "Hono + Cloudflare Workers + 小程序全栈实战"，把鉴权、推送、文件上传、灰度发布等都串起来，敬请期待。
+如果你正在用 Hono 写后端，又有小程序入口，可以优先按这套结构落地：HTTP API 最大化复用 Hono RPC 类型能力，WebSocket 选择更贴近小程序运行时的直连方式，再按实际业务补上传、流式响应、鉴权刷新等专项能力。

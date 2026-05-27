@@ -50,3 +50,5 @@ bundle-analysis.html
 # Testing
 coverage/
 .nyc_output/
+
+temp/
