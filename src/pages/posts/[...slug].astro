@@ -51,6 +51,7 @@ const jsonLd = {
   // TODO include cover image here
 }
 const hasMath = remarkPluginFrontmatter.hasMath
+const hasCodeFeatures = /(^|\n)(```|~~~)|<pre\b/i.test(entry.body ?? '')
 ---
 <MainGridLayout banner={entry.data.image} title={entry.data.title} description={entry.data.description} lang='zh-CN' setOGTypeArticle={true} headings={headings}>
     <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
@@ -108,7 +109,7 @@ const hasMath = remarkPluginFrontmatter.hasMath
             }
 
 
-            <Markdown class="mb-6 markdown-content onload-animation">
+            <Markdown class="mb-6 markdown-content onload-animation" enableCodeFeatures={hasCodeFeatures}>
                 <Content />
             </Markdown>
 

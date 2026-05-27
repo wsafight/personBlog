@@ -1,5 +1,6 @@
 ---
 
+import { Icon } from 'astro-icon/components'
 import { getTagList } from '../../utils/content-utils'
 import { url } from '../../utils/url-utils'
 import ButtonTag from '../control/ButtonTag.astro'
@@ -7,9 +8,14 @@ import WidgetLayout from './WidgetLayout.astro'
 
 const tags = await getTagList()
 
-const COLLAPSED_HEIGHT = '7.5rem'
+const SIDEBAR_TAG_LIMIT = 24
 
-const isCollapsed = tags.length >= 20
+const sidebarTags = [...tags]
+  .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
+  .slice(0, SIDEBAR_TAG_LIMIT)
+const hasMoreTags = tags.length > sidebarTags.length
+const tagsEndpoint = url('/sidebar-tags.json')
+const tagBase = url('/archive/tag/')
 
 interface Props {
   class?: string
@@ -18,12 +24,61 @@ interface Props {
 const className = Astro.props.class
 const style = Astro.props.style
 ---
-<WidgetLayout name='标签' id="tags" isCollapsed={isCollapsed} collapsedHeight={COLLAPSED_HEIGHT} class={className} style={style}>
-    <div class="flex gap-2 flex-wrap">
-        {tags.map(t => (
-            <ButtonTag href={url(`/archive/tag/${t.name}/`)} label={`View all posts with the ${t.name} tag`}>
-                {t.name}
-            </ButtonTag>
-        ))}
-    </div>
+<WidgetLayout name='标签' id="tags" class={className} style={style}>
+    <lazy-tag-list data-tags-endpoint={tagsEndpoint} data-tag-base={tagBase}>
+        <div class="flex gap-2 flex-wrap" data-tags-list>
+            {sidebarTags.map(t => (
+                <ButtonTag href={url(`/archive/tag/${t.name}/`)} label={`View all posts with the ${t.name} tag`}>
+                    {t.name}
+                </ButtonTag>
+            ))}
+        </div>
+        {hasMoreTags && (
+            <button
+                type="button"
+                data-tags-load
+                aria-label="Load all tags"
+                class="btn-plain mt-3 h-9 w-full rounded-lg disabled:pointer-events-none disabled:opacity-70"
+            >
+                <div class="text-[var(--primary)] flex items-center justify-center gap-2 -translate-x-2">
+                    <Icon name="material-symbols:more-horiz" class="text-[1.75rem]" />
+                    <span data-tags-load-label>更多</span>
+                </div>
+            </button>
+        )}
+    </lazy-tag-list>
 </WidgetLayout>
+
+<script>
+  class LazyTagList extends HTMLElement {
+    private isLoading = false
+
+    connectedCallback() {
+      const loadButton = this.querySelector<HTMLButtonElement>('[data-tags-load]')
+      if (!loadButton || loadButton.dataset.bound === 'true') return
+
+      loadButton.dataset.bound = 'true'
+      loadButton.addEventListener('click', event => {
+        event.preventDefault()
+        void this.loadAllTags()
+      })
+    }
+
+    async loadAllTags() {
+      if (this.isLoading || this.dataset.tagsLoaded === 'true') return
+
+      this.isLoading = true
+      try {
+        const { renderSidebarTags } = await import('../../scripts/sidebar-tags-loader')
+        const loaded = await renderSidebarTags(this)
+        if (loaded) this.dataset.tagsLoaded = 'true'
+      } finally {
+        this.isLoading = false
+      }
+    }
+  }
+
+  if (!customElements.get('lazy-tag-list')) {
+    customElements.define('lazy-tag-list', LazyTagList)
+  }
+</script>

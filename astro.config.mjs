@@ -52,6 +52,7 @@ export default defineConfig({
           "edit-calendar-outline-rounded",
           "book-2-outline-rounded",
           "tag-rounded",
+          "search-rounded",
           "notes-rounded",
           "schedule-outline-rounded",
           "chevron-left-rounded",

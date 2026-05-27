@@ -1,0 +1,111 @@
+---
+import { Icon } from 'astro-icon/components'
+
+interface Props {
+  pagefindScriptUrl?: string
+}
+
+const { pagefindScriptUrl = '/pagefind/pagefind.js' } = Astro.props
+---
+<lazy-search data-pagefind-script-url={pagefindScriptUrl}>
+    <div id="search-bar" class="hidden lg:flex transition-all items-center h-11 mr-2 rounded-lg
+      bg-black/[0.04] hover:bg-black/[0.06] focus-within:bg-black/[0.06]
+      dark:bg-white/5 dark:hover:bg-white/10 dark:focus-within:bg-white/10
+">
+        <Icon name="material-symbols:search-rounded" class="absolute pointer-events-none ml-3 transition my-auto text-black/30 dark:text-white/30 text-[1.25rem]" />
+        <input
+            data-search-input="desktop"
+            placeholder="搜索"
+            autocomplete="off"
+            class="transition-all pl-10 text-sm bg-transparent outline-0
+         h-full w-40 active:w-60 focus:w-60 text-black/50 dark:text-white/50"
+        />
+    </div>
+
+    <button
+        data-search-toggle
+        aria-label="Search Panel"
+        id="search-switch"
+        class="btn-plain scale-animation lg:!hidden rounded-lg w-11 h-11 active:scale-90"
+    >
+        <Icon name="material-symbols:search-rounded" class="text-[1.25rem]" />
+    </button>
+
+    <div id="search-panel" class="float-panel float-panel-closed search-panel absolute md:w-[30rem]
+top-20 left-4 md:left-[unset] right-4 shadow-2xl rounded-2xl p-2">
+        <div id="search-bar-inside" class="flex relative lg:hidden transition-all items-center h-11 rounded-xl
+      bg-black/[0.04] hover:bg-black/[0.06] focus-within:bg-black/[0.06]
+      dark:bg-white/5 dark:hover:bg-white/10 dark:focus-within:bg-white/10
+  ">
+            <Icon name="material-symbols:search-rounded" class="absolute pointer-events-none ml-3 transition my-auto text-black/30 dark:text-white/30 text-[1.25rem]" />
+            <input
+                data-search-input="mobile"
+                placeholder="Search"
+                autocomplete="off"
+                class="pl-10 absolute inset-0 text-sm bg-transparent outline-0
+               focus:w-60 text-black/50 dark:text-white/50"
+            />
+        </div>
+
+        <div data-search-results></div>
+    </div>
+</lazy-search>
+
+<script>
+  type SearchController = import('../scripts/search-loader').SearchController
+
+  class LazySearch extends HTMLElement {
+    private controller: SearchController | null = null
+    private loadPromise: Promise<SearchController> | null = null
+
+    connectedCallback() {
+      if (this.dataset.bound === 'true') return
+      this.dataset.bound = 'true'
+
+      this.querySelector('[data-search-toggle]')?.addEventListener('click', event => {
+        event.preventDefault()
+        void this.loadAndRun('toggle')
+      })
+
+      this.querySelectorAll<HTMLInputElement>('[data-search-input]').forEach(input => {
+        input.addEventListener('focus', () => {
+          void this.loadAndRun('focus', input)
+        })
+        input.addEventListener('input', () => {
+          void this.loadAndRun('input', input)
+        })
+      })
+    }
+
+    private async loadAndRun(reason: 'toggle' | 'focus' | 'input', input?: HTMLInputElement) {
+      const controller = await this.loadController()
+      if (reason === 'toggle') {
+        controller.togglePanel()
+        return
+      }
+      controller.handleInput(input)
+    }
+
+    private async loadController() {
+      if (this.controller) return this.controller
+      this.loadPromise ??= import('../scripts/search-loader').then(module => module.mountSearch(this))
+      this.controller = await this.loadPromise
+      return this.controller
+    }
+  }
+
+  if (!customElements.get('lazy-search')) {
+    customElements.define('lazy-search', LazySearch)
+  }
+</script>
+
+<style>
+  input:focus {
+    outline: 0;
+  }
+
+  .search-panel {
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+  }
+</style>
