@@ -1,4 +1,11 @@
-# 抢跑 200ms：Feed 冷启场景下的 UDP 预热方案
+---
+title: 抢跑 200ms：Feed 冷启场景下的 UDP 预热方案
+published: 2026-05-27
+description: 深入解析高流量 Feed 应用冷启优化方案：通过 UDP 预热在网络库初始化前提前通知服务端开始计算，实现首屏延迟优化。涵盖 fingerprint 规范化、cache/inflight 三态复用、安全防重放、多容器部署、竞态处理等完整实现细节与踩坑经验。
+tags: [性能优化, 推荐系统, UDP, 网络协议, 架构设计, QUIC, 冷启动, 缓存策略]
+category: 架构与系统设计
+draft: false
+---
 
 > 某高流量 Feed 应用冷启首屏 P50 耗时 ~900ms，拆解后发现其中 200~300ms 花在"等服务端从零开始算推荐"——而这段时间客户端其实什么都没干，只是在等网络库初始化。如果能在这个空窗期提前通知服务端开算，首屏体感延迟就能砍掉一大截。
 >
@@ -10,13 +17,13 @@
 
 **UDP 预热（pre-warming）**：客户端在正式 Feed 请求前，发送 `fp + 最小必要参数 + 签名元信息` 到服务端；服务端按同一套规则重算 `fp`，提前计算候选集、特征、粗排结果或最终响应，并写入短 TTL cache / inflight（即"正在计算中"的 Promise，后续相同请求可以短等复用）。
 
-它不是 TCP/TLS pre-connect，也不是主链路依赖。UDP 包可以丢、可以晚到、可以命不中；命不中时 HTTP 必须透明回退正常计算。
+它不是 TCP/TLS pre-connect，也不是主链路依赖。UDP 包可以丢、可以晚到、可以未命中；未命中时 HTTP 必须透明回退正常计算。
 
 一句话：**UDP 只抢冷启最早的通知包，后续正式请求仍然走 HTTP 主链路。**
 
 下文为了表达简单，`HTTP` 指正式 Feed 请求这一条主链路；它可以是 HTTP/2，也可以是 HTTP/3 over QUIC。
 
-## 先给结论
+### 四个关键边界
 
 读这套方案时，先抓住四个边界：
 
@@ -162,15 +169,18 @@ UDP 预热包应该保持很小，但不要假设 JSON 形态天然能小于 200
 
 ## 落地关键点
 
+> 下表列出规范要求和常见坑；每个坑的真实现象和根因见后面的[踩坑实录](#踩坑实录)。
+
 | 关键点 | 要求 | 常见坑 |
 |---|---|---|
-| fingerprint | 客户端、UDP server、HTTP server 使用同一套字段规范 | 直接对业务 JSON hash，跨语言顺序不一致 |
-| 参数白名单 | 只放影响预热结果的字段 | 把 `requestId / nonce / clientTime` 放进 key |
+| fingerprint | 客户端、UDP server、HTTP server 使用同一套字段规范；hash 算法建议用 SHA-256 截断前 16 字节（128-bit），xxhash64 仅适合内部低安全场景 | 直接对业务 JSON hash，跨语言顺序不一致 → 命中率 5% |
+| 参数白名单 | 只放影响预热结果的字段 | 把 `requestId / nonce / clientTime` 放进 key → 命中率 0% |
 | 规范化 | 固定键顺序、空值规则、数字精度、大小写、数组语义 | 看起来参数一样，hash 实际不同 |
-| TTL | cache 通常 1~5s；inflight 要有超时，且尽量取消或隔离真实下游任务 | TTL 太短白做，太长返回旧结果；只 `Promise.race` 超时但下游继续跑 |
+| TTL | cache 通常 2~5s（根据实际 HTTP 到达时间分布调整）；inflight 要有超时，且尽量取消或隔离真实下游任务 | TTL 500ms 白做；TTL 10s 返回旧结果；只 `Promise.race` 超时但下游继续跑 |
 | freshness | HTTP 命中后仍做权限、AB、过滤、用户行为校验 | 预热结果覆盖了最新用户意图 |
-| 资源隔离 | 预热 worker、队列、下游 budget 低于 HTTP 主链路 | 预热和正式请求抢资源 |
+| 资源隔离 | 预热 worker、队列、下游 budget 独立于 HTTP 主链路 | 预热和正式请求抢资源 → 高峰期 P99 劣化 |
 | 安全 | UDP 不放 token 和敏感字段；用短期 ticket / HMAC / 时间窗 / nonce | 把 `fp` 当鉴权依据 |
+| 多容器 | 共享状态层（Redis）或按 fp 一致性路由 | UDP 打到容器 A，HTTP 打到容器 B → 命中率 ~15% |
 
 参数规范化的原则很简单：**先定义字段规范，再做确定性序列化，不要直接拿业务对象 JSON hash**。
 
@@ -292,7 +302,7 @@ UDP 和 HTTP 是两条独立链路，顺序没有保证。
 两态 `cache hit / miss` 不够，服务端要做三态：
 
 1. **cache hit**：直接复用。
-2. **inflight exists**：HTTP 短等同一个 Promise，建议 `MAX_WAIT_MS = 10~50ms`。
+2. **inflight exists**：HTTP 短等同一个 Promise，建议 `MAX_WAIT_MS = 10~50ms`；等太久会让主请求 P99 劣化，等太短则预热刚算完就超时。30ms 是一个经验起点，应根据实际 P50 服务端计算耗时和主请求 SLA 调整。
 3. **nothing**：HTTP 自己成为 owner，注册可复用计算并正常返回。
 
 核心伪代码：
@@ -304,6 +314,35 @@ return computeByHttpAndRegisterInflight(fp);
 ```
 
 UDP 侧也要先查 `cache / inflight`，已有就退出，避免重复算。
+
+**完整示例**：
+
+```ts
+// HTTP 主请求
+async function handleFeedRequest(fp: string, params: FeedParams) {
+  const cached = cache.get(fp);
+  if (cached && canUse(params, cached)) {
+    return buildFeed(params, cached);
+  }
+
+  const pending = inflight.get(fp);
+  if (pending) {
+    const result = await waitFor(pending, MAX_WAIT_MS);
+    if (result.ok && canUse(params, result.value)) {
+      return buildFeed(params, result.value);
+    }
+    return computeFinalFeed(params);
+  }
+
+  return computeAndRegister(fp, params);
+}
+
+// UDP 预热
+function handlePrewarmPacket(fp: string, params: PrewarmParams) {
+  if (cache.has(fp) || inflight.has(fp)) return;
+  getOrComputePrewarmArtifact(fp, params).catch(() => {});
+}
+```
 
 如果是多容器部署，不能只依赖容器内本地 `Map`：UDP 可能打到 A 容器，HTTP 打到 B 容器，B 看不到 A 的 cache / inflight。常见做法有两种：
 
@@ -371,7 +410,7 @@ type PrewarmScalar = string | number | boolean;
 type PrewarmParamValue = PrewarmScalar | PrewarmScalar[];
 type PrewarmParams = Partial<Record<string, PrewarmParamValue>>;
 const CACHE_TTL_MS = 3000;
-const MAX_WAIT_MS = 30;
+const MAX_WAIT_MS = 30; // 经验起点，应根据 P50 服务端计算耗时和主请求 SLA 调整（建议范围 10~50ms）
 const PREWARM_COMPUTE_TIMEOUT_MS = 500;
 const MAX_PREWARM_PACKET_BYTES = 1200;
 const MAX_FINGERPRINT_LENGTH = 128;
@@ -488,7 +527,7 @@ function canonicalize(params: PrewarmParams): string {
 }
 
 function fingerprint(params: PrewarmParams): string {
-  // 生产环境建议用 SHA-256 截断前 16 字节；这里用 xxhash64 只表达 key 生成流程。
+  // 生产环境建议用 SHA-256 截断前 16 字节（128-bit）；xxhash64 仅适合内部低安全场景。
   return xxhash64(canonicalize(params));
 }
 
@@ -496,8 +535,10 @@ function canUsePrewarmArtifact(
   _params: FeedParams,
   _artifact: PrewarmArtifact,
 ): boolean {
-  // 这里应校验用户身份、AB 版本、过滤策略、freshness、近期用户行为等。
-  return true;
+  // 占位实现，生产环境必须替换。
+  // 需校验：用户身份（viewerKey 是否匹配）、AB 版本、过滤策略、freshness、近期用户行为等。
+  // 任何一项不通过都应返回 false，让 HTTP 走正式计算。
+  throw new Error('canUsePrewarmArtifact must be implemented before production use');
 }
 
 function canAttemptPrewarm(_params: FeedParams): boolean {
@@ -665,7 +706,11 @@ http.get('/feed', async (req) => {
 });
 ```
 
-上面假设 `computePrewarmArtifact()` 产出的就是主链路可复用的昂贵中间结果，`buildFeedFromArtifact()` 能在这个 artifact 基础上完成最终响应。HTTP 在 cache miss 且无 inflight 时通过 `computeMainPathAndPublishReusableArtifact()` 成为 owner，先注册同一个可复用计算；如果已有 inflight 但短等失败、计算报错或最终校验不通过，就不再重新 join 同一个 pending，而是透明回退 `computeFinalFeed()`。后台 UDP 预热有独立的 `PREWARM_COMPUTE_TIMEOUT_MS`，预热计算必须主动响应 `AbortSignal` 或由队列 / worker budget 兜底取消；HTTP 主请求则应由正式请求自己的 deadline / cancellation 控制，避免先等预热超时再重复算主链路。
+上面假设 `computePrewarmArtifact()` 产出的是主链路可复用的昂贵中间结果，`buildFeedFromArtifact()` 能在此基础上完成最终响应。
+
+HTTP 在 cache miss 且无 inflight 时，通过 `computeMainPathAndPublishReusableArtifact()` 成为 owner，注册同一个可复用计算。如果已有 inflight 但短等失败、计算报错或最终校验不通过，就不再重新 join 同一个 pending，而是透明回退 `computeFinalFeed()`。
+
+超时控制上，UDP 预热有独立的 `PREWARM_COMPUTE_TIMEOUT_MS`，预热计算必须主动响应 `AbortSignal` 或由队列 / worker budget 兜底取消。HTTP 主请求应由自己的 deadline / cancellation 控制，不要先等预热超时再重复算主链路。
 
 如果主链路无法从中间 artifact 构建最终响应，就不要为了预热先算 artifact 再算正式结果。此时应把 `inflight` 改成更轻量的 owner / singleflight 标记，让 UDP 后到时退出，同时 HTTP 直接走正式计算。
 
@@ -673,16 +718,16 @@ http.get('/feed', async (req) => {
 
 ## 踩坑实录
 
-以下是实际落地中容易遇到的问题：
+落地关键点列出了规范，这里补充每个坑的真实现象和根因，方便排查时对号入座。
 
-| 坑 | 现象 | 根因 | 解法 |
-|---|---|---|---|
-| fingerprint 跨语言不一致 | 命中率只有 5%，服务端日志显示 fp 全部 miss | 客户端 Swift 和服务端 Go 对 JSON key 排序规则不同，导致同一参数算出不同 hash | 不要依赖 JSON 序列化顺序，改用确定性的 key=value 拼接 |
-| TTL 设太短 | 白算率 > 80%，预热算完了但 HTTP 还没到 | cache TTL 设了 500ms，而冷启网络库初始化 + QUIC 握手经常超过 1s | 根据实际 HTTP 到达时间分布设 TTL，通常 2~5s |
-| TTL 设太长 | 用户反馈"刷新没变化" | cache 10s，用户快速下拉刷新时命中了上一次的旧结果 | 刷新场景单独设短 TTL 或跳过 cache |
-| 预热和主链路抢资源 | 高峰期 P99 劣化 | 预热没有独立限流，和正式请求共享同一个推荐服务线程池 | 预热走独立 worker pool，设 budget 上限 |
-| 多容器 cache 不共享 | 命中率远低于预期（~15%） | UDP 打到容器 A，HTTP 打到容器 B，B 看不到 A 的 cache | 引入 Redis 共享 cache 或按 fp 一致性路由 |
-| 把 requestId 放进 fp | 命中率 0% | 每次请求的 requestId 不同，fp 永远不一样 | 严格白名单，只放影响推荐结果的字段 |
+| 坑 | 现象 | 根因 |
+|---|---|---|
+| fingerprint 跨语言不一致 | 命中率只有 5%，服务端日志显示 fp 全部 miss | 客户端 Swift 和服务端 Go 对 JSON key 排序规则不同，导致同一参数算出不同 hash |
+| TTL 设太短 | 白算率 > 80%，预热算完了但 HTTP 还没到 | cache TTL 设了 500ms，而冷启网络库初始化 + QUIC 握手经常超过 1s |
+| TTL 设太长 | 用户反馈"刷新没变化" | cache 10s，用户快速下拉刷新时命中了上一次的旧结果 |
+| 预热和主链路抢资源 | 高峰期 P99 劣化 | 预热没有独立限流，和正式请求共享同一个推荐服务线程池 |
+| 多容器 cache 不共享 | 命中率远低于预期（~15%） | UDP 打到容器 A，HTTP 打到容器 B，B 看不到 A 的 cache |
+| 把 requestId 放进 fp | 命中率 0% | 每次请求的 requestId 不同，fp 永远不一样 |
 
 ---
 
@@ -724,4 +769,5 @@ http.get('/feed', async (req) => {
 
 > **UDP 预热 = 用一个廉价的网络通知，让服务端比客户端早一步开始干活。**
 
-它适合"重计算 + 参数可预测 + 用户正在等"的 Feed 场景。真正的难点不是发 UDP，而是让这次抢跑能被 HTTP 正确复用，并且在命不中、重复算、弱网、资源压力和 freshness 校验失败时都能稳定降级。
+它适合"重计算 + 参数可预测 + 用户正在等"的 Feed 场景。真正的难点不是发 UDP，而是让这次抢跑能被 HTTP 正确复用，并且在未命中、重复算、弱网、资源压力和 freshness 校验失败时都能稳定降级。
+
