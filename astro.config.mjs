@@ -1,8 +1,6 @@
 import sitemap from "@astrojs/sitemap";
-import svelte from "@astrojs/svelte";
 import tailwindcss from "@tailwindcss/vite";
 import swup from "@swup/astro";
-import compressor from "astro-compressor";
 import Compress from "astro-compress";
 import icon from "astro-icon";
 import { defineConfig } from "astro/config";
@@ -21,7 +19,6 @@ import { remarkExcerpt } from "./src/plugins/remark-excerpt.js";
 import { remarkHasMath } from "./src/plugins/remark-has-math.js";
 import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs";
 
-const compressBr = process.env.COMPRESS_BR === "true";
 // https://astro.build/config
 export default defineConfig({
   site: "https://wsafight.github.io",
@@ -69,7 +66,6 @@ export default defineConfig({
         "fa6-solid": ["arrow-up-right-from-square"],
       },
     }),
-    svelte(),
     sitemap(),
     Compress({
       CSS: true,
@@ -81,7 +77,6 @@ export default defineConfig({
         Passed: async () => true, // https://github.com/PlayForm/Compress/issues/376
       },
     }),
-    ...[compressBr && compressor({ gzip: false, brotli: true })],
   ],
   markdown: {
     syntaxHighlight: {

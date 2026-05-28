@@ -10,7 +10,7 @@
 }
 
 /* Source files for Tailwind to scan */
-@source "../**/*.{astro,html,js,jsx,svelte,ts,tsx,vue,mjs}";
+@source "../**/*.{astro,html,js,jsx,ts,tsx,vue,mjs}";
 
 @utility link {
   @apply transition rounded-md p-1 -m-1 expand-animation;
