@@ -1,3 +1,4 @@
+import { unified } from "@astrojs/markdown-remark";
 import sitemap from "@astrojs/sitemap";
 import tailwindcss from "@tailwindcss/vite";
 import swup from "@swup/astro";
@@ -79,6 +80,9 @@ export default defineConfig({
     }),
   ],
   markdown: {
+    // Astro v7 默认使用 Sätteri 渲染 Markdown,这里显式切换回 unified 管道,
+    // 以便继续复用现有的 remark / rehype 插件(KaTeX、Admonition、Autolink 等)。
+    processor: unified(),
     syntaxHighlight: {
       type: "shiki",
       excludeLangs: ["math", "caddy", "tsrx", "gritql", "grit", "slint"],
