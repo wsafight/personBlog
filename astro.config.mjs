@@ -178,10 +178,7 @@ export default defineConfig({
         ],
       ],
     }),
-    syntaxHighlight: {
-      type: "shiki",
-      excludeLangs: ["math", "caddy", "tsrx", "gritql", "grit", "slint"],
-    },
+    syntaxHighlight: "prism",
     shikiConfig: {
       langAlias: {
         TS: "typescript",
