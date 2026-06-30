@@ -5,7 +5,9 @@ import swup from "@swup/astro";
 import Compress from "astro-compress";
 import icon from "astro-icon";
 import { defineConfig } from "astro/config";
+import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
+import { gzipSync } from "node:zlib";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeComponents from "rehype-components"; /* Render the custom directive content */
 import rehypeKatex from "rehype-katex";
@@ -22,50 +24,39 @@ import { remarkHasMath } from "./src/plugins/remark-has-math.js";
 import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs";
 
 const dataStorePath = fileURLToPath(new URL("./.astro/data-store.json", import.meta.url));
-const dataStoreVirtualId = "astro:data-layer-content";
-const resolvedDataStoreVirtualId = `\0${dataStoreVirtualId}`;
-
-function externalDataStoreModule() {
-  return {
-    code: `
-import { readFileSync } from "node:fs";
-
-export default JSON.parse(readFileSync(${JSON.stringify(dataStorePath)}, "utf-8"));
-`,
-    map: { mappings: "" },
-  };
-}
 
 function externalAstroContentDataStore() {
   return {
     name: "external-astro-content-data-store",
     apply: "build",
     enforce: "pre",
-    configResolved(config) {
-      const astroContentPlugin = config.plugins.find(
-        plugin => plugin.name === "astro-content-virtual-mod-plugin",
-      );
-      const load = astroContentPlugin?.load;
-      if (!load || typeof load !== "object" || typeof load.handler !== "function") {
-        return;
-      }
-
-      const originalHandler = load.handler;
-      load.handler = function (id, ...args) {
-        if (id === resolvedDataStoreVirtualId) {
-          return externalDataStoreModule();
-        }
-        return originalHandler.call(this, id, ...args);
-      };
-    },
     resolveId(id) {
-      if (id === dataStoreVirtualId) {
-        return resolvedDataStoreVirtualId;
+      if (id === "astro:data-layer-content") {
+        return "\0astro:data-layer-content";
       }
     },
     load(id) {
-      if (id === resolvedDataStoreVirtualId) {
-        return externalDataStoreModule();
+      if (id === "\0astro:data-layer-content") {
+        if (!existsSync(dataStorePath)) {
+          return {
+            code: "export default new Map()",
+            map: { mappings: "" },
+          };
+        }
+
+        const jsonData = readFileSync(dataStorePath, "utf-8");
+        JSON.parse(jsonData);
+        const compressedData = gzipSync(jsonData).toString("base64");
+
+        return {
+          code: `
+import { Buffer } from "node:buffer";
+import { gunzipSync } from "node:zlib";
+
+export default JSON.parse(gunzipSync(Buffer.from(${JSON.stringify(compressedData)}, "base64")).toString("utf-8"));
+`,
+          map: { mappings: "" },
+        };
       }
     },
   };
