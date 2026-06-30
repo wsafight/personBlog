@@ -82,7 +82,58 @@ export default defineConfig({
   markdown: {
     // Astro v7 默认使用 Sätteri 渲染 Markdown,这里显式切换回 unified 管道,
     // 以便继续复用现有的 remark / rehype 插件(KaTeX、Admonition、Autolink 等)。
-    processor: unified(),
+    processor: unified({
+      remarkPlugins: [
+        remarkMath,
+        remarkHasMath,
+        remarkReadingTime,
+        remarkExcerpt,
+        remarkGithubAdmonitionsToDirectives,
+        remarkDirective,
+        remarkSectionize,
+        parseDirectiveNode,
+      ],
+      rehypePlugins: [
+        rehypeKatex,
+        rehypeSlug,
+        [
+          rehypeComponents,
+          {
+            components: {
+              github: GithubCardComponent,
+              note: (x, y) => AdmonitionComponent(x, y, "note"),
+              tip: (x, y) => AdmonitionComponent(x, y, "tip"),
+              important: (x, y) => AdmonitionComponent(x, y, "important"),
+              caution: (x, y) => AdmonitionComponent(x, y, "caution"),
+              warning: (x, y) => AdmonitionComponent(x, y, "warning"),
+            },
+          },
+        ],
+        [
+          rehypeAutolinkHeadings,
+          {
+            behavior: "append",
+            properties: {
+              className: ["anchor"],
+            },
+            content: {
+              type: "element",
+              tagName: "span",
+              properties: {
+                className: ["anchor-icon"],
+                "data-pagefind-ignore": true,
+              },
+              children: [
+                {
+                  type: "text",
+                  value: "#",
+                },
+              ],
+            },
+          },
+        ],
+      ],
+    }),
     syntaxHighlight: {
       type: "shiki",
       excludeLangs: ["math", "caddy", "tsrx", "gritql", "grit", "slint"],
@@ -95,56 +146,6 @@ export default defineConfig({
         wxml: "xml",
       },
     },
-    remarkPlugins: [
-      remarkMath,
-      remarkHasMath,
-      remarkReadingTime,
-      remarkExcerpt,
-      remarkGithubAdmonitionsToDirectives,
-      remarkDirective,
-      remarkSectionize,
-      parseDirectiveNode,
-    ],
-    rehypePlugins: [
-      rehypeKatex,
-      rehypeSlug,
-      [
-        rehypeComponents,
-        {
-          components: {
-            github: GithubCardComponent,
-            note: (x, y) => AdmonitionComponent(x, y, "note"),
-            tip: (x, y) => AdmonitionComponent(x, y, "tip"),
-            important: (x, y) => AdmonitionComponent(x, y, "important"),
-            caution: (x, y) => AdmonitionComponent(x, y, "caution"),
-            warning: (x, y) => AdmonitionComponent(x, y, "warning"),
-          },
-        },
-      ],
-      [
-        rehypeAutolinkHeadings,
-        {
-          behavior: "append",
-          properties: {
-            className: ["anchor"],
-          },
-          content: {
-            type: "element",
-            tagName: "span",
-            properties: {
-              className: ["anchor-icon"],
-              "data-pagefind-ignore": true,
-            },
-            children: [
-              {
-                type: "text",
-                value: "#",
-              },
-            ],
-          },
-        },
-      ],
-    ],
   },
   vite: {
     plugins: [tailwindcss()],
