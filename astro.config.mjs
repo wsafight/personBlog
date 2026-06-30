@@ -22,27 +22,50 @@ import { remarkHasMath } from "./src/plugins/remark-has-math.js";
 import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs";
 
 const dataStorePath = fileURLToPath(new URL("./.astro/data-store.json", import.meta.url));
+const dataStoreVirtualId = "astro:data-layer-content";
+const resolvedDataStoreVirtualId = `\0${dataStoreVirtualId}`;
+
+function externalDataStoreModule() {
+  return {
+    code: `
+import { readFileSync } from "node:fs";
+
+export default JSON.parse(readFileSync(${JSON.stringify(dataStorePath)}, "utf-8"));
+`,
+    map: { mappings: "" },
+  };
+}
 
 function externalAstroContentDataStore() {
   return {
     name: "external-astro-content-data-store",
     apply: "build",
     enforce: "pre",
+    configResolved(config) {
+      const astroContentPlugin = config.plugins.find(
+        plugin => plugin.name === "astro-content-virtual-mod-plugin",
+      );
+      const load = astroContentPlugin?.load;
+      if (!load || typeof load !== "object" || typeof load.handler !== "function") {
+        return;
+      }
+
+      const originalHandler = load.handler;
+      load.handler = function (id, ...args) {
+        if (id === resolvedDataStoreVirtualId) {
+          return externalDataStoreModule();
+        }
+        return originalHandler.call(this, id, ...args);
+      };
+    },
     resolveId(id) {
-      if (id === "astro:data-layer-content") {
-        return "\0astro:data-layer-content";
+      if (id === dataStoreVirtualId) {
+        return resolvedDataStoreVirtualId;
       }
     },
     load(id) {
-      if (id === "\0astro:data-layer-content") {
-        return {
-          code: `
-import { readFileSync } from "node:fs";
-
-export default JSON.parse(readFileSync(${JSON.stringify(dataStorePath)}, "utf-8"));
-`,
-          map: { mappings: "" },
-        };
+      if (id === resolvedDataStoreVirtualId) {
+        return externalDataStoreModule();
       }
     },
   };
