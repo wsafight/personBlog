@@ -7,7 +7,6 @@ import icon from "astro-icon";
 import { defineConfig } from "astro/config";
 import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { gzipSync } from "node:zlib";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeComponents from "rehype-components"; /* Render the custom directive content */
 import rehypeKatex from "rehype-katex";
@@ -29,31 +28,24 @@ function externalAstroContentDataStore() {
   return {
     name: "external-astro-content-data-store",
     apply: "build",
-    enforce: "pre",
-    resolveId(id) {
-      if (id === "astro:data-layer-content") {
-        return "\0astro:data-layer-content";
-      }
-    },
-    load(id) {
+    transform(_code, id) {
+      // Astro 7 turns the content data store into a huge ESM literal. Keep the
+      // module tiny so Vite/Rolldown does not parse that generated payload.
       if (id === "\0astro:data-layer-content") {
         if (!existsSync(dataStorePath)) {
           return {
-            code: "export default new Map()",
+            code: "export default []",
             map: { mappings: "" },
           };
         }
 
-        const jsonData = readFileSync(dataStorePath, "utf-8");
-        JSON.parse(jsonData);
-        const compressedData = gzipSync(jsonData).toString("base64");
+        JSON.parse(readFileSync(dataStorePath, "utf-8"));
 
         return {
           code: `
-import { Buffer } from "node:buffer";
-import { gunzipSync } from "node:zlib";
+import { readFileSync } from "node:fs";
 
-export default JSON.parse(gunzipSync(Buffer.from(${JSON.stringify(compressedData)}, "base64")).toString("utf-8"));
+export default JSON.parse(readFileSync(${JSON.stringify(dataStorePath)}, "utf-8"));
 `,
           map: { mappings: "" },
         };
@@ -178,7 +170,27 @@ export default defineConfig({
         ],
       ],
     }),
-    syntaxHighlight: "prism",
+    syntaxHighlight: {
+      type: "prism",
+      excludeLangs: [
+        "math",
+        "caddy",
+        "tsrx",
+        "gritql",
+        "grit",
+        "slint",
+        "wxml",
+        "make",
+        "prisma",
+        "conf",
+        "asm",
+        "moonbit",
+        "TS",
+        "TypeScript",
+        "svelte",
+        "vue",
+      ],
+    },
     shikiConfig: {
       langAlias: {
         TS: "typescript",
