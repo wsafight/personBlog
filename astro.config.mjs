@@ -69,7 +69,9 @@ export default defineConfig({
     }),
     sitemap(),
     Compress({
-      CSS: true,
+      // CSSO does not understand Tailwind 4's modern media query syntax like
+      // `@media (width >= 64rem)` and drops responsive rules in production.
+      CSS: false,
       HTML: true,
       JavaScript: false,
       Image: false,
