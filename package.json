@@ -4,8 +4,8 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && pagefind --site dist && node scripts/remove-pagefind-useless.js",
-    "build:analyze": "astro build && pagefind --site dist && node scripts/remove-pagefind-useless.js && node scripts/analyze-build.js",
+    "build": "node --max-old-space-size=4096 --wasm-max-mem-pages=8192 node_modules/astro/bin/astro.mjs build && pagefind --site dist && node scripts/remove-pagefind-useless.js",
+    "build:analyze": "node --max-old-space-size=4096 --wasm-max-mem-pages=8192 node_modules/astro/bin/astro.mjs build && pagefind --site dist && node scripts/remove-pagefind-useless.js && node scripts/analyze-build.js",
     "preview": "astro preview",
     "type-check": "tsc --noEmit --isolatedDeclarations",
     "new-post": "node scripts/new-post.js",
