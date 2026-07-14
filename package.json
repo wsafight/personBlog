@@ -33,6 +33,7 @@
     "katex": "0.17.0",
     "markdown-it": "14.2.0",
     "mdast-util-to-string": "4.0.0",
+    "mermaid": "^11.16.0",
     "overlayscrollbars": "2.16.0",
     "pagefind": "1.5.2",
     "photoswipe": "5.4.4",

@@ -1,6 +1,7 @@
 ---
 import codeFontStylesheetUrl from '@fontsource-variable/jetbrains-mono/wght.css?url'
 import CodeCopyScript from './CodeCopyScript.astro'
+import MermaidScript from './MermaidScript.astro'
 
 interface Props {
   class: string
@@ -14,3 +15,4 @@ const enableCodeFeatures = Astro.props.enableCodeFeatures ?? false
     <slot/>
 </div>
 {enableCodeFeatures && <CodeCopyScript />}
+<MermaidScript />

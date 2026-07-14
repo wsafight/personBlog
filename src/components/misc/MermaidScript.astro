@@ -1,0 +1,154 @@
+<script>
+type MermaidApi = typeof import('mermaid').default
+
+type MermaidRuntimeState = {
+  diagramId: number
+  renderVersion: number
+  lastDarkMode: boolean
+  mermaid?: Promise<MermaidApi>
+  themeObserver?: MutationObserver
+  removeSwupListeners?: Array<() => void>
+  removeSwupEnableListener?: () => void
+}
+
+declare global {
+  interface Window {
+    mermaidRuntime?: MermaidRuntimeState
+  }
+}
+
+const diagramSelector = '.custom-md pre[data-language="mermaid"]'
+const renderedDiagramSelector = '.custom-md .mermaid-diagram[data-mermaid-source]'
+const mermaidRuntime = window.mermaidRuntime ??= {
+  diagramId: 0,
+  renderVersion: 0,
+  lastDarkMode: document.documentElement.classList.contains('dark'),
+}
+
+function prepareDiagrams(): HTMLElement[] {
+  document.querySelectorAll<HTMLPreElement>(diagramSelector).forEach(pre => {
+    const source = pre.querySelector('code')?.textContent ?? pre.textContent ?? ''
+    const diagram = document.createElement('div')
+    diagram.className = 'mermaid-diagram not-prose'
+    diagram.dataset.mermaidSource = source
+    diagram.setAttribute('role', 'img')
+    diagram.setAttribute('aria-label', '流程图')
+
+    const codeBlock = pre.parentElement?.classList.contains('code-block') ? pre.parentElement : null
+    if (codeBlock) {
+      codeBlock.replaceWith(diagram)
+    } else {
+      pre.replaceWith(diagram)
+    }
+  })
+
+  return Array.from(document.querySelectorAll<HTMLElement>(renderedDiagramSelector))
+}
+
+function loadMermaid(): Promise<MermaidApi> {
+  mermaidRuntime.mermaid ??= import('mermaid').then(module => module.default)
+  return mermaidRuntime.mermaid
+}
+
+async function renderMermaidDiagrams() {
+  const diagrams = prepareDiagrams()
+  if (diagrams.length === 0) return
+
+  const renderVersion = ++mermaidRuntime.renderVersion
+  const darkMode = document.documentElement.classList.contains('dark')
+  const mermaid = await loadMermaid()
+  if (renderVersion !== mermaidRuntime.renderVersion) return
+
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: 'strict',
+    theme: darkMode ? 'dark' : 'default',
+  })
+
+  for (const diagram of diagrams) {
+    const source = diagram.dataset.mermaidSource
+    if (!source || renderVersion !== mermaidRuntime.renderVersion) return
+
+    try {
+      const id = `mermaid-diagram-${++mermaidRuntime.diagramId}`
+      const { svg, bindFunctions } = await mermaid.render(id, source)
+      if (renderVersion !== mermaidRuntime.renderVersion || !diagram.isConnected) return
+      diagram.innerHTML = svg
+      diagram.classList.remove('mermaid-diagram-error')
+      bindFunctions?.(diagram)
+    } catch (error) {
+      diagram.textContent = source
+      diagram.classList.add('mermaid-diagram-error')
+      console.error('Failed to render Mermaid diagram', error)
+    }
+  }
+}
+
+function watchTheme() {
+  mermaidRuntime.themeObserver?.disconnect()
+  mermaidRuntime.lastDarkMode = document.documentElement.classList.contains('dark')
+  mermaidRuntime.themeObserver = new MutationObserver(() => {
+    const darkMode = document.documentElement.classList.contains('dark')
+    if (darkMode === mermaidRuntime.lastDarkMode) return
+    mermaidRuntime.lastDarkMode = darkMode
+    void renderMermaidDiagrams()
+  })
+  mermaidRuntime.themeObserver.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['class'],
+  })
+}
+
+function setupSwup() {
+  mermaidRuntime.removeSwupListeners?.forEach(remove => remove())
+  mermaidRuntime.removeSwupListeners = [
+    window.swup.hooks.on('page:view', () => {
+      void renderMermaidDiagrams()
+    }),
+  ]
+}
+
+mermaidRuntime.removeSwupEnableListener?.()
+if (window.swup?.hooks) {
+  setupSwup()
+} else {
+  const onSwupEnable = () => {
+    mermaidRuntime.removeSwupEnableListener?.()
+    mermaidRuntime.removeSwupEnableListener = undefined
+    setupSwup()
+  }
+  document.addEventListener('swup:enable', onSwupEnable)
+  mermaidRuntime.removeSwupEnableListener = () => {
+    document.removeEventListener('swup:enable', onSwupEnable)
+  }
+}
+
+watchTheme()
+void renderMermaidDiagrams()
+</script>
+
+<style is:global>
+  .custom-md .mermaid-diagram {
+    width: 100%;
+    margin-block: 1.75rem;
+    overflow-x: auto;
+  }
+
+  .custom-md .mermaid-diagram svg {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    margin-inline: auto;
+  }
+
+  .custom-md .mermaid-diagram-error {
+    padding: 1rem;
+    overflow-x: auto;
+    color: inherit;
+    font-family: monospace;
+    white-space: pre;
+    border: 1px solid var(--line-divider);
+    border-radius: var(--radius-large);
+  }
+</style>

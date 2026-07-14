@@ -5,7 +5,7 @@
   const copyTimeouts = new WeakMap<HTMLButtonElement, ReturnType<typeof setTimeout>>()
 
   function addPreCopyButton(root: Document | Element = document) {
-    const codeBlocks = Array.from(root.querySelectorAll('pre:not([data-copy-bound])'))
+    const codeBlocks = Array.from(root.querySelectorAll('pre:not([data-copy-bound]):not([data-language="mermaid"])'))
 
     for (const codeBlock of codeBlocks) {
       if (codeBlock.parentElement?.nodeName === 'DIV' && codeBlock.parentElement?.classList.contains('code-block')) continue
