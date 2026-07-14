@@ -6,13 +6,15 @@ import MermaidScript from './MermaidScript.astro'
 interface Props {
   class: string
   enableCodeFeatures?: boolean
+  enableMermaid?: boolean
 }
 const className = Astro.props.class
 const enableCodeFeatures = Astro.props.enableCodeFeatures ?? false
+const enableMermaid = Astro.props.enableMermaid ?? false
 ---
 {enableCodeFeatures && <link rel="stylesheet" href={codeFontStylesheetUrl} />}
 <div data-pagefind-body class=`prose dark:prose-invert prose-base !max-w-none custom-md ${className}`>
     <slot/>
 </div>
 {enableCodeFeatures && <CodeCopyScript />}
-<MermaidScript />
+{enableMermaid && <MermaidScript />}

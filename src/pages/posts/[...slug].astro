@@ -52,6 +52,9 @@ const jsonLd = {
 }
 const hasMath = remarkPluginFrontmatter.hasMath
 const hasCodeFeatures = /(^|\n)(```|~~~)|<pre\b/i.test(entry.body ?? '')
+const hasMermaid = /(^|\n)(```|~~~)\s*mermaid(?:\s|\n|$)/i.test(
+  entry.body ?? '',
+)
 ---
 <MainGridLayout banner={entry.data.image} title={entry.data.title} description={entry.data.description} lang='zh-CN' setOGTypeArticle={true} headings={headings}>
     <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
@@ -109,7 +112,7 @@ const hasCodeFeatures = /(^|\n)(```|~~~)|<pre\b/i.test(entry.body ?? '')
             }
 
 
-            <Markdown class="mb-6 markdown-content onload-animation" enableCodeFeatures={hasCodeFeatures}>
+            <Markdown class="mb-6 markdown-content onload-animation" enableCodeFeatures={hasCodeFeatures} enableMermaid={hasMermaid}>
                 <Content />
             </Markdown>
 
