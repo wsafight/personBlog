@@ -27,26 +27,28 @@ draft: false
 
 ```mermaid
 flowchart LR
-    subgraph Client[客户端]
-        Q[Query<br/>字段树]
+    subgraph Client["客户端"]
+        Q["Query<br/>字段树"]
     end
-    subgraph Server[GraphQL 服务端]
-        S[Schema<br/>类型契约]
-        P[Parser<br/>词法/语法]
-        V[Validator<br/>类型校验]
-        E[Executor<br/>递归 Resolver]
-        R[(Resolvers<br/>字段 → 数据)]
+    subgraph Server["GraphQL 服务端"]
+        S["Schema<br/>类型契约"]
+        P["Parser<br/>词法/语法"]
+        V["Validator<br/>类型校验"]
+        E["Executor<br/>递归 Resolver"]
+        R[("Resolvers<br/>字段到数据")]
     end
-    subgraph Response
-        J[JSON<br/>data 形状对应 Query]
+    subgraph Response["响应"]
+        J["JSON<br/>data 形状对应 Query"]
     end
 
-    Q --> P --> V
-    S -.契约.-> V
+    Q --> P
+    P --> V
+    S -. 契约 .-> V
     V --> E
-    E <--> R
+    E --> R
+    R --> E
     E --> J
-    J --> Client
+    J --> Q
 ```
 
 一句话概括：**GraphQL 引擎是一个「由 selection set 驱动、受 Schema 约束的字段执行器」**。数据可以来自 MySQL、Redis、微服务或文件，具体访问方式由 Resolver 和数据访问层负责。
@@ -59,15 +61,15 @@ flowchart LR
 
 ```mermaid
 flowchart LR
-    A[Query String<br/>纯文本] -->|词法+语法| B[AST<br/>抽象语法树]
-    B -->|对照 Schema| C[Validated AST]
-    C -->|递归求值| D[Data Tree]
-    D -->|按 Query 层级序列化| E[JSON Response]
+    A["Query String<br/>纯文本"] -->|词法 + 语法| B["AST<br/>抽象语法树"]
+    B -->|对照 Schema| C["Validated AST"]
+    C -->|递归求值| D["Data Tree"]
+    D -->|按 Query 层级序列化| E["JSON Response"]
 
-    B -.-> B1[Parse]
-    C -.-> C1[Validate]
-    D -.-> D1[Execute]
-    E -.-> E1[Format]
+    B -.-> B1["Parse"]
+    C -.-> C1["Validate"]
+    D -.-> D1["Execute"]
+    E -.-> E1["Format"]
 ```
 
 | 阶段 | 输入 | 输出 | 核心工作 |
